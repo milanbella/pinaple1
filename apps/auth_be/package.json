@@ -1,0 +1,23 @@
+{
+  "name": "auth_be",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/router": "^10.1.1",
+    "ajv": "^8.6.3",
+    "koa": "^2.13.3",
+    "koa-bodyparser": "^4.3.0",
+    "koa-session": "^6.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^16.10.1",
+    "typescript": "^4.4.3"
+  }
+}
