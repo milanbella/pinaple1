@@ -5,27 +5,30 @@ const { jwtVerify } = require('jose/jwt/verify');
 
 const fs = require('fs');
 
+const PRIVATE_KEY_FILE_PATH = 'certs/key-pkcs8.pem';
+const PUBLIC_KEY_FILE_PATH = 'certs/cert.pem';
+const JWT_CLAIMS = {
+  'urn:example:claim': true,
+};
+const JWT_ISSUER = 'pinaple1';
+const JWT_AUDIENCE = 'api';
+const JWT_EXPIRATION_TIME = '2h';
+
 async function getPrivateKey() {
-  const key = fs.readFileSync('certs/key-pkcs8.pem', 'utf8')
-  const privateKey = await importPKCS8(key, 'RS256')
+  const key = fs.readFileSync(PRIVATE_KEY_FILE_PATH, 'utf8');
+  const privateKey = await importPKCS8(key, 'RS256');
   return privateKey;
 }
 
 async function getPublicKey() {
-  const key = fs.readFileSync('certs/cert.pem', 'utf8')
-  const publicKey = await importX509(key, 'RS256')
+  const key = fs.readFileSync(PUBLIC_KEY_FILE_PATH, 'utf8');
+  const publicKey = await importX509(key, 'RS256');
   return publicKey;
 }
 
 async function generateJWT() {
   const privateKey = await getPrivateKey();
-  const jwt = await new SignJWT({ 'urn:example:claim': true })
-  .setProtectedHeader({ alg: 'RS256' })
-  .setIssuedAt()
-  .setIssuer('urn:example:issuer')
-  .setAudience('urn:example:audience')
-  .setExpirationTime('2h')
-  .sign(privateKey);
+  const jwt = await new SignJWT(JWT_CLAIMS).setProtectedHeader({ alg: 'RS256' }).setIssuedAt().setIssuer(JWT_ISSUER).setAudience(JWT_AUDIENCE).setExpirationTime(JWT_EXPIRATION_TIME).sign(privateKey);
 
   return jwt;
 }
@@ -35,13 +38,12 @@ async function verifyJWT() {
   const publicKey = await getPublicKey();
 
   const { payload, protectedHeader } = await jwtVerify(jwt, publicKey, {
-    issuer: 'urn:example:issuer',
-    audience: 'urn:example:audience'
+    issuer: JWT_ISSUER,
+    audience: JWT_AUDIENCE,
   });
 
-  console.log(protectedHeader)
-  console.log(payload)
+  console.log(protectedHeader);
+  console.log(payload);
 }
 
 verifyJWT();
-

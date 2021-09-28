@@ -67,7 +67,7 @@ common/autoinstallers/*/.npmrc
 # Heft
 .heft
 
-.swp
+*.swp
 
 dist/
 

@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "test": "jest",
+    "testDebug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
+    "prettier-check": "prettier --check \"src/**/*.ts\"",
+    "prettier-fix": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint . --format unix --ext .js,.jsx,.ts,.tsx"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +22,14 @@
     "koa-session": "^6.2.0"
   },
   "devDependencies": {
+    "@types/jest": "^27.0.2",
     "@types/node": "^16.10.1",
+    "@typescript-eslint/eslint-plugin": "^4.32.0",
+    "@typescript-eslint/parser": "^4.32.0",
+    "eslint": "^7.32.0",
+    "jest": "^27.2.3",
+    "prettier": "^2.4.1",
+    "ts-jest": "^27.0.5",
     "typescript": "^4.4.3"
   }
 }
