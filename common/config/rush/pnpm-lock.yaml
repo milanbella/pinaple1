@@ -18,6 +18,7 @@ specifiers:
   koa-bodyparser: ^4.3.0
   koa-session: ^6.2.0
   next: 11.1.2
+  node-fetch: ^2.6.5
   pg: ^8.7.1
   prettier: ^2.4.1
   react: 17.0.2
@@ -44,6 +45,7 @@ dependencies:
   koa-bodyparser: 4.3.0
   koa-session: 6.2.0
   next: 11.1.2_94019d5ea9236784e4778c48676ab990
+  node-fetch: 2.6.5
   pg: 8.7.1
   prettier: 2.4.1
   react: 17.0.2
@@ -4491,6 +4493,13 @@ packages:
     engines: {node: 4.x || >=6.0.0}
     dev: false
 
+  /node-fetch/2.6.5:
+    resolution: {integrity: sha512-mmlIVHJEu5rnIxgEgez6b9GgWXbkZj5YZ7fx+2r94a2E+Uirsp6HsPTPlomfdHtpt/B0cdKviwkoaM6pyvUOpQ==}
+    engines: {node: 4.x || >=6.0.0}
+    dependencies:
+      whatwg-url: 5.0.0
+    dev: false
+
   /node-html-parser/1.4.9:
     resolution: {integrity: sha512-UVcirFD1Bn0O+TSmloHeHqZZCxHjvtIeGdVdGMhyZ8/PWlEiZaZ5iJzR189yKZr8p0FXN58BUeC7RHRkf/KYGw==}
     dependencies:
@@ -5771,6 +5780,10 @@ packages:
       universalify: 0.1.2
     dev: false
 
+  /tr46/0.0.3:
+    resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
+    dev: false
+
   /tr46/1.0.1:
     resolution: {integrity: sha1-qLE/1r/SSJUZZ0zN5VujaTtwbQk=}
     dependencies:
@@ -6096,6 +6109,10 @@ packages:
       graceful-fs: 4.2.8
     dev: false
 
+  /webidl-conversions/3.0.1:
+    resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}
+    dev: false
+
   /webidl-conversions/4.0.2:
     resolution: {integrity: sha512-YQ+BmxuTgd6UXZW3+ICGfyqRyHXVlD5GtQr5+qjiNW7bF0cqrzX500HVXPBOvgXb5YnzDd+h0zqyv61KUD7+Sg==}
     dev: false
@@ -6118,6 +6135,13 @@ packages:
 
   /whatwg-mimetype/2.3.0:
     resolution: {integrity: sha512-M4yMwr6mAnQz76TbJm914+gPpB/nCwvZbJU28cUD6dR004SAxDLOOSUaB1JDRqLtaOV/vi0IC5lEAGFgrjGv/g==}
+    dev: false
+
+  /whatwg-url/5.0.0:
+    resolution: {integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0=}
+    dependencies:
+      tr46: 0.0.3
+      webidl-conversions: 3.0.1
     dev: false
 
   /whatwg-url/7.1.0:
@@ -6258,7 +6282,7 @@ packages:
     dev: false
 
   file:projects/api.tgz:
-    resolution: {integrity: sha512-Zh5t8r0dvbR/NiO00DGz6SXGVYwlLgBM7/Mq6zXcWQZl3kDJj8fyTyyroqU0Q/LkaulZUk8mfUOJpYK9XnwpRA==, tarball: file:projects/api.tgz}
+    resolution: {integrity: sha512-PD4TDeFzKgVSfwZHQDcvNTbbu1iYfU+i0RTg4MbzBBk2wP+bYdj261x0Ew9BfJD0IMig//DBBxVY67Ia9grQXQ==, tarball: file:projects/api.tgz}
     name: '@rush-temp/api'
     version: 0.0.0
     dependencies:
@@ -6273,6 +6297,7 @@ packages:
       jose: 3.18.0
       koa: 2.13.3
       koa-bodyparser: 4.3.0
+      node-fetch: 2.6.5
       pg: 8.7.1
       prettier: 2.4.1
       ts-jest: 27.0.5_3f00e57d4cc005a60af484dfb2e33bba

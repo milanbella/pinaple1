@@ -28,7 +28,7 @@ app.use(session(CONFIG, app));
 app.use(bodyParser());
 
 router.get('/', (ctx, next) => {
-  ctx.body = 'Hello World';
+  ctx.body = 'Hello!';
 });
 
 app.use(router.routes()).use(router.allowedMethods());
