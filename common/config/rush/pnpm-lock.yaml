@@ -5,12 +5,13 @@ specifiers:
   '@rush-temp/api': file:./projects/api.tgz
   '@rush-temp/auth_be': file:./projects/auth_be.tgz
   '@rush-temp/auth_fe': file:./projects/auth_fe.tgz
+  '@rush-temp/types': file:./projects/types.tgz
+  '@rush-temp/www': file:./projects/www.tgz
   '@types/jest': ^27.0.2
   '@types/node': ^16.10.1
   '@types/react': 17.0.24
   '@typescript-eslint/eslint-plugin': ^4.32.0
   '@typescript-eslint/parser': ^4.32.0
-  ajv: ^8.6.3
   eslint-config-next: 11.1.2
   jest: ^27.2.3
   jose: ^3.18.0
@@ -19,25 +20,25 @@ specifiers:
   koa-session: ^6.2.0
   next: 11.1.2
   node-fetch: ^2.6.5
-  pg: ^8.7.1
+  pg: ~8.7.1
   prettier: ^2.4.1
   react: 17.0.2
   react-dom: 17.0.2
   react-hook-form: ^7.15.4
   sass: ^1.42.1
-  ts-jest: ^27.0.5
 
 dependencies:
   '@koa/router': 10.1.1
   '@rush-temp/api': file:projects/api.tgz
   '@rush-temp/auth_be': file:projects/auth_be.tgz
   '@rush-temp/auth_fe': file:projects/auth_fe.tgz
+  '@rush-temp/types': file:projects/types.tgz
+  '@rush-temp/www': file:projects/www.tgz
   '@types/jest': 27.0.2
   '@types/node': 16.10.1
   '@types/react': 17.0.24
   '@typescript-eslint/eslint-plugin': 4.32.0_@typescript-eslint+parser@4.32.0
   '@typescript-eslint/parser': 4.32.0
-  ajv: 8.6.3
   eslint-config-next: 11.1.2_next@11.1.2
   jest: 27.2.3
   jose: 3.18.0
@@ -52,7 +53,6 @@ dependencies:
   react-dom: 17.0.2_react@17.0.2
   react-hook-form: 7.16.0_react@17.0.2
   sass: 1.42.1
-  ts-jest: 27.0.5_@types+jest@27.0.2+jest@27.2.3
 
 packages:
 
@@ -5828,36 +5828,6 @@ packages:
       yargs-parser: 20.2.9
     dev: false
 
-  /ts-jest/27.0.5_@types+jest@27.0.2+jest@27.2.3:
-    resolution: {integrity: sha512-lIJApzfTaSSbtlksfFNHkWOzLJuuSm4faFAfo5kvzOiRAuoN4/eKxVJ2zEAho8aecE04qX6K1pAzfH5QHL1/8w==}
-    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
-    hasBin: true
-    peerDependencies:
-      '@babel/core': '>=7.0.0-beta.0 <8'
-      '@types/jest': ^27.0.0
-      babel-jest: '>=27.0.0 <28'
-      jest: ^27.0.0
-      typescript: '>=3.8 <5.0'
-    peerDependenciesMeta:
-      '@babel/core':
-        optional: true
-      '@types/jest':
-        optional: true
-      babel-jest:
-        optional: true
-    dependencies:
-      '@types/jest': 27.0.2
-      bs-logger: 0.2.6
-      fast-json-stable-stringify: 2.1.0
-      jest: 27.2.3
-      jest-util: 27.2.3
-      json5: 2.2.0
-      lodash: 4.17.21
-      make-error: 1.3.6
-      semver: 7.3.5
-      yargs-parser: 20.2.9
-    dev: false
-
   /ts-pnp/1.2.0:
     resolution: {integrity: sha512-csd+vJOb/gkzvcCHgTGSChYpy5f1/XKNsmvBGO4JXS+z1v2HobugDz4s1IeFXM3wZB44uczs+eazB5Q/ccdhQw==}
     engines: {node: '>=6'}
@@ -6282,7 +6252,7 @@ packages:
     dev: false
 
   file:projects/api.tgz:
-    resolution: {integrity: sha512-PD4TDeFzKgVSfwZHQDcvNTbbu1iYfU+i0RTg4MbzBBk2wP+bYdj261x0Ew9BfJD0IMig//DBBxVY67Ia9grQXQ==, tarball: file:projects/api.tgz}
+    resolution: {integrity: sha512-d56+p0HLQPhkcXRPtMN9nv7pyvaJDZkgK92TuICirKY2FkR9yNhArp62Z7tBUPCr5dg2WbUPS5WJQavsiM3Jdw==, tarball: file:projects/api.tgz}
     name: '@rush-temp/api'
     version: 0.0.0
     dependencies:
@@ -6365,4 +6335,37 @@ packages:
       - node-sass
       - supports-color
       - webpack
+    dev: false
+
+  file:projects/types.tgz:
+    resolution: {integrity: sha512-tiKCFMjRARD0Hg03eOASpki7at30lF2Uq5mDRmpX7Dcmr50ijo3ZYtTKNz92wJXmpJ3ECMlxDMjbhweiRGkUOQ==, tarball: file:projects/types.tgz}
+    name: '@rush-temp/types'
+    version: 0.0.0
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 4.32.0_1eacf2495a01e8a68ffa99482308e8ec
+      '@typescript-eslint/parser': 4.32.0_eslint@7.32.0+typescript@4.4.3
+      eslint: 7.32.0
+      prettier: 2.4.1
+      typescript: 4.4.3
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  file:projects/www.tgz:
+    resolution: {integrity: sha512-V4Rr3An2h7wQGq5iJokt6XJ0e3KUpxdNNzxX0+Imik/c8oWOF23AdyHdWrAoLKrGpsvUkH4nHZbEHXpWTG2uBA==, tarball: file:projects/www.tgz}
+    name: '@rush-temp/www'
+    version: 0.0.0
+    dependencies:
+      '@types/node': 16.10.1
+      '@typescript-eslint/eslint-plugin': 4.32.0_1eacf2495a01e8a68ffa99482308e8ec
+      '@typescript-eslint/parser': 4.32.0_eslint@7.32.0+typescript@4.4.3
+      eslint: 7.32.0
+      jose: 3.18.0
+      node-fetch: 2.6.5
+      pg: 8.7.1
+      prettier: 2.4.1
+      typescript: 4.4.3
+    transitivePeerDependencies:
+      - pg-native
+      - supports-color
     dev: false

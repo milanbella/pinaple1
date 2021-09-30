@@ -1,4 +1,5 @@
 import { environment } from './environment';
+import { IResponseError } from 'types/dist/http';
 
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');

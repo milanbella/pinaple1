@@ -3,7 +3,10 @@ const { Pool } = require('pg');
 const pool = new Pool();
 const FILE = 'pool.ts'
 
-async function query<T>(sql: string, values: any[]): Promise<T> {
+interface IResult {
+  rows: any[];
+}
+async function query(sql: string, values: any[]): Promise<IResult> {
   const FUNC = 'query()';
   return new Promise(() => {
     pool.connect((err, client, release) => {
@@ -20,7 +23,7 @@ async function query<T>(sql: string, values: any[]): Promise<T> {
           Promise.reject(new Error('query error'));
           return;
         }
-        Promise.resolve(res as T);
+        Promise.resolve(res as IResult);
       });
     })
   })

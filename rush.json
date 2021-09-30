@@ -468,6 +468,14 @@
     {
       "packageName": "api",
       "projectFolder": "apps/api"
+    },
+    {
+      "packageName": "www",
+      "projectFolder": "lib/www"
+    },
+    {
+      "packageName": "types",
+      "projectFolder": "lib/types"
     }
   ]
 }
