@@ -2,38 +2,30 @@ import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
 import { query   } from 'www/dist/pool';
 
 const Router = require('@koa/router');
-const router = new Router();
 const Ajv = require("ajv");
 const SHA256 = require("crypto-js/sha256");
-const { uuid1: uuidv1 } = require('uuid');
+const { v1: uuidv1 } = require('uuid');
 
 const FILE = 'user.ts';
 
 const ajv = new Ajv();
 
-router.get('/user', (ctx, next) => {
-  ctx.body = 'Hello!';
-});
+export const router = new Router();
 
-const schemaUserGet = ajv.compile({
-  type: "object",
-  properties: {
-    userName: {type: "string"},
-  },
-  required: ["userName"],
-  additionalProperties: false,
-});
-router.post('/user/get', async (ctx) => {
+router.get('/user', async (ctx) => {
   const FUNC = 'router.post(/user/get)';
-  const valid = schemaUserGet(ctx.request.body);
 
-  if (!valid) {
+  let userName = ctx.request.query.user_name;
+
+  if (!userName) {
     let body: IResponseError = {
-      errKind: ResponseErrorKind.JSON_SCHEMA_VALIDATION,
-      data: valid.errors,
+      errKind: ResponseErrorKind.WRONG_PARAMETR,
+      data: {
+        message: 'missing user_name query parameter',
+      }
     };
     ctx.response.status = 400;
-    ctx.response.body = body; 
+    ctx.response.body = body;
     return;
   }
 
@@ -84,14 +76,14 @@ const schemaUserCreate = ajv.compile({
   ],
   additionalProperties: false,
 });
-router.post('/user/create', async (ctx) => {
-  const FUNC = 'router.post(/user/create)';
+router.post('/user', async (ctx) => {
+  const FUNC = 'router.post(/user)';
   const valid = schemaUserCreate(ctx.request.body);
 
   if (!valid) {
     let body: IResponseError = {
       errKind: ResponseErrorKind.JSON_SCHEMA_VALIDATION,
-      data: valid.errors,
+      data: schemaUserCreate.errors,
     };
     ctx.response.status = 400;
     ctx.response.body = body; 

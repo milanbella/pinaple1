@@ -1,30 +1,57 @@
 const { Pool } = require('pg');
 
-const pool = new Pool();
 const FILE = 'pool.ts'
 
-interface IResult {
+let pool;
+
+export interface IResult {
   rows: any[];
 }
-async function query(sql: string, values: any[]): Promise<IResult> {
+export async function query(sql: string, values?: any[]): Promise<IResult> {
   const FUNC = 'query()';
-  return new Promise(() => {
+
+  if (!pool) {
+    console.error(`${FILE}:${FUNC}: pool not initialized, call initPool() to initialize it`);
+    return Promise.reject(new Error('pool not initialized'));
+  }
+
+  return new Promise((resolve, reject) => {
     pool.connect((err, client, release) => {
       if (err) {
         release()
         console.error(`${FILE}:${FUNC}: pool error: sql: ${sql}`, err);
-        Promise.reject(new Error('pool error'));
+        reject(err);
         return;
       }
       client.query(sql, values, (err, res) => {
         release();
         if (err) {
           console.error(`${FILE}:${FUNC}: query error: sql: ${sql}`, err);
-          Promise.reject(new Error('query error'));
+          reject(err);
           return;
         }
-        Promise.resolve(res as IResult);
+        resolve(res as IResult);
       });
     })
   })
+}
+
+export function initPool(user: string, host: string, database: string, password: string, port: number) {
+  const FUNC = 'initPool()';
+  if (pool) {
+    console.error(`${FILE}:${FUNC}: pool already initialized`);
+    throw new Error('pool already initialized');
+  }
+  let opts = {
+    user: user,
+    host: host,
+    database: database,
+    password: password,
+    port: port,
+  }
+  pool = new Pool(opts);
+}
+
+export function releasePool(): Promise<any> {
+  return pool.end();
 }

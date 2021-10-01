@@ -1,11 +1,23 @@
 export interface IEnvironment {
-  protocol: string;
-  host: string;
-  port: number;
+  apiProtocol: string;
+  apiHost: string;
+  apiPort: number;
+
+  pgUser: string;
+  pgHost: string;
+  pgDatabase: string;
+  pgPassword: string;
+  pgPort: number;
 }
 
 export let environment: IEnvironment = {
-  protocol: 'http',
-  host: 'localhost',
-  port: 3355,
+  apiProtocol: 'http',
+  apiHost: 'localhost',
+  apiPort: 3355,
+
+  pgUser: 'auth',
+  pgHost: 'localhost',
+  pgDatabase: 'auth',
+  pgPassword: 'auth',
+  pgPort: 5433,
 }

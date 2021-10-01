@@ -1,14 +1,52 @@
 import { environment } from '../environment';
+import { httpGet, httpPost, HttpError } from 'www/dist/http';
+import { initPool, releasePool, query  } from 'www/dist/pool';
 
 const fetch = require('node-fetch');
 
+initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
+
+afterAll(() => {
+  return releasePool();
+});
+
 function url() {
-  return `${environment.protocol}://${environment.host}:${environment.port}`;
+  return `${environment.apiProtocol}://${environment.apiHost}:${environment.apiPort}`;
 }
 
-test('Api is up and running', async () => {
-  let response = await fetch(`${url()}/`);
-  expect(response.ok).toEqual(true);
-  let text = await response.text();
-  expect(text.indexOf('Hello') > -1).toEqual(true);
+test('Create new user', async () => {
+  await query("delete from auth.users where user_name='johnDoe'");
+  let result = await httpPost(`${url()}/user`, {
+    userName: 'johnDoe',
+    email: 'johndoe@foo.com',
+    password: 'bla',
+  });
+  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  expect(qresult.rows[0].cnt).toEqual('1');
+})
+
+test('Do not create user with same user name', async () => {
+
+  await query("delete from auth.users where user_name='johnDoe'");
+  let result = await httpPost(`${url()}/user`, {
+    userName: 'johnDoe',
+    email: 'johndoe@foo.com',
+    password: 'bla',
+  });
+
+  try {
+    result = await httpPost(`${url()}/user`, {
+      userName: 'johnDoe',
+      email: 'johndoe25@foo.com',
+      password: 'bla',
+    });
+  } catch(err) {
+    expect(err instanceof HttpError).toEqual(true);
+    expect(err.status === 409);
+    expect(err.jsonBody).toEqual({
+      errKind: 'ERROR_RESOURCE_EXISTS',
+      data: { message: 'user name already exists' }
+    });
+
+  }
 })
