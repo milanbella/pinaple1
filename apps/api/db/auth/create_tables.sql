@@ -4,3 +4,14 @@ create table auth.users (
   email    varchar(100) not null,
   password varchar(150) not null
 );
+
+create table auth.oauth_code (
+  id varchar(50) not null primary key,
+  issued_at timestamp,
+  client_id varchar(50)
+);
+
+create table auth.oauth_client (
+  id varchar(50) not null primary key,
+  redirect_uri: varchar(250),
+);

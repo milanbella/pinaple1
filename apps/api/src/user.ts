@@ -1,9 +1,9 @@
 import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
-import { query   } from 'www/dist/pool';
+import { query } from 'www/dist/pool';
+import { validateSchema, hashString, responseInternalError } from './common';
 
 const Router = require('@koa/router');
 const Ajv = require("ajv");
-const SHA256 = require("crypto-js/sha256");
 const { v1: uuidv1 } = require('uuid');
 
 const FILE = 'user.ts';
@@ -14,49 +14,56 @@ export const router = new Router();
 
 router.get('/user', async (ctx) => {
   const FUNC = 'router.post(/user/get)';
+  try {
 
-  let userName = ctx.request.query.user_name;
+    let userName = ctx.request.query.user_name;
 
-  if (!userName) {
-    let body: IResponseError = {
-      errKind: ResponseErrorKind.WRONG_PARAMETR,
-      data: {
-        message: 'missing user_name query parameter',
-      }
-    };
-    ctx.response.status = 400;
-    ctx.response.body = body;
-    return;
-  }
-
-  let qres = await query('select id, user_name, email, password from auth.users where user_name=$1', [ctx.request.body.userName]);  
-
-  if (qres.rows.length === 1) {
-    let data = qres.rows[0];
-    ctx.response.status = 200;
-    ctx.response.body = {
-      id: data.id,
-      userName: data.user_name,
-      userEmail: data.email,
-      password: data.password,
+    if (!userName) {
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.WRONG_PARAMETR,
+        data: {
+          message: 'missing user_name query parameter',
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
     }
-    return;
-  } else if (qres.rows.length === 0) {
-    let body: IResponseError = {
-      errKind: ResponseErrorKind.NOT_FOUND,
-      data: {}
-    };
-    ctx.response.status = 404;
-    ctx.response.body = body; 
-    return;
-  } else {
-    console.error(`${FILE}:${FUNC}: more then one user found`);
-    let body: IResponseError = {
-      errKind: ResponseErrorKind.INTERNAL_ERROR,
-      data: {}
-    };
-    ctx.response.status = 500;
-    ctx.response.body = body; 
+
+    let qres = await query('select id, user_name, email, password from auth.users where user_name=$1', [ctx.request.body.userName]);  
+
+    if (qres.rows.length === 1) {
+      let data = qres.rows[0];
+      ctx.response.status = 200;
+      ctx.response.body = {
+        id: data.id,
+        userName: data.user_name,
+        userEmail: data.email,
+        password: data.password,
+      }
+      return;
+    } else if (qres.rows.length === 0) {
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.NOT_FOUND,
+        data: {}
+      };
+      ctx.response.status = 404;
+      ctx.response.body = body; 
+      return;
+    } else {
+      console.error(`${FILE}:${FUNC}: more then one user found`);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {}
+      };
+      ctx.response.status = 500;
+      ctx.response.body = body; 
+      return;
+    }
+
+  } catch(err) {
+    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    responseInternalError(ctx);
     return;
   }
 
@@ -78,15 +85,8 @@ const schemaUserCreate = ajv.compile({
 });
 router.post('/user', async (ctx) => {
   const FUNC = 'router.post(/user)';
-  const valid = schemaUserCreate(ctx.request.body);
 
-  if (!valid) {
-    let body: IResponseError = {
-      errKind: ResponseErrorKind.JSON_SCHEMA_VALIDATION,
-      data: schemaUserCreate.errors,
-    };
-    ctx.response.status = 400;
-    ctx.response.body = body; 
+  if (!validateSchema(schemaUserCreate, ctx)) {
     return;
   }
   let inData = ctx.request.body;
@@ -121,7 +121,7 @@ router.post('/user', async (ctx) => {
 
     // create new user
     let id = uuidv1()
-    let password = SHA256(inData.password); 
+    let password = hashString(inData.password); 
     qres = await query('insert into auth.users(id, user_name, email, password) values($1, $2, $3, $4)', [id, inData.userName, inData.email, password]);  
 
     ctx.response.status = 200;
@@ -129,13 +129,7 @@ router.post('/user', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    let body: IResponseError = {
-      errKind: ResponseErrorKind.INTERNAL_ERROR,
-      data: {
-      }
-    };
-    ctx.response.status = 500;
-    ctx.response.body = body; 
+    responseInternalError(ctx);
     return;
   }
 

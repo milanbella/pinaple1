@@ -4,6 +4,9 @@ export enum ResponseErrorKind {
   RESOURCE_EXISTS = 'ERROR_RESOURCE_EXISTS',
   INTERNAL_ERROR = 'ERROR_INTERNAL_ERROR',
   NOT_FOUND = 'NOT_FOUND',
+  UNAUTHORIZED = 'UNAUTHORIZED',
+  BAD_REQUEST = 'BAD_REQUEST',
+
 }
 
 export interface IResponseError {
