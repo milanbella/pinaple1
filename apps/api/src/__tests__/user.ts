@@ -14,8 +14,13 @@ function url() {
   return `${environment.apiProtocol}://${environment.apiHost}:${environment.apiPort}`;
 }
 
+async function cleanDb() {
+  await query("delete from auth.users where user_name in ('johnDoe') or email in ('johndoe25@foo.com',  'johndoe@foo.com')");
+}
+
 test('Create new user', async () => {
-  await query("delete from auth.users where user_name='johnDoe'");
+  await cleanDb();
+
   let result = await httpPost(`${url()}/user`, {
     userName: 'johnDoe',
     email: 'johndoe@foo.com',
@@ -26,8 +31,8 @@ test('Create new user', async () => {
 })
 
 test('Do not create user with same user name', async () => {
+  await cleanDb();
 
-  await query("delete from auth.users where user_name='johnDoe'");
   let result = await httpPost(`${url()}/user`, {
     userName: 'johnDoe',
     email: 'johndoe@foo.com',
@@ -46,6 +51,32 @@ test('Do not create user with same user name', async () => {
     expect(err.jsonBody).toEqual({
       errKind: 'ERROR_RESOURCE_EXISTS',
       data: { message: 'user name already exists' }
+    });
+
+  }
+})
+
+test('Do not create user with same email', async () => {
+  await cleanDb();
+
+  let result = await httpPost(`${url()}/user`, {
+    userName: 'johnDoe',
+    email: 'johndoe@foo.com',
+    password: 'bla',
+  });
+
+  try {
+    result = await httpPost(`${url()}/user`, {
+      userName: 'johnDoe25',
+      email: 'johndoe@foo.com',
+      password: 'bla',
+    });
+  } catch(err) {
+    expect(err instanceof HttpError).toEqual(true);
+    expect(err.status === 409);
+    expect(err.jsonBody).toEqual({
+      errKind: 'ERROR_RESOURCE_EXISTS',
+      data: { message: 'user email already exists' }
     });
 
   }

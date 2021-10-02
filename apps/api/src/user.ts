@@ -106,7 +106,7 @@ router.post('/user', async (ctx) => {
       ctx.response.body = body; 
       return;
     }
-    qres = await query('select count(*) as cnt from auth.users where user_name=$1', [inData.email]);
+    qres = await query('select count(*) as cnt from auth.users where email=$1', [inData.email]);
     if (qres.rows[0].cnt > 0) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.RESOURCE_EXISTS,

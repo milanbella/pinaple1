@@ -22,7 +22,6 @@
     "koa-bodyparser": "^4.3.0",
     "node-fetch": "^2.6.5",
     "pg": "~8.7.1",
-    "ts-jest": "~27.0.5",
     "www": "*",
     "types": "*",
     "crypto-js": "~4.1.1",
