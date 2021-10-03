@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/app.js",
+    "test": "jest",
     "prettier-check": "prettier --check \"src/**/*.ts\"",
     "prettier-fix": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint . --format unix --ext .js,.jsx,.ts,.tsx"
@@ -17,12 +18,15 @@
     "ramda": "~0.27.1"
   },
   "devDependencies": {
+    "@types/jest": "^27.0.2",
     "@types/node": "^16.10.1",
     "@typescript-eslint/eslint-plugin": "^4.32.0",
     "@typescript-eslint/parser": "^4.32.0",
     "eslint": "^7.32.0",
+    "jest": "^27.2.4",
     "prettier": "^2.4.1",
-    "typescript": "^4.4.3"
+    "typescript": "^4.4.3",
+    "ts-jest": "~27.0.5"
   },
   "author": "",
   "license": "ISC"
