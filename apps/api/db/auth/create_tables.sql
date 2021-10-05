@@ -16,7 +16,7 @@ create table auth.oauth_code_token (
   client_id varchar(50) not null,
   user_id varchar(50) not null,
   user_name varchar(50) not null, 
-  email    varchar(100) not null,
+  user_email varchar(100) not null,
   issued_at timestamp not null
 );
 
@@ -25,9 +25,9 @@ create table auth.oauth_access_token (
   client_id varchar(50) not null,
   user_id varchar(50) not null,
   user_name varchar(50) not null, 
-  email    varchar(100) not null,
-  issued_at timestamp not null,
+  user_email    varchar(100) not null,
   access_token_hash varchar(100) not null,
-  refresh_token varchar(100)
+  refresh_token varchar(100),
+  issued_at timestamp not null
 );
 

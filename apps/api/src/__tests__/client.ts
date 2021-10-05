@@ -21,18 +21,14 @@ async function cleanDb() {
 }
 
 test('It creates and removes client', async () => {
-  console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 500`);
-  await cleanDb();
-
   let hres = await httpPost(`${url()}/client`, {
-    redirect_uri: gRedirectUri
+    redirectUri: gRedirectUri
   });
   expect(hres.id).toBeDefined();
   let id = hres.id;
   let qres = await query("select count(*) as cnt from auth.client where id=$1", [id]);
   expect(qres.rows[0].cnt).toEqual('1');
 
-  console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 1000: id: ${id}`);
   hres = await httpDel(`${url()}/client`, {
     id: id
   });

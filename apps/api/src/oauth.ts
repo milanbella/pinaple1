@@ -19,21 +19,20 @@ export const router = new Router();
 const schemaOauthCodeIssue = ajv.compile({
   type: 'object',
   properties: {
-    client_id: {type: 'string'}, 
+    clientId: {type: 'string'}, 
     userName: {type: 'string'},
     email: {type: 'string'},
     password: {type: 'string'},
   },
   required: [
-    'client_id',
+    'clientId',
     'password'
   ],
   additionalProperties: false,
 });
-router.get('/oauth/code/issue', async (ctx) => {
+router.post('/oauth/code/issue', async (ctx) => {
   const FUNC = 'router.get(/oauth/code/issue)';
   try {
-
     if (!validateSchema(schemaOauthCodeIssue, ctx)) {
       return;
     }
@@ -41,38 +40,36 @@ router.get('/oauth/code/issue', async (ctx) => {
     // Verify client.
  
     let client_id, redirect_uri;
-    let sql = 'select client_id, redirect_uri from oauth_client where client_id=$1';
-    let params = [ctx.request.body.client_id];
+    let sql = 'select id, redirect_uri from client where id=$1';
+    let params = [ctx.request.body.clientId];
     let qres = await query(sql, params);
     if (qres.rows.length < 1) {
       responseUnauthorized(ctx, 'no such client_id');
       return;
     } else if (qres.rows.length > 1) {
-      console.error(`${FILE}:${FUNC}: client_id ${ctx.request.body.client_id} is not unique`)
+      console.error(`${FILE}:${FUNC}: client_id ${ctx.request.body.clientId} is not unique`)
       responseInternalError(ctx, 'client_id not unique');
       return;
     } else {
-      client_id = qres.rows[0].client_id;
+      client_id = qres.rows[0].id;
       redirect_uri = qres.rows[0].redirect_uri;
     }
 
     // Either username or email has to be specified.
     
     let  message;
-    let userName = ctx.request.body.userName;
-    let email = ctx.request.body.email;
-    let user_id, password; 
+    let user_id, user_name, email, password; 
 
-    if (userName) {
-      sql = "select user_id, password from users where user_name=$1";
-      params = [userName];
+    if (ctx.request.body.userName) {
+      sql = "select id, user_name, email,  password from users where user_name=$1";
+      params = [ctx.request.body.userName];
       message = "no such user name";
-    } else if (email) {
-      sql = "select user_id, password from users where email=$1";
-      params = [email];
+    } else if (ctx.request.body.email) {
+      sql = "select id, user_name, email, password from users where email=$1";
+      params = [ctx.request.body.email];
       message = "no such email";
     } else {
-      responseBadRequest(ctx, 'either user_name or email parameter has to be specified');
+      responseBadRequest(ctx, 'either userName or email parameter has to be specified');
       return;
     }
     qres = await query(sql, params);
@@ -80,10 +77,12 @@ router.get('/oauth/code/issue', async (ctx) => {
       responseUnauthorized(ctx, message);
       return;
     } else if (qres.rows.length > 1) {
-      console.error(`${FILE}:${FUNC}: user is not unique, user_name: ${userName}, email: ${email}`)
+      console.error(`${FILE}:${FUNC}: user is not unique, userName: ${ctx.request.body.userName}, email: ${ctx.request.body.email}`)
       responseInternalError(ctx, 'user is not unique');
     } else {
-      user_id = qres.rows[0].user_id;
+      user_id = qres.rows[0].id;
+      user_name = qres.rows[0].user_name;
+      email = qres.rows[0].email;
       password = qres.rows[0].password;
     }
 
@@ -98,8 +97,8 @@ router.get('/oauth/code/issue', async (ctx) => {
     // Issue code token.
 
     let code = uuidv4();
-    sql = 'insert into oauth_code(id, client_id, user_id, user_name, user_email, issued_at) values($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)';
-    params = [code, client_id, user_id, userName, email];
+    sql = 'insert into oauth_code_token(id, client_id, user_id, user_name, user_email, issued_at) values($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)';
+    params = [code, client_id, user_id, user_name, email];
     qres = await query(sql, params);
 
     ctx.response.status = 200;
@@ -119,53 +118,54 @@ router.get('/oauth/code/issue', async (ctx) => {
 const schemaOauthTokenIssue = ajv.compile({
   type: 'object',
   properties: {
-    grant_type: {type: 'string'}, 
+    grantType: {type: 'string'}, 
     code: {type: 'string'}, 
-    redirect_uri: {type: 'string'}, 
-    client_id: {type: 'string'},
+    redirectUri: {type: 'string'}, 
+    clientId: {type: 'string'},
   },
   required: [
-    'grant_type',
+    'grantType',
     'code',
-    'redirect_uri',
-    'client_id'
+    'redirectUri',
+    'clientId'
   ],
   additionalProperties: false,
 });
-router.get('/oauth/token/issue', async (ctx) => {
+router.post('/oauth/token/issue', async (ctx) => {
   const FUNC = 'router.get(/oauth/token/issue)';
   try {
-    if (!validateSchema(schemaOauthCodeIssue, ctx)) {
+    if (!validateSchema(schemaOauthTokenIssue, ctx)) {
       return;
     }
 
-    let grant_type = ctx.request.body.grant_type;
-    if (grant_type !== 'code') {
-      responseBadRequest(ctx, 'grant_type must be \'code\'');
+    let grantType = ctx.request.body.grantType;
+    if (grantType !== 'code') {
+      responseBadRequest(ctx, 'grantType must be \'code\'');
       return;
     }
 
     // Verify client.
 
-    let client_id, redirect_uri;
-    let sql = 'select client_id, redirect_uri from oauth_client where client_id=$1';
-    let params = [ctx.request.body.client_id];
+    let client_id, client_name, redirect_uri;
+    let sql = 'select id, name, redirect_uri from client where id=$1';
+    let params = [ctx.request.body.clientId];
     let qres = await query(sql, params);
     if (qres.rows.length < 1) {
-      responseUnauthorized(ctx, 'no such client_id');
+      responseUnauthorized(ctx, 'no such clientId');
       return;
     } else if (qres.rows.length > 1) {
-      responseInternalError(ctx, 'client_id not unique');
+      responseInternalError(ctx, 'clientId not unique');
       return;
     } else {
-      client_id = qres.rows[0].client_id;
+      client_id = qres.rows[0].id;
+      client_name = qres.rows[0].name;
       redirect_uri = qres.rows[0].redirect_uri;
     }
 
     // Verify redirect_uri.
 
-    if (ctx.request.body.redirect_uri !== redirect_uri) {
-      responseUnauthorized(ctx, 'unknown redirect_uri');
+    if (ctx.request.body.redirectUri !== redirect_uri) {
+      responseUnauthorized(ctx, 'unknown redirectUri');
       return;
     }
 
@@ -173,7 +173,7 @@ router.get('/oauth/token/issue', async (ctx) => {
 
     let code = ctx.request.body.code;
     let id, user_id, user_name, user_email, issued_at;
-    sql = 'select id, user_id, user_name, user_email, client_id, issued_at from oauth_code_token where id=$1  and client_id=$2';
+    sql = 'select id, user_id, client_id, user_name, user_email, issued_at from oauth_code_token where id=$1  and client_id=$2';
     params = [code, client_id];
     qres = await query(sql, params);
     if (qres.rows.length < 1) {
@@ -214,9 +214,10 @@ router.get('/oauth/token/issue', async (ctx) => {
     id = uuidv1();
     let access_token_hash = hashString(jwt);
     let refresh_token = uuidv4();
+    issued_at = new Date().toISOString();
 
-    sql = `insert into oauth_access_token(id, client_id, user_id, user_name, user_emaia,l access_token_hash, refresh_token) values ($1, $2, $3, $4, $5)`;
-    params = [id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token]
+    sql = `insert into oauth_access_token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at) values ($1, $2, $3, $4, $5, $6, $7, $8)`;
+    params = [id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at]
     await query(sql, params);
 
     ctx.response.status = 200;

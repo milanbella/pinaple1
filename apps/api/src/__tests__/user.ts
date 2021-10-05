@@ -15,7 +15,7 @@ function url() {
 }
 
 async function cleanDb() {
-  await query("delete from auth.users where user_name in ('johnDoe') or email in ('johndoe25@foo.com',  'johndoe@foo.com')");
+  await query("delete from users where user_name in ('johnDoe') or email in ('johndoe25@foo.com',  'johndoe@foo.com')");
 }
 
 test('Create new user', async () => {

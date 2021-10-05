@@ -18,10 +18,10 @@ const schemaClientCreate = ajv.compile({
   type: 'object',
   properties: {
     name: {type: 'string'},
-    redirect_uri: {type: 'string'},
+    redirectUri: {type: 'string'},
   },
   required: [
-    'redirect_uri',
+    'redirectUri',
   ],
   additionalProperties: false,
 });
@@ -34,7 +34,7 @@ router.post('/client', async (ctx) => {
 
     let id =uuidv1(); 
     let name = ctx.request.body.name || null;
-    let redirect_uri = ctx.request.body.redirect_uri;
+    let redirect_uri = ctx.request.body.redirectUri;
 
     let sql = `insert into auth.client(id, name, redirect_uri) values ($1, $2, $3)`;
     let params = [id, name, redirect_uri];
