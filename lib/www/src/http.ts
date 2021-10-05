@@ -37,17 +37,18 @@ function getRequestOptions(options?: Options) {
 }
 
 async function getJsonBody(response): Promise<any> {
+  const FUNC = 'getJsonBody()';
   try {
-      let body = await response.json();
+    let text = await response.text();
+    try {
+      let body = JSON.parse(text);
       return body;
+    } catch(err) {
+      return text;
+    }
   } catch(err) {
-      let text = await response.text();
-      try {
-        let body = JSON.parse(text);
-        return body;
-      } catch(err) {
-        return {};
-      }
+    console.error(`${FILE}:${FUNC}: error: ${err}`, err)
+    return;
   }
 }
 
@@ -64,8 +65,13 @@ export async function httpGet (url: string, options?: Options): Promise<any> {
   let response = await fetch(url, foptions);
 
   if (response.ok) {
-    let body = await response.json();
-    return body;
+    try {
+      let body = await response.json();
+      return body;
+    } catch(err) {
+      console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
+      throw new HttpError(response.status, 'response.json() failed, error: ${err}');
+    }
   } else {
     let body = await getJsonBody(response);
     console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
@@ -89,8 +95,43 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
   let response = await fetch(url, foptions);
 
   if (response.ok) {
-    let body = await response.json();
-    return body;
+    try {
+      let body = await response.json();
+      return body;
+    } catch(err) {
+      console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
+      throw new HttpError(response.status, 'response.json() failed, error: ${err}');
+    }
+  } else {
+    let body = await getJsonBody(response);
+    console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
+    throw new HttpError(response.status, body);
+  }
+}
+
+export async function httpDel (url: string, body: any, options?: Options): Promise<any> {
+  const FUNC = 'httpPost()';
+
+  let roptions = getRequestOptions(options);
+  let foptions = {
+    method: 'delete',
+    query: roptions.query, 
+    headers: R.mergeLeft(roptions.headers || {}, {
+      'Content-Type': 'application/json',
+    }), 
+    body: JSON.stringify(body),
+  };
+
+  let response = await fetch(url, foptions);
+
+  if (response.ok) {
+    try {
+      let body = await response.json();
+      return body;
+    } catch(err) {
+      console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
+      throw new HttpError(response.status, 'response.json() failed, error: ${err}');
+    }
   } else {
     let body = await getJsonBody(response);
     console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);

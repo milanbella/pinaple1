@@ -2,6 +2,8 @@ import { environment } from './environment';
 import { IResponseError } from 'types/dist/http';
 
 import { router as userRouter } from './user';
+import { router as clientRouter } from './client';
+import { router as oauthRouter } from './oauth';
 import { initPool } from 'www/dist/pool';
 
 initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
@@ -25,6 +27,8 @@ app
   .use(router.routes())
   .use(router.allowedMethods())
   .use(userRouter.routes())
+  .use(clientRouter.routes())
+  .use(oauthRouter.routes())
 ;
 
 app.listen(environment.apiPort);

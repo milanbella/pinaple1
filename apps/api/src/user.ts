@@ -30,7 +30,7 @@ router.get('/user', async (ctx) => {
       return;
     }
 
-    let qres = await query('select id, user_name, email, password from auth.users where user_name=$1', [ctx.request.body.userName]);  
+    let qres = await query('select id, user_name, email, password from users where user_name=$1', [ctx.request.body.userName]);  
 
     if (qres.rows.length === 1) {
       let data = qres.rows[0];
@@ -94,7 +94,7 @@ router.post('/user', async (ctx) => {
   try {
 
     // check if such a user already exists
-    let qres = await query('select count(*) as cnt from auth.users where user_name=$1', [inData.userName]);
+    let qres = await query('select count(*) as cnt from users where user_name=$1', [inData.userName]);
     if (qres.rows[0].cnt > 0) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.RESOURCE_EXISTS,
@@ -106,7 +106,7 @@ router.post('/user', async (ctx) => {
       ctx.response.body = body; 
       return;
     }
-    qres = await query('select count(*) as cnt from auth.users where email=$1', [inData.email]);
+    qres = await query('select count(*) as cnt from users where email=$1', [inData.email]);
     if (qres.rows[0].cnt > 0) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.RESOURCE_EXISTS,
@@ -122,7 +122,7 @@ router.post('/user', async (ctx) => {
     // create new user
     let id = uuidv1()
     let password = hashString(inData.password); 
-    qres = await query('insert into auth.users(id, user_name, email, password) values($1, $2, $3, $4)', [id, inData.userName, inData.email, password]);  
+    qres = await query('insert into users(id, user_name, email, password) values($1, $2, $3, $4)', [id, inData.userName, inData.email, password]);  
 
     ctx.response.status = 200;
     ctx.response.body = {}
