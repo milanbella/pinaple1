@@ -11,7 +11,7 @@ create table auth.client (
   redirect_uri varchar(250) not null
 );
 
-create table auth.oauth_code_token (
+create table auth.code (
   id varchar(50) not null primary key,
   client_id varchar(50) not null,
   user_id varchar(50) not null,
@@ -20,7 +20,7 @@ create table auth.oauth_code_token (
   issued_at timestamp not null
 );
 
-create table auth.oauth_access_token (
+create table auth.token (
   id varchar(50) not null primary key,
   client_id varchar(50) not null,
   user_id varchar(50) not null,

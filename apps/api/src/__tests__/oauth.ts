@@ -20,26 +20,31 @@ function url() {
 async function cleanDb() {
   await query("delete from users where user_name = $1", [gUserName]);
   await query("delete from client where name = $1", [gClientName]);
-  await query("delete from oauth_code_token where user_name = $1", [gUserName]);
-  await query("delete from oauth_access_token where user_name = $1", [gUserName]);
+  await query("delete from code where user_name = $1", [gUserName]);
+  await query("delete from token where user_name = $1", [gUserName]);
 }
 
-beforeAll(async () => {
-  await cleanDb();
+beforeEach(async () => {
+  try {
+    await cleanDb();
 
-  // create client
-  let hres = await httpPost(`${url()}/client`, {
-    redirectUri: gRedirectUri,
-    name: gClientName, 
-  });
-  gClientId = hres.id;
+    // create client
+    let hres = await httpPost(`${url()}/client`, {
+      redirectUri: gRedirectUri,
+      name: gClientName, 
+    });
+    gClientId = hres.id;
 
-  // create user
-  let result = await httpPost(`${url()}/user`, {
-    userName: gUserName,
-    email: gUserEmail,
-    password: gPassword,
-  });
+    // create user
+    let result = await httpPost(`${url()}/user`, {
+      userName: gUserName,
+      email: gUserEmail,
+      password: gPassword,
+    });
+  } catch(err) {
+    console.error(`@@@@@@@@@@@@@@@@@@@@ cleanUp failed: ${err}`, err);
+    throw err;
+  }
 
 })
 
@@ -74,4 +79,3 @@ test('Issue acces token.', async () => {
     clientId: gClientId,
   });
 })
-

@@ -97,7 +97,7 @@ router.post('/oauth/code/issue', async (ctx) => {
     // Issue code token.
 
     let code = uuidv4();
-    sql = 'insert into oauth_code_token(id, client_id, user_id, user_name, user_email, issued_at) values($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)';
+    sql = 'insert into code(id, client_id, user_id, user_name, user_email, issued_at) values($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)';
     params = [code, client_id, user_id, user_name, email];
     qres = await query(sql, params);
 
@@ -173,7 +173,7 @@ router.post('/oauth/token/issue', async (ctx) => {
 
     let code = ctx.request.body.code;
     let id, user_id, user_name, user_email, issued_at;
-    sql = 'select id, user_id, client_id, user_name, user_email, issued_at from oauth_code_token where id=$1  and client_id=$2';
+    sql = 'select id, user_id, client_id, user_name, user_email, issued_at from code where id=$1  and client_id=$2';
     params = [code, client_id];
     qres = await query(sql, params);
     if (qres.rows.length < 1) {
@@ -197,7 +197,7 @@ router.post('/oauth/token/issue', async (ctx) => {
       // expired refresh toke
       responseUnauthorized(ctx, 'code expired');
 
-      sql = 'delete from auth.oauth_code_token where id=$1';
+      sql = 'delete from auth.code where id=$1';
       params = [id];
       await query(ctx, params);
 
@@ -216,7 +216,7 @@ router.post('/oauth/token/issue', async (ctx) => {
     let refresh_token = uuidv4();
     issued_at = new Date().toISOString();
 
-    sql = `insert into oauth_access_token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at) values ($1, $2, $3, $4, $5, $6, $7, $8)`;
+    sql = `insert into token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at) values ($1, $2, $3, $4, $5, $6, $7, $8)`;
     params = [id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at]
     await query(sql, params);
 
@@ -264,7 +264,7 @@ router.get('/oauth/token/refresh', async (ctx) => {
 
     let refresh_token = ctx.request.body.refresh_token;
 
-    let sql = 'select id, client_id, user_id, user_name, user_email, issued_at, from oauth_access_token where refresh_token=$1';
+    let sql = 'select id, client_id, user_id, user_name, user_email, issued_at, from token where refresh_token=$1';
     let params = [refresh_token];
     let qres = await query(sql, params);
     if (qres.rows.length < 1) {
@@ -291,7 +291,7 @@ router.get('/oauth/token/refresh', async (ctx) => {
         // expired refresh toke
         responseUnauthorized(ctx, 'refresh_token expired');
 
-        sql = 'delete from oauth_access_token where refresh_token=$1';
+        sql = 'delete from token where refresh_token=$1';
         params = [refresh_token];
         await query(ctx, params);
 
@@ -300,7 +300,7 @@ router.get('/oauth/token/refresh', async (ctx) => {
 
       // Invalidate tokens
 
-      sql = `delete from oauth_access_token where refresh_token=$1`;
+      sql = `delete from token where refresh_token=$1`;
       params = [refresh_token];
       await query(sql, params);
 
@@ -315,7 +315,7 @@ router.get('/oauth/token/refresh', async (ctx) => {
       let access_token_hash = hashString(jwt);
       refresh_token = uuidv4();
 
-      sql = `insert into oauth_access_token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token) values ($1, $2, $3, $4, $5)`;
+      sql = `insert into token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token) values ($1, $2, $3, $4, $5)`;
       params = [id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token]
       await query(sql, params);
 
