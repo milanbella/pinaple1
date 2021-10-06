@@ -86,11 +86,10 @@ router.post('/oauth/code/issue', async (ctx) => {
       password = qres.rows[0].password;
     }
 
-
     // Verify if password match.
 
     if (password !== hashString(ctx.request.body.password)) {
-      responseUnauthorized(ctx, message);
+      responseUnauthorized(ctx, 'wrong password');
       return;
     }
 
@@ -165,7 +164,7 @@ router.post('/oauth/token/issue', async (ctx) => {
     // Verify redirect_uri.
 
     if (ctx.request.body.redirectUri !== redirect_uri) {
-      responseUnauthorized(ctx, 'unknown redirectUri');
+      responseUnauthorized(ctx, 'wrong redirectUri');
       return;
     }
 
@@ -197,12 +196,18 @@ router.post('/oauth/token/issue', async (ctx) => {
       // expired refresh toke
       responseUnauthorized(ctx, 'code expired');
 
+      // Invalidate code
       sql = 'delete from auth.code where id=$1';
       params = [id];
-      await query(ctx, params);
+      await query(sql, params);
 
       return;
     }
+
+    // Invalidate code
+    sql = 'delete from auth.code where id=$1';
+    params = [id];
+    await query(sql, params);
 
     // Issue acces and refresh token.
 
@@ -219,6 +224,7 @@ router.post('/oauth/token/issue', async (ctx) => {
     sql = `insert into token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at) values ($1, $2, $3, $4, $5, $6, $7, $8)`;
     params = [id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at]
     await query(sql, params);
+
 
     ctx.response.status = 200;
     ctx.response.body = {

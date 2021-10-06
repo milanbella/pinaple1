@@ -25,26 +25,21 @@ async function cleanDb() {
 }
 
 beforeEach(async () => {
-  try {
-    await cleanDb();
+  await cleanDb();
 
-    // create client
-    let hres = await httpPost(`${url()}/client`, {
-      redirectUri: gRedirectUri,
-      name: gClientName, 
-    });
-    gClientId = hres.id;
+  // create client
+  let hres = await httpPost(`${url()}/client`, {
+    redirectUri: gRedirectUri,
+    name: gClientName, 
+  });
+  gClientId = hres.id;
 
-    // create user
-    let result = await httpPost(`${url()}/user`, {
-      userName: gUserName,
-      email: gUserEmail,
-      password: gPassword,
-    });
-  } catch(err) {
-    console.error(`@@@@@@@@@@@@@@@@@@@@ cleanUp failed: ${err}`, err);
-    throw err;
-  }
+  // create user
+  let result = await httpPost(`${url()}/user`, {
+    userName: gUserName,
+    email: gUserEmail,
+    password: gPassword,
+  });
 
 })
 
@@ -62,6 +57,52 @@ test('Issue code using user_name.', async () => {
   expect(hres.code).toBeDefined();
 })
 
+test('Do not issue code using wrong user_name.', async () => {
+  try {
+    let hres = await httpPost(`${url()}/oauth/code/issue`, {
+      clientId: gClientId,
+      userName: gUserName + 'xxxx',
+      password: gPassword,
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such user name' } });
+  }
+})
+
+test('Do not issue code using wrong password.', async () => {
+  try {
+    let hres = await httpPost(`${url()}/oauth/code/issue`, {
+      clientId: gClientId,
+      userName: gUserName,
+      password: gPassword + 'xxx',
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong password' } });
+  }
+})
+
+test('Do not issue code using wrong client_id.', async () => {
+  try {
+    let hres = await httpPost(`${url()}/oauth/code/issue`, {
+      clientId: gClientId + 'xxx',
+      userName: gUserName,
+      password: gPassword,
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such client_id' } });
+  }
+})
+
+
 test('Issue acces token.', async () => {
   let hres = await httpPost(`${url()}/oauth/code/issue`, {
     clientId: gClientId,
@@ -78,4 +119,130 @@ test('Issue acces token.', async () => {
     redirectUri: gRedirectUri,
     clientId: gClientId,
   });
+
+  expect(hres.access_token).toBeDefined();
+  expect(hres.token_type).toEqual('Bearer');
+  expect(hres.refresh_token).toBeDefined();
+  expect(hres.expires_in).toBeDefined();
+})
+
+test('Do not issue acces token if wrong code.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  try {
+    hres = await httpPost(`${url()}/oauth/token/issue`, {
+      grantType: 'code',
+      code: code + 'xxx',
+      redirectUri: gRedirectUri,
+      clientId: gClientId,
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such code' } });
+  }
+
+})
+
+test('Do not issue acces token if wrong redirect_uri.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  try {
+    hres = await httpPost(`${url()}/oauth/token/issue`, {
+      grantType: 'code',
+      code: code,
+      redirectUri: gRedirectUri + 'xxx',
+      clientId: gClientId,
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong redirectUri' } });
+  }
+
+})
+
+test('Do not issue acces token if code expired.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  try {
+
+    let qres = await query('select issued_at from code where id=$1', [code]);
+    let issued_at = qres.rows[0].issued_at;
+    issued_at.setTime(issued_at.getTime() - 3600*1000);
+    await query("update code set issued_at=$1 where id=$2", [issued_at, code]);
+
+    hres = await httpPost(`${url()}/oauth/token/issue`, {
+      grantType: 'code',
+      code: code,
+      redirectUri: gRedirectUri,
+      clientId: gClientId,
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'code expired' } });
+  }
+
+})
+
+test('After issuing access token code is invalid and removed', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  hres = await httpPost(`${url()}/oauth/token/issue`, {
+    grantType: 'code',
+    code: code,
+    redirectUri: gRedirectUri,
+    clientId: gClientId,
+  });
+
+  expect(hres.access_token).toBeDefined();
+  expect(hres.token_type).toEqual('Bearer');
+  expect(hres.refresh_token).toBeDefined();
+  expect(hres.expires_in).toBeDefined();
+
+  try {
+    hres = await httpPost(`${url()}/oauth/token/issue`, {
+      grantType: 'code',
+      code: code,
+      redirectUri: gRedirectUri,
+      clientId: gClientId,
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such code' } });
+  }
 })
