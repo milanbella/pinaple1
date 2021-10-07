@@ -120,10 +120,10 @@ test('Issue acces token.', async () => {
     clientId: gClientId,
   });
 
-  expect(hres.access_token).toBeDefined();
-  expect(hres.token_type).toEqual('Bearer');
-  expect(hres.refresh_token).toBeDefined();
-  expect(hres.expires_in).toBeDefined();
+  expect(hres.accessToken).toBeDefined();
+  expect(hres.tokenType).toEqual('Bearer');
+  expect(hres.refreshToken).toBeDefined();
+  expect(hres.expiresIn).toBeDefined();
 })
 
 test('Do not issue acces token if wrong code.', async () => {
@@ -227,10 +227,10 @@ test('After issuing access token code is invalid and removed', async () => {
     clientId: gClientId,
   });
 
-  expect(hres.access_token).toBeDefined();
-  expect(hres.token_type).toEqual('Bearer');
-  expect(hres.refresh_token).toBeDefined();
-  expect(hres.expires_in).toBeDefined();
+  expect(hres.accessToken).toBeDefined();
+  expect(hres.tokenType).toEqual('Bearer');
+  expect(hres.refreshToken).toBeDefined();
+  expect(hres.expiresIn).toBeDefined();
 
   try {
     hres = await httpPost(`${url()}/oauth/token/issue`, {
@@ -245,4 +245,34 @@ test('After issuing access token code is invalid and removed', async () => {
     expect(err.status).toBe(401);
     expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such code' } });
   }
+})
+
+test('Refresh acces token.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  hres = await httpPost(`${url()}/oauth/token/issue`, {
+    grantType: 'code',
+    code: code,
+    redirectUri: gRedirectUri,
+    clientId: gClientId,
+  });
+
+  expect(hres.accessToken).toBeDefined();
+  expect(hres.tokenType).toEqual('Bearer');
+  expect(hres.refreshToken).toBeDefined();
+  expect(hres.expiresIn).toBeDefined();
+
+  let refreshToken = hres.refreshToken;
+  hres = await httpPost(`${url()}/oauth/token/refresh`, {
+    grantType: 'refresh_token',
+    refreshToken: refreshToken,
+  });
+
 })

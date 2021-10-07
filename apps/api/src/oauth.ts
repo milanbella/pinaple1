@@ -16,6 +16,42 @@ const ajv = new Ajv();
 
 export const router = new Router();
 
+async function issueToken(clientId: string, userId: string, userName: string, userEmail: string): Promise<{
+  accessToken: string;
+  tokenType: string;
+  refreshToken: string;
+  expiresIn: string;
+}> {
+    const FUNC = 'issueToken()'; 
+    try {
+      // Issue acces and refresh token.
+
+      let key = readKeyFromFs('certs/key-pkcs8.pem');
+      let privateKey = await importPrivateKey(key);
+      let expiresIn = '3600s';
+      let jwt = await generateJWT(privateKey, expiresIn);
+
+      let id = uuidv1();
+      let access_token_hash = hashString(jwt);
+      let refresh_token = uuidv4();
+      let issued_at = new Date().toISOString();
+
+      let sql = `insert into token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at) values ($1, $2, $3, $4, $5, $6, $7, $8)`;
+      let params = [id, clientId, userId, userName, userEmail, access_token_hash, refresh_token, issued_at]
+      await query(sql, params);
+
+      return {
+        accessToken: `$jwt`,
+        tokenType: `Bearer`,
+        refreshToken: `${refresh_token}`, 
+        expiresIn: expiresIn,
+      }
+    } catch(err) {
+      console.error(`${FILE}:${FUNC}: error: ${err}`, err);
+      throw err;
+    }
+}
+
 const schemaOauthCodeIssue = ajv.compile({
   type: 'object',
   properties: {
@@ -211,27 +247,14 @@ router.post('/oauth/token/issue', async (ctx) => {
 
     // Issue acces and refresh token.
 
-    let key = readKeyFromFs('certs/key-pkcs8.pem');
-    let privateKey = await importPrivateKey(key);
-    let expiresIn = '3600s';
-    let jwt = await generateJWT(privateKey, expiresIn);
-
-    id = uuidv1();
-    let access_token_hash = hashString(jwt);
-    let refresh_token = uuidv4();
-    issued_at = new Date().toISOString();
-
-    sql = `insert into token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at) values ($1, $2, $3, $4, $5, $6, $7, $8)`;
-    params = [id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at]
-    await query(sql, params);
-
+    let res = await issueToken(client_id, user_id, user_name, user_email);
 
     ctx.response.status = 200;
     ctx.response.body = {
-      access_token: `$jwt`,
-      token_type: `Bearer`,
-      refresh_token: `${refresh_token}`, 
-      expires_in: expiresIn,
+      accessToken: res.accessToken,
+      tokenType: res.tokenType,
+      refreshToken: res.refreshToken, 
+      expiresIn: res.expiresIn,
     }
 
   } catch(err) {
@@ -245,33 +268,31 @@ router.post('/oauth/token/issue', async (ctx) => {
 const schemaOauthTokenRefresh = ajv.compile({
   type: 'object',
   properties: {
-    grant_type: {type: 'string'}, 
-    c: {type: 'string'}, 
-    redirect_uri: {type: 'string'}, 
-    client_id: {type: 'string'},
+    grantType: {type: 'string'}, 
+    refreshToken: {type: 'string'}, 
   },
   required: [
-    'grant_type',
-    'refresh_token',
+    'grantType',
+    'refreshToken',
   ],
   additionalProperties: false,
 });
-router.get('/oauth/token/refresh', async (ctx) => {
+router.post('/oauth/token/refresh', async (ctx) => {
   const FUNC = 'router.get(/oauth/token/refresh)';
   try {
-    if (!validateSchema(schemaOauthCodeIssue, ctx)) {
+    if (!validateSchema(schemaOauthTokenRefresh, ctx)) {
       return;
     }
 
-    if (ctx.request.body.grant_type !== 'refresh_token') {
+    if (ctx.request.body.grantType !== 'refresh_token') {
       responseBadRequest(ctx, 'grant_type must be \'refresh_token\'');
       return;
     }
 
-    let refresh_token = ctx.request.body.refresh_token;
+    let refreshToken = ctx.request.body.refreshToken;
 
-    let sql = 'select id, client_id, user_id, user_name, user_email, issued_at, from token where refresh_token=$1';
-    let params = [refresh_token];
+    let sql = 'select id, client_id, user_id, user_name, user_email, issued_at from token where refresh_token=$1';
+    let params = [refreshToken];
     let qres = await query(sql, params);
     if (qres.rows.length < 1) {
       responseUnauthorized(ctx, 'inavlid refresh token');
@@ -298,39 +319,29 @@ router.get('/oauth/token/refresh', async (ctx) => {
         responseUnauthorized(ctx, 'refresh_token expired');
 
         sql = 'delete from token where refresh_token=$1';
-        params = [refresh_token];
+        params = [refreshToken];
         await query(ctx, params);
 
         return;
       }
 
+
       // Invalidate tokens
 
       sql = `delete from token where refresh_token=$1`;
-      params = [refresh_token];
+      params = [refreshToken];
       await query(sql, params);
 
       // Issue acces and refresh token.
 
-      let key = readKeyFromFs('certs/key-pkcs8.pem');
-      let privateKey = await importPrivateKey(key);
-      let expiresIn = '3600s';
-      let jwt = await generateJWT(privateKey, expiresIn);
-
-      id = uuidv1();
-      let access_token_hash = hashString(jwt);
-      refresh_token = uuidv4();
-
-      sql = `insert into token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token) values ($1, $2, $3, $4, $5)`;
-      params = [id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token]
-      await query(sql, params);
+      let res = await issueToken(client_id, user_id, user_name, user_email);
 
       ctx.response.status = 200;
       ctx.response.body = {
-        access_token: `$jwt`,
-        token_type: `Bearer`,
-        refresh_token: `${refresh_token}`, 
-        expires_in: expiresIn,
+        accessToken: res.accessToken,
+        tokenType: res.tokenType,
+        refreshToken: res.refreshToken,
+        expiresIn: res.expiresIn,
       }
     }
 
