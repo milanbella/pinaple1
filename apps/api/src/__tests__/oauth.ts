@@ -152,6 +152,32 @@ test('Do not issue acces token if wrong code.', async () => {
 
 })
 
+test('Do not issue acces token if inavlid grant type.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  try {
+    hres = await httpPost(`${url()}/oauth/token/issue`, {
+      grantType: 'code_xxxx',
+      code: code,
+      redirectUri: gRedirectUri,
+      clientId: gClientId,
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(400);
+    expect(err.jsonBody).toEqual({ errKind: 'BAD_REQUEST', data: { message: 'grantType must be \'code\'' } });
+  }
+
+})
+
 test('Do not issue acces token if wrong redirect_uri.', async () => {
   let hres = await httpPost(`${url()}/oauth/code/issue`, {
     clientId: gClientId,
@@ -274,5 +300,83 @@ test('Refresh acces token.', async () => {
     grantType: 'refresh_token',
     refreshToken: refreshToken,
   });
+
+  expect(hres.accessToken).toBeDefined();
+  expect(hres.tokenType).toEqual('Bearer');
+  expect(hres.refreshToken).toBeDefined();
+  expect(hres.expiresIn).toBeDefined();
+})
+
+test('Do not Refresh acces token with invalid refresh token.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  hres = await httpPost(`${url()}/oauth/token/issue`, {
+    grantType: 'code',
+    code: code,
+    redirectUri: gRedirectUri,
+    clientId: gClientId,
+  });
+
+  expect(hres.accessToken).toBeDefined();
+  expect(hres.tokenType).toEqual('Bearer');
+  expect(hres.refreshToken).toBeDefined();
+  expect(hres.expiresIn).toBeDefined();
+
+  try {
+    let refreshToken = hres.refreshToken;
+    hres = await httpPost(`${url()}/oauth/token/refresh`, {
+      grantType: 'refresh_token',
+      refreshToken: refreshToken + 'xxx',
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'inavlid refresh token' } });
+  }
+
+})
+
+test('Do not Refresh acces token with invalid grant.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  hres = await httpPost(`${url()}/oauth/token/issue`, {
+    grantType: 'code',
+    code: code,
+    redirectUri: gRedirectUri,
+    clientId: gClientId,
+  });
+
+  expect(hres.accessToken).toBeDefined();
+  expect(hres.tokenType).toEqual('Bearer');
+  expect(hres.refreshToken).toBeDefined();
+  expect(hres.expiresIn).toBeDefined();
+
+  try {
+    let refreshToken = hres.refreshToken;
+    hres = await httpPost(`${url()}/oauth/token/refresh`, {
+      grantType: 'refresh_token_xxxxx',
+      refreshToken: refreshToken,
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(400);
+    expect(err.jsonBody).toEqual({ errKind: 'BAD_REQUEST', data: { message: 'grant_type must be \'refresh_token\'' } });
+  }
 
 })
