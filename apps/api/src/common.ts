@@ -34,6 +34,24 @@ export function responseUnauthorized(ctx, message?) {
   ctx.response.body = body;
 }
 
+export function responseNotFound(ctx, message?) {
+  let data;
+  if (message) {
+    data = {
+      message: message
+    }
+  } else {
+    data = {};
+  }
+
+  let body: IResponseError = {
+    errKind: ResponseErrorKind.UNAUTHORIZED,
+    data: data
+  };
+  ctx.response.status = 404;
+  ctx.response.body = body;
+}
+
 export function responseInternalError(ctx, message?) {
   let data;
   if (message) {

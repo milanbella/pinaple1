@@ -1,62 +1,12 @@
-@use 'base';
-@use 'sass:color';
+@use 'form';
 
-.container {
-  width: 100%;
-  max-width: 500px;
-  margin: auto;
-  padding: 20px 40px;
-}
 
-.container h2 {
-  text-align: center;
-  margin-top: 20px;
-  color: base.$color-gray;
-}
-
-.field {
-  margin: 15px 0px;
-}
-
-.field input {
-  width: 100%;
-  padding: 15px 10px;
-  border-radius: 5px;
-  border: 1px solid color.adjust(base.$color-gray, $lightness: 20%);
-
-}
-
-.error {
-}
-
-.field input.error {
-  border-color: color.adjust(base.$color-red, $lightness: 20%);
-}
-
-.field label {
-  display: inline-block;
-  padding-bottom: 5px;
-  color: color.adjust(base.$color-black, $lightness: 10%);
-  font-size: 0.8rem;
-  font-weight: bold;
-
+.formField label {
   &[for=userName]::after,
   &[for=email]::after,
   &[for=password]::after,
   &[for=passwordConfirm]::after
   {
-    content: '*';
-    color: color.adjust(base.$color-red, $lightness: 20%);
+    @include form.mandatory_field;
   }
 }
-
-.buttonsPane {
-  display: flex;
-  margin-top: 35px;
-  justify-content: center;
-
-  a {
-    box-shadow: 4px 4px 8px 1px color.adjust(base.$color-primary, $lightness: -20%);
-  }
-}
-

@@ -1,0 +1,62 @@
+@use 'base';
+@use 'sass:color';
+
+@mixin mandatory_field() {
+  content: '*';
+}
+
+
+
+.formContainer {
+  width: 100%;
+  max-width: 500px;
+  margin: auto;
+  padding: 20px 40px;
+}
+
+.formContainer h2 {
+  text-align: center;
+  margin-top: 20px;
+  color: base.$color-gray;
+}
+
+.formField {
+  margin: 15px 0px;
+}
+
+.formField input {
+  width: 100%;
+  padding: 15px 10px;
+  border-radius: 5px;
+  border: 1px solid color.adjust(base.$color-gray, $lightness: 20%);
+  background-color: base.$color-white; 
+
+
+}
+
+.formError {
+}
+
+.formField input.formError {
+  border-color: color.adjust(base.$color-red, $lightness: 20%);
+}
+
+.formField label {
+  display: inline-block;
+  padding-bottom: 5px;
+  color: color.adjust(base.$color-black, $lightness: 10%);
+  font-size: 0.8rem;
+  font-weight: bold;
+
+}
+
+.formButtonsPane {
+  display: flex;
+  margin-top: 35px;
+  justify-content: center;
+
+  a {
+    box-shadow: 4px 4px 8px 1px color.adjust(base.$color-primary, $lightness: -20%);
+  }
+}
+

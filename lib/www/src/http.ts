@@ -58,11 +58,18 @@ export async function httpGet (url: string, options?: Options): Promise<any> {
 
   let roptions = getRequestOptions(options);
   let foptions = {
-    query: roptions.query, 
     headers: roptions.headers, 
   };
 
-  let response = await fetch(url, foptions);
+  let _url;
+  if (roptions.query) {
+    let q = R.compose(R.join('&'), R.map((pair) => `${pair[0]}=${encodeURIComponent(pair[1])}`), R.toPairs)(roptions.query);
+    _url=`${url}?${q}`;
+  } else {
+    _url = url;
+  }
+  
+  let response = await fetch(_url, foptions);
 
   if (response.ok) {
     try {

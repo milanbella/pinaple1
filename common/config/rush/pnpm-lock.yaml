@@ -14,11 +14,10 @@ specifiers:
   '@typescript-eslint/parser': ^4.32.0
   crypto-js: ~4.1.1
   eslint-config-next: 11.1.2
-  jest-serial-runner: ~1.2.0
   jose: ^3.18.0
   koa: ^2.13.3
   koa-bodyparser: ^4.3.0
-  koa-session: ^6.2.0
+  koa-generic-session: ~2.1.1
   next: 11.1.2
   node-fetch: ^2.6.5
   pg: ~8.7.1
@@ -44,11 +43,10 @@ dependencies:
   '@typescript-eslint/parser': 4.32.0
   crypto-js: 4.1.1
   eslint-config-next: 11.1.2_next@11.1.2
-  jest-serial-runner: 1.2.0
   jose: 3.19.0
   koa: 2.13.3
   koa-bodyparser: 4.3.0
-  koa-session: 6.2.0
+  koa-generic-session: 2.1.1
   next: 11.1.2_94019d5ea9236784e4778c48676ab990
   node-fetch: 2.6.5
   pg: 8.7.1
@@ -1848,6 +1846,10 @@ packages:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
     dev: false
 
+  /crc/3.5.0:
+    resolution: {integrity: sha1-mLi6fUiWZbo5efWbITgTdBAaGWQ=}
+    dev: false
+
   /crc/3.8.0:
     resolution: {integrity: sha512-iX3mfgcTMIq3ZKLIsVFAbv7+Mc10kxabAGQb8HvjA1o3T1PIYprbakQ65d3I+2HGHt6nSKkM9PYjgoJO2KcFBQ==}
     dependencies:
@@ -1975,6 +1977,12 @@ packages:
 
   /debug/2.6.9:
     resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    dependencies:
+      ms: 2.0.0
+    dev: false
+
+  /debug/3.1.0:
+    resolution: {integrity: sha512-OX8XqP7/1a9cqkxYw2yXss15f26NKWBpDXQd0/uK/KPqdQhxbPa994hnzjcE2VqQpDslf55723cKPUOGSmMY3g==}
     dependencies:
       ms: 2.0.0
     dev: false
@@ -3994,6 +4002,17 @@ packages:
       koa-compose: 4.1.0
     dev: false
 
+  /koa-generic-session/2.1.1:
+    resolution: {integrity: sha512-ZWsq0klIGnsDHcPWETTYVR4FKBRm+hMexJV7HxZdtALO54dQaOGV7GxMZSZNwnNqr9yVPldRUXDcJZsd9AHozw==}
+    engines: {node: '>= 6.0.0'}
+    dependencies:
+      copy-to: 2.0.1
+      crc: 3.5.0
+      debug: 3.1.0
+      parseurl: 1.3.3
+      uid-safe: 2.1.5
+    dev: false
+
   /koa-session/6.2.0:
     resolution: {integrity: sha512-l2ZC6D1BnRkIXhWkRgpewdqKn38/9/2WScmxyShuN408TxX+J/gUzdzGBIvGZaRwmezOU819sNpGmfFGLeDckg==}
     engines: {node: '>=7.6'}
@@ -5048,6 +5067,11 @@ packages:
     resolution: {integrity: sha512-PgIdVpn5y5Yns8vqb8FzBUEYn98V3xcPgawAkkgj0YJ0qDsnHCiNmZYfOGMgOvoB0eWFLpYbhxUR3mxfDIMvpw==}
     dev: false
 
+  /random-bytes/1.0.0:
+    resolution: {integrity: sha1-T2ih3Arli9P7lYSMMDJNt11kNgs=}
+    engines: {node: '>= 0.8'}
+    dev: false
+
   /randombytes/2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
     dependencies:
@@ -5890,6 +5914,13 @@ packages:
     hasBin: true
     dev: false
 
+  /uid-safe/2.1.5:
+    resolution: {integrity: sha512-KPHm4VL5dDXKz01UuEd88Df+KzynaohSL9fBh096KWAxSKZQDI2uBrVqtvRM4rwrIrRRKsdLNML/lnaaVSRioA==}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      random-bytes: 1.0.0
+    dev: false
+
   /unbox-primitive/1.0.1:
     resolution: {integrity: sha512-tZU/3NqK3dA5gpE1KtyiJUrEB0lxnGkMFHptJ7q6ewdZ8s12QrODwNbhIJStmJkd1QDXa1NRA8aF2A1zk/Ypyw==}
     dependencies:
@@ -6198,7 +6229,7 @@ packages:
     dev: false
 
   file:projects/api.tgz:
-    resolution: {integrity: sha512-+XBONIk43A8Ccz8VQGzPI/FlLSsDl6Dj+tKU0yKiVHO3vD7n9pWpNQoZbXBUC2IwIT86+dOI0u87uGxSjWDhBQ==, tarball: file:projects/api.tgz}
+    resolution: {integrity: sha512-ryAOv1TwIDWsVV9Mx6erUGiTpqMYoU1i8rqXts+BsuacPLtvuq8NEeJBq3ktg1FnTNb2tgP74Md+vfajrjLb4A==, tarball: file:projects/api.tgz}
     name: '@rush-temp/api'
     version: 0.0.0
     dependencies:
@@ -6227,7 +6258,6 @@ packages:
       - babel-jest
       - bufferutil
       - canvas
-      - jest-runner
       - node-notifier
       - pg-native
       - supports-color
@@ -6236,7 +6266,7 @@ packages:
     dev: false
 
   file:projects/auth_be.tgz:
-    resolution: {integrity: sha512-/EqaJXYuFHQczdKNvxlcLdQCLPaMDOsrslVJFMmUcyn/14Eeo+4l0p+Ew7ObGfsw3yvpdrjgjSg9FVCuIE4W6g==, tarball: file:projects/auth_be.tgz}
+    resolution: {integrity: sha512-FfzB5mbmmf732hJ2xJWCBIEY45dH0RD97V2VWysVxjhQ3rfNKFkZ/v3s/zowf/+PA8LIOuUemtFSRNec04Xm5g==, tarball: file:projects/auth_be.tgz}
     name: '@rush-temp/auth_be'
     version: 0.0.0
     dependencies:
@@ -6250,6 +6280,7 @@ packages:
       jest: 27.2.4
       koa: 2.13.3
       koa-bodyparser: 4.3.0
+      koa-generic-session: 2.1.1
       koa-session: 6.2.0
       prettier: 2.4.1
       ts-jest: 27.0.5_52a571d76319e63aeaa66dc9db9e90cc

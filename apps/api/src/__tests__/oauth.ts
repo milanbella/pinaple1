@@ -8,7 +8,7 @@ initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environ
 
 let gRedirectUri = 'https://blablabla.foo.com';
 let gClientId;
-let gClientName = 'test_client';
+let gClientName = 'test_client_for_oauth.ts';
 let gUserName = 'johnDoe' ;
 let gUserEmail = 'johndoe@foo.com' ;
 let gPassword =  'bla';

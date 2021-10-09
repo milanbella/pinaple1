@@ -1,7 +1,7 @@
 import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
 import { query } from 'www/dist/pool';
 import { validateSchema } from './common';
-import { responseInternalError, responseBadRequest, responseOk, responseUnauthorized } from './common';
+import { responseInternalError, responseBadRequest, responseOk, responseUnauthorized, responseNotFound } from './common';
 import { environment } from './environment';
 
 const Router = require('@koa/router');
@@ -21,6 +21,7 @@ const schemaClientCreate = ajv.compile({
     redirectUri: {type: 'string'},
   },
   required: [
+    'name',
     'redirectUri',
   ],
   additionalProperties: false,
@@ -44,6 +45,42 @@ router.post('/client', async (ctx) => {
     ctx.status = 200;
     ctx.response.body = {
       id: id
+    };
+
+  } catch(err) {
+    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    responseInternalError(ctx);
+    return;
+  }
+
+})
+
+router.get('/client', async (ctx) => {
+  const FUNC = 'router.get(/client)';
+  try {
+    if (!ctx.request.query.clientId) {
+      responseBadRequest(ctx, 'missing \`clientId\' parameter');
+      return;
+    }
+
+    let clientId = ctx.request.query.clientId;
+
+    let sql = `select id, name, redirect_uri from client where id=$1`;
+    let params = [clientId];
+
+    let qres = await query(sql, params);
+    if (qres.rows.length < 1) {
+      responseNotFound(ctx, 'no such client');
+    } if (qres.rows.length > 1) {
+      console.error(`${FILE}:${FUNC}: more then one client found, clientId: ${clientId}`)
+      responseInternalError(ctx);
+    };
+
+    ctx.status = 200;
+    ctx.response.body = {
+      clientId: qres.rows[0].id,
+      name: qres.rows[0].name,
+      redirectUri: qres.rows[0].redirect_uri,
     };
 
   } catch(err) {
