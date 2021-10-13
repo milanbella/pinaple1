@@ -466,6 +466,14 @@
       "projectFolder": "apps/auth_be"
     },
     {
+      "packageName": "app_fe",
+      "projectFolder": "apps/app_fe"
+    },
+    {
+      "packageName": "app_be",
+      "projectFolder": "apps/app_be"
+    },
+    {
       "packageName": "api",
       "projectFolder": "apps/api"
     },

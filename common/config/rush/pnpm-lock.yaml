@@ -3,6 +3,8 @@ lockfileVersion: 5.3
 specifiers:
   '@koa/router': ^10.1.1
   '@rush-temp/api': file:./projects/api.tgz
+  '@rush-temp/app_be': file:./projects/app_be.tgz
+  '@rush-temp/app_fe': file:./projects/app_fe.tgz
   '@rush-temp/auth_be': file:./projects/auth_be.tgz
   '@rush-temp/auth_fe': file:./projects/auth_fe.tgz
   '@rush-temp/types': file:./projects/types.tgz
@@ -32,6 +34,8 @@ specifiers:
 dependencies:
   '@koa/router': 10.1.1
   '@rush-temp/api': file:projects/api.tgz
+  '@rush-temp/app_be': file:projects/app_be.tgz
+  '@rush-temp/app_fe': file:projects/app_fe.tgz
   '@rush-temp/auth_be': file:projects/auth_be.tgz
   '@rush-temp/auth_fe': file:projects/auth_fe.tgz
   '@rush-temp/types': file:projects/types.tgz
@@ -6263,6 +6267,59 @@ packages:
       - supports-color
       - ts-node
       - utf-8-validate
+    dev: false
+
+  file:projects/app_be.tgz:
+    resolution: {integrity: sha512-l3xHyIE7qrz55hE1C5FNXDjH56OOr874sFYi/PHQe4wbY50FHM41156dQThR2zsFM3jRA6Ie9x/Kow+CU7EeIw==, tarball: file:projects/app_be.tgz}
+    name: '@rush-temp/app_be'
+    version: 0.0.0
+    dependencies:
+      '@koa/router': 10.1.1
+      '@types/jest': 27.0.2
+      '@types/node': 16.10.2
+      '@typescript-eslint/eslint-plugin': 4.32.0_1eacf2495a01e8a68ffa99482308e8ec
+      '@typescript-eslint/parser': 4.32.0_eslint@7.32.0+typescript@4.4.3
+      ajv: 8.6.3
+      eslint: 7.32.0
+      jest: 27.2.4
+      koa: 2.13.3
+      koa-bodyparser: 4.3.0
+      koa-generic-session: 2.1.1
+      prettier: 2.4.1
+      ts-jest: 27.0.5_52a571d76319e63aeaa66dc9db9e90cc
+      typescript: 4.4.3
+    transitivePeerDependencies:
+      - '@babel/core'
+      - babel-jest
+      - bufferutil
+      - canvas
+      - node-notifier
+      - supports-color
+      - ts-node
+      - utf-8-validate
+    dev: false
+
+  file:projects/app_fe.tgz:
+    resolution: {integrity: sha512-W0NCvIME518vFVji6yqnwQwB1/u3ZBEIz6BvdTPdUuNTqvTbcaU5hlK2TXe5jFoHr/qhOYbFMabQACzD11QRsg==, tarball: file:projects/app_fe.tgz}
+    name: '@rush-temp/app_fe'
+    version: 0.0.0
+    dependencies:
+      '@types/react': 17.0.24
+      eslint: 7.32.0
+      eslint-config-next: 11.1.2_82ad98da5e129ae9d310451a179848d9
+      next: 11.1.2_dda2c6382961d2b57087a288cd378b42
+      prettier: 2.4.1
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-hook-form: 7.17.0_react@17.0.2
+      sass: 1.42.1
+      typescript: 4.4.3
+    transitivePeerDependencies:
+      - '@babel/core'
+      - fibers
+      - node-sass
+      - supports-color
+      - webpack
     dev: false
 
   file:projects/auth_be.tgz:

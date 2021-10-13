@@ -1,9 +1,9 @@
 {
-  "name": "auth_fe",
+  "name": "app_fe",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 4100",
+    "dev": "next dev -p 4090",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

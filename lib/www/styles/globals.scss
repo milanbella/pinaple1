@@ -10,8 +10,19 @@
   box-sizing: border-box;
 }
 
+/* Trick to override background clolor for auto filled fields in chrome */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+   -webkit-box-shadow: 0 0 0px 1000px base.$color-white inset;
+}
+
 body {
   font-family: Roboto;
+}
+
+a {
+  text-decoration: none;
 }
 
 a.btn {
@@ -27,9 +38,7 @@ a.btn {
   }
 }
 
-/* Trick to override background clolor for auto filled fields in chrome */
-input:-webkit-autofill,
-textarea:-webkit-autofill,
-select:-webkit-autofill {
-   -webkit-box-shadow: 0 0 0px 1000px base.$color-white inset;
+.pageContainer {
+  max-width: 800px;
+  margin: auto;
 }

@@ -1,0 +1,13 @@
+//@use 'form';
+@use '../../node_modules/www/dist/styles/form';
+
+
+.formField label {
+  &[for=userName]::after,
+  &[for=email]::after,
+  &[for=password]::after,
+  &[for=passwordConfirm]::after
+  {
+    @include form.mandatory_field;
+  }
+}

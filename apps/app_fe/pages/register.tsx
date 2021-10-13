@@ -1,10 +1,9 @@
 import type { NextPage } from "next";
-import Image from "next/image";
-import styles from "../styles/Register.module.scss";
+import styles from "../styles/pages/Register.module.scss";
 import { useForm } from "react-hook-form";
 import React from "react";
 
-const Home: NextPage = () => {
+const Login: NextPage = () => {
   const { register, handleSubmit, watch, formState } = useForm();
 
   let submitForm = (data: any) => {
@@ -72,4 +71,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Login;

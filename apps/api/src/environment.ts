@@ -17,7 +17,7 @@ export interface IEnvironment {
 export let environment: IEnvironment = {
   apiProtocol: 'http',
   apiHost: 'localhost',
-  apiPort: 3355,
+  apiPort: 5100,
 
   pgUser: 'auth',
   pgHost: 'localhost',

@@ -1,0 +1,18 @@
+@use '../../node_modules/www/dist/styles/base';
+.header {
+  .nav {
+    margin-top: 10px;
+    ul {
+      display: flex;
+      justify-content: flex-end;
+      list-style: none;
+    }
+    ul li a {
+      display: inline-block;
+      padding: 10px 15px;
+      margin-right: 10px;
+      background-color: base.$color-primary; 
+      color: base.$color-white; 
+    }
+  }
+}
