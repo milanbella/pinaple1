@@ -1,7 +1,6 @@
 import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
 import { query } from 'www/dist/pool';
 import { validateSchema, hashString } from './common';
-import { responseInternalError, responseBadRequest, responseOk, responseUnauthorized } from './common';
 import { readKeyFromFs, importPrivateKey, importPublicKey, generateJWT, verifyJWT } from 'www/dist/token';
 import { environment } from './environment';
 
@@ -57,11 +56,12 @@ const schemaOauthCodeIssue = ajv.compile({
   properties: {
     clientId: {type: 'string'}, 
     userName: {type: 'string'},
-    email: {type: 'string'},
     password: {type: 'string'},
+    redirectUri: {type: 'string'}
   },
   required: [
     'clientId',
+    'userName',
     'password'
   ],
   additionalProperties: false,
@@ -80,41 +80,71 @@ router.post('/oauth/code/issue', async (ctx) => {
     let params = [ctx.request.body.clientId];
     let qres = await query(sql, params);
     if (qres.rows.length < 1) {
-      responseUnauthorized(ctx, 'no such client_id');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.UNAUTHORIZED,
+        data: {
+          message: 'no such client_id'
+        }
+      };
+      ctx.response.status = 401;
+      ctx.response.body = body;
       return;
     } else if (qres.rows.length > 1) {
       console.error(`${FILE}:${FUNC}: client_id ${ctx.request.body.clientId} is not unique`)
-      responseInternalError(ctx, 'client_id not unique');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {
+          message: 'client_id not unique'
+        }
+      };
+      ctx.response.status = 500;
       return;
     } else {
       client_id = qres.rows[0].id;
       redirect_uri = qres.rows[0].redirect_uri;
+
+      if (redirect_uri !== ctx.request.body.redirectUri) {
+        let body: IResponseError = {
+          errKind: ResponseErrorKind.UNAUTHORIZED,
+          data: {
+            message: 'wrong redirect_uri'
+          }
+        };
+        ctx.response.status = 401;
+        ctx.response.body = body;
+        return;
+      }
     }
 
-    // Either username or email has to be specified.
     
     let  message;
     let user_id, user_name, email, password; 
 
-    if (ctx.request.body.userName) {
-      sql = "select id, user_name, email,  password from users where user_name=$1";
-      params = [ctx.request.body.userName];
-      message = "no such user name";
-    } else if (ctx.request.body.email) {
-      sql = "select id, user_name, email, password from users where email=$1";
-      params = [ctx.request.body.email];
-      message = "no such email";
-    } else {
-      responseBadRequest(ctx, 'either userName or email parameter has to be specified');
-      return;
-    }
+    sql = 'select id, user_name, email,  password from users where user_name=$1';
+    params = [ctx.request.body.userName];
+
     qres = await query(sql, params);
     if (qres.rows.length < 1) {
-      responseUnauthorized(ctx, message);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.UNAUTHORIZED,
+        data: {
+          message: 'wrong user',
+        }
+      };
+      ctx.response.status = 401;
+      ctx.response.body = body;
       return;
     } else if (qres.rows.length > 1) {
       console.error(`${FILE}:${FUNC}: user is not unique, userName: ${ctx.request.body.userName}, email: ${ctx.request.body.email}`)
-      responseInternalError(ctx, 'user is not unique');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {
+          message: 'user is not unique'
+        }
+      };
+      ctx.response.status = 500;
+      ctx.response.body = body;
+      return;
     } else {
       user_id = qres.rows[0].id;
       user_name = qres.rows[0].user_name;
@@ -125,7 +155,14 @@ router.post('/oauth/code/issue', async (ctx) => {
     // Verify if password match.
 
     if (password !== hashString(ctx.request.body.password)) {
-      responseUnauthorized(ctx, 'wrong password');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.UNAUTHORIZED,
+        data: {
+          message: 'wrong password'
+        }
+      };
+      ctx.response.status = 401;
+      ctx.response.body = body;
       return;
     }
 
@@ -144,7 +181,14 @@ router.post('/oauth/code/issue', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    responseInternalError(ctx);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
     return;
   }
 
@@ -175,7 +219,14 @@ router.post('/oauth/token/issue', async (ctx) => {
 
     let grantType = ctx.request.body.grantType;
     if (grantType !== 'code') {
-      responseBadRequest(ctx, 'grantType must be \'code\'');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'grantType must be \'code\''
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
       return;
     }
 
@@ -186,10 +237,24 @@ router.post('/oauth/token/issue', async (ctx) => {
     let params = [ctx.request.body.clientId];
     let qres = await query(sql, params);
     if (qres.rows.length < 1) {
-      responseUnauthorized(ctx, 'no such clientId');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.UNAUTHORIZED,
+        data: {
+          message: 'no such clientId'
+        }
+      };
+      ctx.response.status = 401;
+      ctx.response.body = body;
       return;
     } else if (qres.rows.length > 1) {
-      responseInternalError(ctx, 'clientId not unique');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {
+          message: 'clientId not unique'
+        }
+      };
+      ctx.response.status = 500;
+      ctx.response.body = body;
       return;
     } else {
       client_id = qres.rows[0].id;
@@ -200,7 +265,14 @@ router.post('/oauth/token/issue', async (ctx) => {
     // Verify redirect_uri.
 
     if (ctx.request.body.redirectUri !== redirect_uri) {
-      responseUnauthorized(ctx, 'wrong redirectUri');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.UNAUTHORIZED,
+        data: {
+          message: 'wrong redirectUri'
+        }
+      };
+      ctx.response.status = 401;
+      ctx.response.body = body;
       return;
     }
 
@@ -212,10 +284,24 @@ router.post('/oauth/token/issue', async (ctx) => {
     params = [code, client_id];
     qres = await query(sql, params);
     if (qres.rows.length < 1) {
-      responseUnauthorized(ctx, 'no such code');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.UNAUTHORIZED,
+        data: {
+          message: 'no such code'
+        }
+      };
+      ctx.response.status = 401;
+      ctx.response.body = body;
       return;
     } else if (qres.rows.length > 1) {
-      responseInternalError(ctx, 'code not unique');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {
+          message: 'code not unique'
+        }
+      };
+      ctx.response.status = 500;
+      ctx.response.body = body;
       return;
     } else {
       id = qres.rows[0].id;
@@ -229,14 +315,20 @@ router.post('/oauth/token/issue', async (ctx) => {
     let currentMs = new Date().getTime();
     let validityMs = environment.codeTokenValiditySeconds * 1000;
     if (currentMs - issuedAtMs > validityMs) {
-      // expired refresh toke
-      responseUnauthorized(ctx, 'code expired');
 
       // Invalidate code
       sql = 'delete from auth.code where id=$1';
       params = [id];
       await query(sql, params);
 
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.UNAUTHORIZED,
+        data: {
+          message: 'code expired'
+        }
+      };
+      ctx.response.status = 401;
+      ctx.response.body = body;
       return;
     }
 
@@ -259,7 +351,14 @@ router.post('/oauth/token/issue', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    responseInternalError(ctx);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
     return;
   }
 
@@ -285,7 +384,14 @@ router.post('/oauth/token/refresh', async (ctx) => {
     }
 
     if (ctx.request.body.grantType !== 'refresh_token') {
-      responseBadRequest(ctx, 'grant_type must be \'refresh_token\'');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'grant_type must be \'refresh_token\''
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
       return;
     }
 
@@ -295,11 +401,26 @@ router.post('/oauth/token/refresh', async (ctx) => {
     let params = [refreshToken];
     let qres = await query(sql, params);
     if (qres.rows.length < 1) {
-      responseUnauthorized(ctx, 'inavlid refresh token');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.UNAUTHORIZED,
+        data: {
+          message: 'inavlid refresh token'
+        }
+      };
+      ctx.response.status = 401;
+      ctx.response.body = body;
       return;
     } if (qres.rows.length > 1) {
       console.error(`${FILE}:${FUNC}: refresh token not unique`);
-      responseInternalError(ctx, 'refresh token not unique');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {
+          message: 'refresh token not unique'
+        }
+      };
+      ctx.response.status = 500;
+      ctx.response.body = body;
+      return;
     } else {
 
       let id = qres.rows[0].id;
@@ -315,13 +436,19 @@ router.post('/oauth/token/refresh', async (ctx) => {
       let currentMs = new Date().getTime();
       let validityMs = environment.refreshTokenValidityHours * 3600 * 1000;
       if (currentMs - issuedAtMs > validityMs) {
-        // expired refresh toke
-        responseUnauthorized(ctx, 'refresh_token expired');
 
         sql = 'delete from token where refresh_token=$1';
         params = [refreshToken];
         await query(ctx, params);
 
+        let body: IResponseError = {
+          errKind: ResponseErrorKind.UNAUTHORIZED,
+          data: {
+            message: 'refresh_token expired'
+          }
+        };
+        ctx.response.status = 401;
+        ctx.response.body = body;
         return;
       }
 
@@ -347,7 +474,14 @@ router.post('/oauth/token/refresh', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    responseInternalError(ctx);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
     return;
   }
 

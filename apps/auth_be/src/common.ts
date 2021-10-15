@@ -9,16 +9,6 @@ export function redirectWithErrorResponse(ctx, redirectUri: string, errorCode: s
   }
 }
 
-export function errorResponse(ctx, status: number, message?: string) {
-  if (message) {
-    ctx.response.status = status;
-    ctx.response.body = {
-      message: message
-    }
-  } else {
-    ctx.response.status = status;
-  }
-}
 
 export function apiUrl() {
   return `${environment.apiProtocol}://${environment.apiHost}:${environment.apiPort}`

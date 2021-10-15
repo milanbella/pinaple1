@@ -9,7 +9,11 @@ export enum ResponseErrorKind {
 
 }
 
+export interface IResposeErrorData {
+  message: string;
+}
+
 export interface IResponseError {
   errKind: ResponseErrorKind;
-  data: any
+  data: IResposeErrorData;
 }

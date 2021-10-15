@@ -1,6 +1,6 @@
 import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
 import { query } from 'www/dist/pool';
-import { validateSchema, hashString, responseInternalError } from './common';
+import { validateSchema, hashString } from './common';
 
 const Router = require('@koa/router');
 const Ajv = require("ajv");
@@ -45,7 +45,9 @@ router.get('/user', async (ctx) => {
     } else if (qres.rows.length === 0) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.NOT_FOUND,
-        data: {}
+        data: {
+          message: 'user not found'
+        }
       };
       ctx.response.status = 404;
       ctx.response.body = body; 
@@ -54,7 +56,9 @@ router.get('/user', async (ctx) => {
       console.error(`${FILE}:${FUNC}: more then one user found`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
-        data: {}
+        data: {
+          message: 'internal error'
+        }
       };
       ctx.response.status = 500;
       ctx.response.body = body; 
@@ -63,7 +67,14 @@ router.get('/user', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    responseInternalError(ctx);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
     return;
   }
 
@@ -129,7 +140,14 @@ router.post('/user', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    responseInternalError(ctx);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
     return;
   }
 

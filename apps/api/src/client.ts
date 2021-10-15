@@ -1,7 +1,6 @@
 import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
 import { query } from 'www/dist/pool';
 import { validateSchema } from './common';
-import { responseInternalError, responseBadRequest, responseOk, responseUnauthorized, responseNotFound } from './common';
 import { environment } from './environment';
 
 const Router = require('@koa/router');
@@ -49,7 +48,14 @@ router.post('/client', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    responseInternalError(ctx);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
     return;
   }
 
@@ -59,7 +65,14 @@ router.get('/client', async (ctx) => {
   const FUNC = 'router.get(/client)';
   try {
     if (!ctx.request.query.clientId) {
-      responseBadRequest(ctx, 'missing \`clientId\' parameter');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'missing \`clientId\' parameter'
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
       return;
     }
 
@@ -70,10 +83,26 @@ router.get('/client', async (ctx) => {
 
     let qres = await query(sql, params);
     if (qres.rows.length < 1) {
-      responseNotFound(ctx, 'no such client');
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.NOT_FOUND,
+        data: {
+          message: 'no such client'
+        }
+      };
+      ctx.response.status = 404;
+      ctx.response.body = body;
+      return;
     } if (qres.rows.length > 1) {
       console.error(`${FILE}:${FUNC}: more then one client found, clientId: ${clientId}`)
-      responseInternalError(ctx);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {
+          message: 'internal error'
+        }
+      };
+      ctx.response.status = 500;
+      ctx.response.body = body;
+      return;
     };
 
     ctx.status = 200;
@@ -85,7 +114,14 @@ router.get('/client', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    responseInternalError(ctx);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
     return;
   }
 
@@ -123,7 +159,14 @@ router.del('/client', async (ctx) => {
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);
-    responseInternalError(ctx);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
     return;
   }
 

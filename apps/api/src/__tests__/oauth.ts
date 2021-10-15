@@ -53,6 +53,7 @@ test('Issue code using user_name.', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 })
@@ -63,12 +64,13 @@ test('Do not issue code using wrong user_name.', async () => {
       clientId: gClientId,
       userName: gUserName + 'xxxx',
       password: gPassword,
+      redirectUri: gRedirectUri,
     });
     expect(true).toBe(false);
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such user name' } });
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong user' } });
   }
 })
 
@@ -78,6 +80,7 @@ test('Do not issue code using wrong password.', async () => {
       clientId: gClientId,
       userName: gUserName,
       password: gPassword + 'xxx',
+      redirectUri: gRedirectUri,
     });
     expect(true).toBe(false);
   } catch(err) {
@@ -93,6 +96,7 @@ test('Do not issue code using wrong client_id.', async () => {
       clientId: gClientId + 'xxx',
       userName: gUserName,
       password: gPassword,
+      redirectUri: gRedirectUri,
     });
     expect(true).toBe(false);
   } catch(err) {
@@ -102,12 +106,29 @@ test('Do not issue code using wrong client_id.', async () => {
   }
 })
 
+test('Do not issue code using wrong redirect_uri.', async () => {
+  try {
+    let hres = await httpPost(`${url()}/oauth/code/issue`, {
+      clientId: gClientId,
+      userName: gUserName,
+      password: gPassword,
+      redirectUri: gRedirectUri + 'xxx',
+    });
+    expect(true).toBe(false);
+  } catch(err) {
+    expect(err instanceof HttpError).toBe(true);
+    expect(err.status).toBe(401);
+    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong redirect_uri' } });
+  }
+})
 
-test('Issue acces token.', async () => {
+
+test('Issue access token.', async () => {
   let hres = await httpPost(`${url()}/oauth/code/issue`, {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
@@ -131,6 +152,7 @@ test('Do not issue acces token if wrong code.', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
@@ -157,6 +179,7 @@ test('Do not issue acces token if inavlid grant type.', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
@@ -183,6 +206,7 @@ test('Do not issue acces token if wrong redirect_uri.', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
@@ -209,6 +233,7 @@ test('Do not issue acces token if code expired.', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
@@ -241,6 +266,7 @@ test('After issuing access token code is invalid and removed', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
@@ -278,6 +304,7 @@ test('Refresh acces token.', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
@@ -312,6 +339,7 @@ test('Do not Refresh acces token with invalid refresh token.', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
@@ -349,6 +377,7 @@ test('Do not Refresh acces token with invalid grant.', async () => {
     clientId: gClientId,
     userName: gUserName,
     password: gPassword,
+    redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
 
