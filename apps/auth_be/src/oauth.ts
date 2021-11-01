@@ -6,6 +6,7 @@ import { httpGet, httpPost } from 'www/dist/http';
 import { Authorize, Session } from './types';
 
 const Router = require('@koa/router');
+export const router = new Router();
 
 const FILE = 'oauth.ts';
 

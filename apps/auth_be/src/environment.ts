@@ -7,10 +7,10 @@ export interface IEnvironment {
 }
 
 export let environment: IEnvironment = {
-  port: 4101,
+  port: 5201,
 
   apiProtocol: 'http',
-  apiHost: 'localhost',
-  apiPort: 5100,
+  apiHost: 'pinaple_api',
+  apiPort: 80,
 }
 
