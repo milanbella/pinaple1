@@ -1,5 +1,5 @@
 {
-  "name": "auth_be",
+  "name": "pinaple_auth_be",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -21,8 +21,8 @@
     "koa": "^2.13.3",
     "koa-bodyparser": "^4.3.0",
     "koa-generic-session": "~2.1.1",
-    "www": "*",
-    "types": "*"
+    "pinaple_www": "*",
+    "pinaple_types": "*"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",

@@ -2,19 +2,20 @@ lockfileVersion: 5.3
 
 specifiers:
   '@koa/router': ^10.1.1
-  '@rush-temp/api': file:./projects/api.tgz
-  '@rush-temp/app_be': file:./projects/app_be.tgz
-  '@rush-temp/app_fe': file:./projects/app_fe.tgz
-  '@rush-temp/auth_be': file:./projects/auth_be.tgz
-  '@rush-temp/auth_fe': file:./projects/auth_fe.tgz
-  '@rush-temp/types': file:./projects/types.tgz
-  '@rush-temp/www': file:./projects/www.tgz
+  '@rush-temp/pinaple_api': file:./projects/pinaple_api.tgz
+  '@rush-temp/pinaple_app_be': file:./projects/pinaple_app_be.tgz
+  '@rush-temp/pinaple_app_fe': file:./projects/pinaple_app_fe.tgz
+  '@rush-temp/pinaple_auth_be': file:./projects/pinaple_auth_be.tgz
+  '@rush-temp/pinaple_auth_fe': file:./projects/pinaple_auth_fe.tgz
+  '@rush-temp/pinaple_types': file:./projects/pinaple_types.tgz
+  '@rush-temp/pinaple_www': file:./projects/pinaple_www.tgz
   '@types/jest': ^27.0.2
   '@types/node': ^16.10.1
   '@types/react': 17.0.24
   '@typescript-eslint/eslint-plugin': ^4.32.0
   '@typescript-eslint/parser': ^4.32.0
   crypto-js: ~4.1.1
+  cypress: ~8.7.0
   eslint-config-next: 11.1.2
   jose: ^3.18.0
   koa: ^2.13.3
@@ -34,19 +35,20 @@ specifiers:
 
 dependencies:
   '@koa/router': 10.1.1
-  '@rush-temp/api': file:projects/api.tgz
-  '@rush-temp/app_be': file:projects/app_be.tgz
-  '@rush-temp/app_fe': file:projects/app_fe.tgz
-  '@rush-temp/auth_be': file:projects/auth_be.tgz
-  '@rush-temp/auth_fe': file:projects/auth_fe.tgz
-  '@rush-temp/types': file:projects/types.tgz
-  '@rush-temp/www': file:projects/www.tgz
+  '@rush-temp/pinaple_api': file:projects/pinaple_api.tgz
+  '@rush-temp/pinaple_app_be': file:projects/pinaple_app_be.tgz
+  '@rush-temp/pinaple_app_fe': file:projects/pinaple_app_fe.tgz
+  '@rush-temp/pinaple_auth_be': file:projects/pinaple_auth_be.tgz
+  '@rush-temp/pinaple_auth_fe': file:projects/pinaple_auth_fe.tgz
+  '@rush-temp/pinaple_types': file:projects/pinaple_types.tgz
+  '@rush-temp/pinaple_www': file:projects/pinaple_www.tgz
   '@types/jest': 27.0.2
   '@types/node': 16.10.2
   '@types/react': 17.0.24
   '@typescript-eslint/eslint-plugin': 4.32.0_@typescript-eslint+parser@4.32.0
   '@typescript-eslint/parser': 4.32.0
   crypto-js: 4.1.1
+  cypress: 8.7.0
   eslint-config-next: 11.1.2_next@11.1.2
   jose: 3.19.0
   koa: 2.13.3
@@ -1749,13 +1751,6 @@ packages:
       ieee754: 1.2.1
     dev: false
 
-  /buffer/5.7.1:
-    resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
-    dependencies:
-      base64-js: 1.5.1
-      ieee754: 1.2.1
-    dev: false
-
   /builtin-status-codes/3.0.0:
     resolution: {integrity: sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=}
     dev: false
@@ -2107,12 +2102,6 @@ packages:
 
   /crc/3.5.0:
     resolution: {integrity: sha1-mLi6fUiWZbo5efWbITgTdBAaGWQ=}
-    dev: false
-
-  /crc/3.8.0:
-    resolution: {integrity: sha512-iX3mfgcTMIq3ZKLIsVFAbv7+Mc10kxabAGQb8HvjA1o3T1PIYprbakQ65d3I+2HGHt6nSKkM9PYjgoJO2KcFBQ==}
-    dependencies:
-      buffer: 5.7.1
     dev: false
 
   /create-ecdh/4.0.4:
@@ -3773,10 +3762,6 @@ packages:
       ci-info: 3.2.0
     dev: false
 
-  /is-class-hotfix/0.0.6:
-    resolution: {integrity: sha512-0n+pzCC6ICtVr/WXnN2f03TK/3BfXY7me4cjCAqT8TYXEl0+JBRoqBo94JJHXcyDSLUeWbNX8Fvy5g5RJdAstQ==}
-    dev: false
-
   /is-core-module/2.7.0:
     resolution: {integrity: sha512-ByY+tjCciCr+9nLryBYcSD50EOGWt95c7tIsKTG1J2ixKKXPvF7Ej3AVd+UfDydAJom3biBGDBALaO79ktwgEQ==}
     dependencies:
@@ -3900,14 +3885,6 @@ packages:
     engines: {node: '>= 0.4'}
     dependencies:
       has-symbols: 1.0.2
-    dev: false
-
-  /is-type-of/1.2.1:
-    resolution: {integrity: sha512-uK0kyX9LZYhSDS7H2sVJQJop1UnWPWmo5RvR3q2kFH6AUHYs7sOrVg0b4nyBHw29kRRNFofYN/JbHZDlHiItTA==}
-    dependencies:
-      core-util-is: 1.0.3
-      is-class-hotfix: 0.0.6
-      isstream: 0.1.2
     dev: false
 
   /is-typed-array/1.1.8:
@@ -4362,12 +4339,6 @@ packages:
       - supports-color
     dev: false
 
-  /jest-serial-runner/1.2.0:
-    resolution: {integrity: sha512-iEQPK4U6K+J+46bu3QV2Uu3EnQMiIMk9nFravKlT794KxIruch0kQSV46YHUOSBeFjR4kqY6ra3aqm/AlHklDg==}
-    peerDependencies:
-      jest-runner: '>= 24.8.0'
-    dev: false
-
   /jest-serializer/27.0.6:
     resolution: {integrity: sha512-PtGdVK9EGC7dsaziskfqaAPib6wTViY3G8E5wz9tLVPhHyiDNTZn/xjZ4khAw+09QkoOVpn7vF5nPSN6dtBexA==}
     engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
@@ -4668,16 +4639,6 @@ packages:
       debug: 3.1.0
       parseurl: 1.3.3
       uid-safe: 2.1.5
-    dev: false
-
-  /koa-session/6.2.0:
-    resolution: {integrity: sha512-l2ZC6D1BnRkIXhWkRgpewdqKn38/9/2WScmxyShuN408TxX+J/gUzdzGBIvGZaRwmezOU819sNpGmfFGLeDckg==}
-    engines: {node: '>=7.6'}
-    dependencies:
-      crc: 3.8.0
-      debug: 3.2.7
-      is-type-of: 1.2.1
-      uuid: 3.4.0
     dev: false
 
   /koa/2.13.3:
@@ -6998,12 +6959,6 @@ packages:
       which-typed-array: 1.1.7
     dev: false
 
-  /uuid/3.4.0:
-    resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
-    deprecated: Please upgrade  to version 7 or higher.  Older versions may use Math.random() in certain circumstances, which is known to be problematic.  See https://v8.dev/blog/math-random for details.
-    hasBin: true
-    dev: false
-
   /uuid/8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
@@ -7274,9 +7229,9 @@ packages:
     engines: {node: '>=10'}
     dev: false
 
-  file:projects/api.tgz:
-    resolution: {integrity: sha512-925UqnHXJX/ZKL/C5Btaqyt2DRUAtWwYcWxliMNXUmYMb2QqvP16JbovxSOfgwefSeX1dR0zE8Q/EY3iMQeyeg==, tarball: file:projects/api.tgz}
-    name: '@rush-temp/api'
+  file:projects/pinaple_api.tgz:
+    resolution: {integrity: sha512-Jy2WpIRgGgHJ7L2DgE0rDe8Mvi6SolkNCxm87J+KN/HSLr3MhUDEeD8zg++9AJfXPLCQj/9Fb3jvV1kwXE/Xuw==, tarball: file:projects/pinaple_api.tgz}
+    name: '@rush-temp/pinaple_api'
     version: 0.0.0
     dependencies:
       '@koa/router': 10.1.1
@@ -7288,7 +7243,6 @@ packages:
       crypto-js: 4.1.1
       eslint: 7.32.0
       jest: 27.2.4
-      jest-serial-runner: 1.2.0
       jose: 3.19.0
       koa: 2.13.3
       koa-bodyparser: 4.3.0
@@ -7312,9 +7266,9 @@ packages:
       - utf-8-validate
     dev: false
 
-  file:projects/app_be.tgz:
-    resolution: {integrity: sha512-hnmrY8cTrVZ2fKZ4f5ZfCua10qNp52kVKKVMWM9ktD9BfS3R5OtXxVqPpH2F1U7sB7x/wD7IgWp8zqDWqqlkQA==, tarball: file:projects/app_be.tgz}
-    name: '@rush-temp/app_be'
+  file:projects/pinaple_app_be.tgz:
+    resolution: {integrity: sha512-j26MoY3M3mIz0qEjVAPW5r6GzT6BBrDl8Qsi82kFK6oFCvNH+2syoY6SKwAxdh8LrryyiEVeGWTPwtU+1UclQQ==, tarball: file:projects/pinaple_app_be.tgz}
+    name: '@rush-temp/pinaple_app_be'
     version: 0.0.0
     dependencies:
       '@koa/router': 10.1.1
@@ -7343,9 +7297,9 @@ packages:
       - utf-8-validate
     dev: false
 
-  file:projects/app_fe.tgz:
-    resolution: {integrity: sha512-nDq912Br3IKqN61Hi0J845cAjcwrMHP4EDCkuKxW3pNte1Mu9ovOElsohpGshOWonf5jQmn/1+iKH5C+GrHzIg==, tarball: file:projects/app_fe.tgz}
-    name: '@rush-temp/app_fe'
+  file:projects/pinaple_app_fe.tgz:
+    resolution: {integrity: sha512-XnIR9Oo8r7kZ8RkLj25v0hPzOfnCNA2S/7zOdMLVvSF9ld3YXGpZDpgSfcRoHcIUOqL5o7qPPP/fRQXVxbJCNg==, tarball: file:projects/pinaple_app_fe.tgz}
+    name: '@rush-temp/pinaple_app_fe'
     version: 0.0.0
     dependencies:
       '@types/react': 17.0.24
@@ -7367,9 +7321,9 @@ packages:
       - webpack
     dev: false
 
-  file:projects/auth_be.tgz:
-    resolution: {integrity: sha512-P+vh4bsMKKjVbTI6jvWBiC1bbQB5Zurll3iWZllcE1iFXtFge5fxukwjtmd8JYCyeCsalkk5iKN9QKgKHxUsuQ==, tarball: file:projects/auth_be.tgz}
-    name: '@rush-temp/auth_be'
+  file:projects/pinaple_auth_be.tgz:
+    resolution: {integrity: sha512-4HaVIBVsiFIWuuUvS1lA6zuZxFeOKhiR6JQtDeakDpbbTiwKP9ws1j0s69fJuSiAknTqZ2lKyWRM9h2YbQ1akg==, tarball: file:projects/pinaple_auth_be.tgz}
+    name: '@rush-temp/pinaple_auth_be'
     version: 0.0.0
     dependencies:
       '@koa/router': 10.1.1
@@ -7383,7 +7337,6 @@ packages:
       koa: 2.13.3
       koa-bodyparser: 4.3.0
       koa-generic-session: 2.1.1
-      koa-session: 6.2.0
       nodemon: 2.0.14
       prettier: 2.4.1
       ts-jest: 27.0.5_52a571d76319e63aeaa66dc9db9e90cc
@@ -7399,9 +7352,9 @@ packages:
       - utf-8-validate
     dev: false
 
-  file:projects/auth_fe.tgz:
-    resolution: {integrity: sha512-hYH3BkUANEtBJIJmZqnL6NsUUc3UsSYSA5eENTFNmrdmPPm1ETFrLJ4EZ02JU3AT2VDrE29HLfNerzxodbuwgg==, tarball: file:projects/auth_fe.tgz}
-    name: '@rush-temp/auth_fe'
+  file:projects/pinaple_auth_fe.tgz:
+    resolution: {integrity: sha512-QdqS+80UM4CuB9W/RKudksT/uIiM5dcocqFCRD80AsHXCW1Wil5ZJ61MXpVg6jKUfuM7K7BH12Z3ECe0h2JVhw==, tarball: file:projects/pinaple_auth_fe.tgz}
+    name: '@rush-temp/pinaple_auth_fe'
     version: 0.0.0
     dependencies:
       '@types/react': 17.0.24
@@ -7422,9 +7375,9 @@ packages:
       - webpack
     dev: false
 
-  file:projects/types.tgz:
-    resolution: {integrity: sha512-tiKCFMjRARD0Hg03eOASpki7at30lF2Uq5mDRmpX7Dcmr50ijo3ZYtTKNz92wJXmpJ3ECMlxDMjbhweiRGkUOQ==, tarball: file:projects/types.tgz}
-    name: '@rush-temp/types'
+  file:projects/pinaple_types.tgz:
+    resolution: {integrity: sha512-QuWknLgYsobE3U/CvMVnahdj///rGzPWITnn1oePeGRfjm4EqBymcrqh6oQXOazfM53oQwuHxzNnfPdNBR8ilg==, tarball: file:projects/pinaple_types.tgz}
+    name: '@rush-temp/pinaple_types'
     version: 0.0.0
     dependencies:
       '@typescript-eslint/eslint-plugin': 4.32.0_1eacf2495a01e8a68ffa99482308e8ec
@@ -7436,9 +7389,9 @@ packages:
       - supports-color
     dev: false
 
-  file:projects/www.tgz:
-    resolution: {integrity: sha512-pHM9mIjRI+D4IAHCSaiJVd66XKtBDEMYnxO7FDe14twLWZWL1/qIIYX0Wx34Jds71YkdqoH8IYJ7voegTwO2nw==, tarball: file:projects/www.tgz}
-    name: '@rush-temp/www'
+  file:projects/pinaple_www.tgz:
+    resolution: {integrity: sha512-g0k0ycdMTSYAQYdhfGCpOWTsVW7i4mMyo+se+zlvDwwtHqV+V/P0lyHoou/ZsuJ1lF+DkE3yzcfMmnuGng0NFw==, tarball: file:projects/pinaple_www.tgz}
+    name: '@rush-temp/pinaple_www'
     version: 0.0.0
     dependencies:
       '@types/jest': 27.0.2

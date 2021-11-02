@@ -1,8 +1,8 @@
-import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
+import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
 import { redirectWithErrorResponse } from './common';
 import { apiUrl } from './common';
-import { HttpError } from 'www/dist/http';
-import { httpGet, httpPost } from 'www/dist/http';
+import { HttpError } from 'pinaple_www/dist/http';
+import { httpGet, httpPost } from 'pinaple_www/dist/http';
 import { Authorize, Session } from './types';
 
 const Router = require('@koa/router');

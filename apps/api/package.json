@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "pinaple_api",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -23,8 +23,8 @@
     "koa-bodyparser": "^4.3.0",
     "node-fetch": "^2.6.5",
     "pg": "~8.7.1",
-    "www": "*",
-    "types": "*",
+    "pinaple_www": "*",
+    "pinaple_types": "*",
     "crypto-js": "~4.1.1",
     "uuid": "~8.3.2",
     "ramda": "~0.27.1"

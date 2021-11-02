@@ -458,31 +458,31 @@
     //   "reviewCategory": "tools"
     // }
     {
-      "packageName": "auth_fe",
+      "packageName": "pinaple_auth_fe",
       "projectFolder": "apps/auth_fe"
     },
     {
-      "packageName": "auth_be",
+      "packageName": "pinaple_auth_be",
       "projectFolder": "apps/auth_be"
     },
     {
-      "packageName": "app_fe",
+      "packageName": "pinaple_app_fe",
       "projectFolder": "apps/app_fe"
     },
     {
-      "packageName": "app_be",
+      "packageName": "pinaple_app_be",
       "projectFolder": "apps/app_be"
     },
     {
-      "packageName": "api",
+      "packageName": "pinaple_api",
       "projectFolder": "apps/api"
     },
     {
-      "packageName": "www",
+      "packageName": "pinaple_www",
       "projectFolder": "lib/www"
     },
     {
-      "packageName": "types",
+      "packageName": "pinaple_types",
       "projectFolder": "lib/types"
     }
   ]

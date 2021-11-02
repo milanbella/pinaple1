@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form';
 import type { NextPage } from 'next';
 
 import styles from '../styles/Login.module.scss';
-import { httpPost, HttpError } from 'www/dist/http';
+import { httpPost, HttpError } from 'pinaple_www/dist/http';
 
 const FILE = 'login.tsx';
 

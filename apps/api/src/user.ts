@@ -1,5 +1,5 @@
-import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
-import { query } from 'www/dist/pool';
+import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
+import { query } from 'pinaple_www/dist/pool';
 import { validateSchema, hashString } from './common';
 
 const Router = require('@koa/router');

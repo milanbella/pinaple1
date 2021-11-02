@@ -1,5 +1,5 @@
 import { environment } from './environment';
-import { initPool, releasePool, query  } from 'www/dist/pool';
+import { initPool, releasePool, query  } from 'pinaple_www/dist/pool';
 
 initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
 

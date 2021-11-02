@@ -1,6 +1,6 @@
 import { environment } from '../environment';
-import {httpPost, httpDel, httpGet } from 'www/dist/http';
-import { initPool, releasePool, query  } from 'www/dist/pool';
+import {httpPost, httpDel, httpGet } from 'pinaple_www/dist/http';
+import { initPool, releasePool, query  } from 'pinaple_www/dist/pool';
 
 const fetch = require('node-fetch');
 

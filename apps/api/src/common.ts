@@ -1,4 +1,4 @@
-import { IResponseError, ResponseErrorKind   } from 'types/dist/http';
+import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
 
 const SHA256 = require("crypto-js/sha256");
 

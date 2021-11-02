@@ -1,4 +1,4 @@
-import "../node_modules/www/dist/styles/globals.scss";
+import "../node_modules/pinaple_www/dist/styles/globals.scss";
 import type { AppProps } from "next/app";
 
 function MyApp({ Component, pageProps }: AppProps) {

@@ -1,5 +1,5 @@
 {
-  "name": "app_fe",
+  "name": "pinaple_app_fe",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hook-form": "^7.15.4",
-    "www": "*"
+    "pinaple_www": "*"
   },
   "devDependencies": {
     "@types/react": "17.0.24",
