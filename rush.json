@@ -486,7 +486,8 @@
     },
     {
       "packageName": "pinaple_types",
-      "projectFolder": "lib/types"
+      "projectFolder": "lib/types",
+      "shouldPublish": true
     }
   ]
 }
