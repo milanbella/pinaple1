@@ -1,6 +1,13 @@
 # Change Log - pinaple_types
 
-This log was last generated on Wed, 03 Nov 2021 15:03:47 GMT and should not be manually modified.
+This log was last generated on Wed, 03 Nov 2021 15:40:47 GMT and should not be manually modified.
+
+## 1.0.6
+Wed, 03 Nov 2021 15:40:47 GMT
+
+### Patches
+
+- m
 
 ## 1.0.5
 Wed, 03 Nov 2021 15:03:47 GMT

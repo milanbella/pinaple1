@@ -2,6 +2,18 @@
   "name": "pinaple_types",
   "entries": [
     {
+      "version": "1.0.6",
+      "tag": "pinaple_types_v1.0.6",
+      "date": "Wed, 03 Nov 2021 15:40:47 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "m"
+          }
+        ]
+      }
+    },
+    {
       "version": "1.0.5",
       "tag": "pinaple_types_v1.0.5",
       "date": "Wed, 03 Nov 2021 15:03:47 GMT",
