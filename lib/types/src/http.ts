@@ -1,4 +1,6 @@
+//
 // Common types
+//
 export enum ResponseErrorKind {
   JSON_SCHEMA_VALIDATION = 'ERROR_JSON_SCHEMA_VALIDATION',
   WRONG_PARAMETR = 'ERROR_WRONG_PARAMETRS',
