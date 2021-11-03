@@ -1,0 +1,10 @@
+{
+  "changes": [
+    {
+      "packageName": "pinaple_types",
+      "comment": "m",
+      "type": "patch"
+    }
+  ],
+  "packageName": "pinaple_types"
+}
