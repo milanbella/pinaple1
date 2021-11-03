@@ -1,6 +1,6 @@
 {
   "name": "pinaple_types",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -19,5 +19,8 @@
     "typescript": "^4.4.3"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "files": [
+    "dist/"
+  ]
 }
