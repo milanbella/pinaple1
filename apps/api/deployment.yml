@@ -19,3 +19,14 @@ spec:
         image: milanbella/pinaple-api
         ports:
         - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pinaple-api
+spec:
+  selector:
+    app: pinaple-api
+  ports:
+    - protocol: TCP
+      port: 80

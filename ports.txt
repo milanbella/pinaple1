@@ -1,9 +1,0 @@
-api 5100
-
-auth_fe 4100
-auth_be 4101
-
-app_fe 4090
-app_be 4091
-
-

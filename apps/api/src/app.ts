@@ -19,7 +19,7 @@ const router = new Router();
 app.use(bodyParser());
 
 router.get('/', (ctx, next) => {
-  ctx.body = 'Hello!';
+  ctx.body = 'Hello!\n';
 });
 
 app
