@@ -1,10 +1,10 @@
 import { IEnvironment } from './types';
 
 export let environment: IEnvironment = {
-  port: 80,
+  port: 5201,
 
   apiProtocol: 'http',
   apiHost: 'pinaple-api',
-  apiPort: 80,
+  apiPort: 5100,
 }
 

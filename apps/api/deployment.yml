@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pinaple-api-deployment
+  labels:
+    app: pinaple-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pinaple-api
+  template:
+    metadata:
+      labels:
+        app: pinaple-api
+    spec:
+      containers:
+      - name: pinaple-api
+        image: milanbella/pinaple-api
+        ports:
+        - containerPort: 80

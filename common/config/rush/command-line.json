@@ -166,6 +166,33 @@
     //    */
     //   // "autoinstallerName": "my-task"
     // }
+    {
+      "commandKind": "bulk",
+      "name": "build-prod",
+      "summary": "Build for production",
+      "description": "Build for production",
+      "enableParallelism": true,
+      "ignoreDependencyOrder": false,
+      "ignoreMissingScript": false
+    },
+    {
+      "commandKind": "bulk",
+      "name": "build-image",
+      "summary": "Build docker image",
+      "description": "Build docker image",
+      "enableParallelism": true,
+      "ignoreDependencyOrder": true,
+      "ignoreMissingScript": true
+    },
+    {
+      "commandKind": "bulk",
+      "name": "push-image",
+      "summary": "Push docker image",
+      "description": "Push docker image",
+      "enableParallelism": true,
+      "ignoreDependencyOrder": true,
+      "ignoreMissingScript": true
+    }
   ],
 
   /**

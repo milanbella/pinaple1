@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "bash scripts/build.sh",
+    "build-prod": "bash scripts/build.sh",
     "start": "node dist/app.js",
     "test": "jest",
     "prettier-check": "prettier --check \"src/**/*.ts\"",

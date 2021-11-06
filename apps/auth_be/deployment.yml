@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pinaple-auth-be-deployment
+  labels:
+    app: pinaple-auth-be
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pinaple-auth-be
+  template:
+    metadata:
+      labels:
+        app: pinaple-auth-be
+    spec:
+      containers:
+      - name: pinaple-auth-be
+        image: milanbella/pinaple-auth-be
+        ports:
+        - containerPort: 80

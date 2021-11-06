@@ -9,9 +9,9 @@ export interface IEnvironment {
 
 export let environment: IEnvironment = {
   authProtocol: 'http',
-  authHost: 'pinaple_auth',
+  authHost: 'pinaple-auth',
   authPort: 80,
 
   oauthClientId: 'XXXXXXX',
-  oauthRedirectUri: 'http://pinaple:7300'
+  oauthRedirectUri: 'http://pinaple-app:7300'
 }

@@ -5,10 +5,14 @@
   "scripts": {
     "dev": "next dev -p 5200",
     "build": "next build",
+    "build-prod": "next build",
     "start": "next start -p 5200",
+    "start-prod": "next start -p 80",
     "lint": "next lint",
     "prettier-check": "prettier --check \"pages/**/*.ts\" \"pages/**/*.tsx\"",
-    "prettier-fix": "prettier --write \"pages/**/*.ts\" \"pages/**/*.tsx\""
+    "prettier-fix": "prettier --write \"pages/**/*.ts\" \"pages/**/*.tsx\"",
+    "build-image": "docker build . -t milanbella/pinaple-auth-fe",
+    "push-image": "docker push milanbella/pinaple-auth-fe"
   },
   "dependencies": {
     "next": "11.1.2",

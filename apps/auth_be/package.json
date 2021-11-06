@@ -4,14 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "bash -c './scripts/build.sh dev'",
+    "build-prod": "bash -c './scripts/build.sh prod'",
     "start": "node dist/app.js",
     "watch": "nodemon dist/app.js",
     "test": "jest",
     "testDebug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "prettier-check": "prettier --check \"src/**/*.ts\"",
     "prettier-fix": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint . --format unix --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint . --format unix --ext .js,.jsx,.ts,.tsx",
+    "build-image": "docker build . -t milanbella/pinaple-auth-be",
+    "push-image": "docker push milanbella/pinaple-auth-be"
   },
   "author": "",
   "license": "ISC",

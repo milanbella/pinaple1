@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pinaple-auth-fe-deployment
+  labels:
+    app: pinaple-auth-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pinaple-auth-fe
+  template:
+    metadata:
+      labels:
+        app: pinaple-auth-fe
+    spec:
+      containers:
+      - name: pinaple-auth-fe
+        image: milanbella/pinaple-auth-fe
+        ports:
+        - containerPort: 80

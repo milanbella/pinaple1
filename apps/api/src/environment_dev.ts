@@ -3,7 +3,7 @@ import { IEnvironment } from './types';
 export let environment: IEnvironment = {
   apiProtocol: 'http',
   apiHost: 'localhost',
-  apiPort: 80,
+  apiPort: 5100,
 
   pgUser: 'auth',
   pgHost: 'localhost',
