@@ -137,8 +137,8 @@ router.get('/authorize', async (ctx) => {
 
 })
 
-router.get('/authenticate', async (ctx) => {
-  const FUNC = 'router.get(/authenticate)';
+router.get('/api/authenticate', async (ctx) => {
+  const FUNC = 'router.get(/api/authenticate)';
   try {
     let session: Session = ctx.session;
     if (!session) {

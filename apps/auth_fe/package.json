@@ -12,7 +12,8 @@
     "prettier-check": "prettier --check \"pages/**/*.ts\" \"pages/**/*.tsx\"",
     "prettier-fix": "prettier --write \"pages/**/*.ts\" \"pages/**/*.tsx\"",
     "build-image": "docker build . -t milanbella/pinaple-auth-fe",
-    "push-image": "docker push milanbella/pinaple-auth-fe"
+    "push-image": "docker push milanbella/pinaple-auth-fe",
+    "kube-apply": "kubectl --kubeconfig ../../../pinaple_kube.yaml apply -f deployment.yml"
   },
   "dependencies": {
     "next": "11.1.2",

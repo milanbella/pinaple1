@@ -14,9 +14,11 @@ spec:
       labels:
         app: pinaple-app-fe
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
       - name: pinaple-app-fe
         image: milanbella/pinaple-app-fe
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
 ---

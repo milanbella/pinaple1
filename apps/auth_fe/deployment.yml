@@ -14,9 +14,11 @@ spec:
       labels:
         app: pinaple-auth-fe
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
       - name: pinaple-auth-fe
         image: milanbella/pinaple-auth-fe
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
 ---

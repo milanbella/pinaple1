@@ -14,7 +14,8 @@
     "prettier-fix": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint . --format unix --ext .js,.jsx,.ts,.tsx",
     "build-image": "docker build . -t milanbella/pinaple-api",
-    "push-image": "docker push milanbella/pinaple-api"
+    "push-image": "docker push milanbella/pinaple-api",
+    "kube-apply": "kubectl --kubeconfig ../../../pinaple_kube.yaml apply -f deployment.yml"
   },
   "author": "",
   "license": "ISC",

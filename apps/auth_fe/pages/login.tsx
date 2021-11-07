@@ -12,8 +12,6 @@ const Login: NextPage = () => {
   const { register, handleSubmit, watch, formState } = useForm();
 
   let submitForm = (data: any) => {
-    console.dir('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ submitForm()'); //@@@@@@@@@@@@@@@@@@@
-    console.log(data);
     try {
       let hres = httpPost('/api/authenticate', {
         userName: data.userName,

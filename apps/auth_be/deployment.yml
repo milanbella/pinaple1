@@ -14,9 +14,11 @@ spec:
       labels:
         app: pinaple-auth-be
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
       - name: pinaple-auth-be
         image: milanbella/pinaple-auth-be
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
 ---

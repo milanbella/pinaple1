@@ -1,8 +1,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-wildcard-host
+  name: ingress-pinaple
 spec:
+  ingressClassName: nginx
   rules:
   - host: pinaple-api-k
     http:

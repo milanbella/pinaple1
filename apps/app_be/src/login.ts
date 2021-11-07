@@ -1,11 +1,12 @@
 import { environment } from './environment';
 
 const Router = require('@koa/router');
+export const router = new Router();
 
 const FILE = 'login.ts';
 
 
-router.get('/login', async (ctx) => {
+router.get('/api/login', async (ctx) => {
   const FUNC = 'router.get(/login)';
   try {
 

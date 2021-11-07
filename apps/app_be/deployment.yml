@@ -14,6 +14,7 @@ spec:
       labels:
         app: pinaple-app-be
     spec:
+      terminationGracePeriodSeconds: 30
       containers:
       - name: pinaple-app-be
         image: milanbella/pinaple-app-be

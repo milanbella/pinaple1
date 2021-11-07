@@ -18,6 +18,10 @@ router.get('/', (ctx, next) => {
   ctx.body = 'Hello!\n';
 });
 
+router.get('/api', (ctx, next) => {
+  ctx.body = 'Hello!\n';
+});
+
 app.use(router.routes())
   .use(router.allowedMethods())
   .use(oauthRouter.routes());
