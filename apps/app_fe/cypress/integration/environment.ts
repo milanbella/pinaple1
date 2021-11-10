@@ -1,3 +1,3 @@
 export let environment = {
-  url: 'http://pinaple'
+  url: 'http://pinaple-app'
 }

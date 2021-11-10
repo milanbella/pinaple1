@@ -5,6 +5,7 @@ const Router = require('@koa/router');
 
 import { environment } from './environment';
 import { router as loginRouter } from './login';
+import { router as registerRouter } from './register';
 
 const app = new Koa();
 const router = new Router();
@@ -23,6 +24,8 @@ router.get('/api', (ctx, next) => {
 
 app.use(router.routes())
   .use(router.allowedMethods())
-  .user(loginRouter);
+  .use(loginRouter.routes())
+  .use(registerRouter.routes())
+;
 
 app.listen(environment.port);

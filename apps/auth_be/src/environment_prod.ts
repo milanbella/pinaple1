@@ -4,7 +4,7 @@ export let environment: IEnvironment = {
   port: 80,
 
   apiProtocol: 'http',
-  apiHost: 'pinaple-api',
+  apiHost: 'pinaple-api-k',
   apiPort: 80,
 }
 

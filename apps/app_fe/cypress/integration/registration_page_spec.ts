@@ -11,6 +11,10 @@ describe('Registartion Page', () => {
   it('Fills in registration form', () => {
 
     cy.get('input[name=userName]').type('milanbella');
+    cy.get('input[name=email]').type('milanbella@hotmail.com');
+    cy.get('input[name=password]').type('xxx');
+    cy.get('input[name=passwordConfirm]').type('xxx');
+    cy.get('a.btn').click();
   })
 
 })

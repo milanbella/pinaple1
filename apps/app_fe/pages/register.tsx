@@ -1,14 +1,39 @@
 import type { NextPage } from "next";
 import styles from "../styles/pages/Register.module.scss";
+import { httpPost, HttpError } from "pinaple_www/dist/http";
+
 import { useForm } from "react-hook-form";
 import React from "react";
+import { useState } from "react";
 
 const Login: NextPage = () => {
+  const [count, setCount] = useState(0);
   const { register, handleSubmit, watch, formState } = useForm();
+  const [errorMessage, setErrorMessage] = useState("");
 
-  let submitForm = (data: any) => {
+  let submitForm = async (data: any) => {
     console.dir('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ submitForm()'); //@@@@@@@@@@@@@@@@@@@
     console.log(data);
+
+    try {
+      let hres = await httpPost('/api/register', {
+        userName: data.userName,
+        email: data.email,
+        password: data.password,
+        passwordConfirm: data.passwordConfirm
+      });
+      console.error('@@@@@@@@@@@@@@@@@@@@@ cp 100: sussess:', hres); 
+      setErrorMessage("user was successfully created");
+    } catch(err) {
+      console.error('@@@@@@@@@@@@@@@@@@@@@ cp 200: error:', err); 
+
+      console.dir(err); //@@@@@@@@@@@@@@@@
+      if (err instanceof HttpError) {
+        setErrorMessage(err.body.data.message);
+      } else {
+        setErrorMessage("internal error");
+      }
+    }
   };
 
   React.useEffect(() => {
@@ -67,6 +92,7 @@ const Login: NextPage = () => {
           Odošli{" "}
         </a>
       </div>
+      {errorMessage}
     </div>
   );
 };

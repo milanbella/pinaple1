@@ -16,7 +16,8 @@
     "jose": "^3.18.0",
     "node-fetch": "^2.6.5",
     "pg": "~8.7.1",
-    "ramda": "~0.27.1"
+    "ramda": "~0.27.1",
+    "pinaple_types": "*"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",

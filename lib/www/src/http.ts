@@ -1,3 +1,5 @@
+import { IResponseError, ResponseErrorKind } from 'pinaple_types/dist/http';
+
 const nodeFetch = require('node-fetch');
 const R = require('ramda');
 
@@ -18,11 +20,25 @@ interface HttpErrorData {
 
 export class HttpError extends Error {
   status: number;
-  jsonBody: any;
-  constructor(status: number, jsonBody?: any) {
+  body: IResponseError; 
+  constructor(status: number, body?: any) {
     super();
     this.status = status;
-    this.jsonBody = jsonBody;
+    let _body: IResponseError;
+    if (body.hasOwnProperty && body.hasOwnProperty('errKind') && body.hasOwnProperty('data') && body.data.hasOwnProperty && body.data.hasOwnProperty('message')) {
+      _body = {
+        errKind: body.errKind,
+        data: body.data,
+      }
+    } else {
+     _body = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {
+          message: 'internal error',
+          value: body,
+        }
+      }
+    }
   }
 }
 
@@ -41,8 +57,8 @@ function getRequestOptions(options?: Options) {
   }
 }
 
-async function getJsonBody(response): Promise<any> {
-  const FUNC = 'getJsonBody()';
+async function getBody(response): Promise<any> {
+  const FUNC = 'getBody()';
   try {
     let text = await response.text();
     try {
@@ -85,7 +101,7 @@ export async function httpGet (url: string, options?: Options): Promise<any> {
       throw new HttpError(response.status, 'response.json() failed, error: ${err}');
     }
   } else {
-    let body = await getJsonBody(response);
+    let body = await getBody(response);
     console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
     throw new HttpError(response.status, body);
   }
@@ -115,9 +131,10 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
       throw new HttpError(response.status, 'response.json() failed, error: ${err}');
     }
   } else {
-    let body = await getJsonBody(response);
+    let body = await getBody(response);
     console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
-    throw new HttpError(response.status, body);
+    let err = new HttpError(response.status, body);
+    throw err;
   }
 }
 
@@ -145,7 +162,7 @@ export async function httpDel (url: string, body: any, options?: Options): Promi
       throw new HttpError(response.status, 'response.json() failed, error: ${err}');
     }
   } else {
-    let body = await getJsonBody(response);
+    let body = await getBody(response);
     console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
     throw new HttpError(response.status, body);
   }

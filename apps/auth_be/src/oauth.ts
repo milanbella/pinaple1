@@ -205,13 +205,14 @@ router.get('/api/authenticate', async (ctx) => {
       code = hres.code;
     } catch(err) {
       if (err instanceof HttpError && err.status === 401) {
-        console.warn(`${FILE}:${FUNC}: unathorized, userName: ${userName}`, err)
+        console.warn(`${FILE}:${FUNC}: unauthorized, userName: ${userName}`, err)
         let message = '';
-        if (err.jsonBody.data && err.jsonBody.data.message === 'wrong user') {
+        if (err.body.data.message === 'wrong user') {
           message = 'wrong user';
-        }
-        if (err.jsonBody.data && err.jsonBody.data.message === 'wrong password') {
+        } else if (err.body.data.message === 'wrong password') {
           message = 'wrong password';
+        } else {
+          message = 'unauthorized';
         }
         let body: IResponseError = {
           errKind: ResponseErrorKind.UNAUTHORIZED,
