@@ -13,7 +13,7 @@ const ajv = new Ajv();
 export const router = new Router();
 
 router.get('/user', async (ctx) => {
-  const FUNC = 'router.post(/user/get)';
+  const FUNC = 'router.get(/user)';
   try {
 
     let userName = ctx.request.query.user_name;
@@ -153,3 +153,62 @@ router.post('/user', async (ctx) => {
 
 
 });
+
+const schemaUserDelete = ajv.compile({
+  type: "object",
+  properties: {
+    userName: {type: "string"},
+    email: {type: "string"},
+  },
+  additionalProperties: false,
+});
+router.del('/user', async (ctx) => {
+  const FUNC = 'router.del(/user)';
+  try {
+
+    if (!validateSchema(schemaUserDelete, ctx)) {
+      return;
+    }
+
+    let sql, params;
+    if (ctx.request.body.userName) {
+      if (ctx.request.body.email) {
+        sql = 'delete from users where user_name=? or email=?';
+        params=[ctx.request.body.userName, ctx.request.body.email]
+      } else {
+        sql = 'delete from users where user_name=?';
+        params=[ctx.request.body.userName]
+      }
+    } else if (ctx.request.body.email) {
+        sql = 'delete from users where email=?';
+        params=[ctx.request.body.email]
+    } else {
+      console.error(`${FILE}:${FUNC} error: either \'userName\' or \'email\' parameter mus be specified`);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'either \'userName\' or \'email\' parameter mus be specified'
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    }
+
+    qres = await query(query, params);
+    ctx.response.status = 200;
+    return;
+
+  } catch(err) {
+    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
+    return;
+  }
+})

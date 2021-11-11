@@ -1,4 +1,4 @@
-drop table users;
-drop table client;
-drop table oauth_code_token;
-drop table oauth_access_token;
+drop table auth.users;
+drop table auth.client;
+drop table auth.code;
+drop table auth.token;

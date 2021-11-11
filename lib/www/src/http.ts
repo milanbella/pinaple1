@@ -23,6 +23,7 @@ export class HttpError extends Error {
   body: IResponseError; 
   constructor(status: number, body?: any) {
     super();
+    this.name = 'HttpError';
     this.status = status;
     let _body: IResponseError;
     if (body.hasOwnProperty && body.hasOwnProperty('errKind') && body.hasOwnProperty('data') && body.data.hasOwnProperty && body.data.hasOwnProperty('message')) {
@@ -39,6 +40,7 @@ export class HttpError extends Error {
         }
       }
     }
+    this.body = _body;
   }
 }
 
@@ -94,7 +96,7 @@ export async function httpGet (url: string, options?: Options): Promise<any> {
 
   if (response.ok) {
     try {
-      let body = await response.json();
+      let body = await getBody(response);
       return body;
     } catch(err) {
       console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
@@ -124,7 +126,7 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
 
   if (response.ok) {
     try {
-      let body = await response.json();
+      let body = await getBody(response);
       return body;
     } catch(err) {
       console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
@@ -155,7 +157,7 @@ export async function httpDel (url: string, body: any, options?: Options): Promi
 
   if (response.ok) {
     try {
-      let body = await response.json();
+      let body = await getBody(response);
       return body;
     } catch(err) {
       console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
@@ -167,85 +169,3 @@ export async function httpDel (url: string, body: any, options?: Options): Promi
     throw new HttpError(response.status, body);
   }
 }
-
-/*
-export function responseUnauthorized(ctx, message?) {
-  let data;
-  if (message) {
-    data = {
-      message: message
-    }
-  } else {
-    data = {};
-  }
-
-  let body: IResponseError = {
-    errKind: ResponseErrorKind.UNAUTHORIZED,
-    data: data
-  };
-  ctx.response.status = 401;
-  ctx.response.body = body;
-}
-
-export function responseNotFound(ctx, message?) {
-  let data;
-  if (message) {
-    data = {
-      message: message
-    }
-  } else {
-    data = {};
-  }
-
-  let body: IResponseError = {
-    errKind: ResponseErrorKind.UNAUTHORIZED,
-    data: data
-  };
-  ctx.response.status = 404;
-  ctx.response.body = body;
-}
-
-export function responseInternalError(ctx, message?) {
-  let data;
-  if (message) {
-    data = {
-      message: message
-    }
-  } else {
-    data = {};
-  }
-
-  let body: IResponseError = {
-    errKind: ResponseErrorKind.INTERNAL_ERROR,
-    data: data
-  };
-  ctx.response.status = 500;
-  ctx.response.body = body;
-}
-
-
-export function responseOk(ctx, body?) {
-  ctx.response.status = 500;
-  if (body) {
-    ctx.response.body = body;
-  }
-}
-
-export function responseBadRequest(ctx, message?) {
-  let data;
-  if (message) {
-    data = {
-      message: message
-    }
-  } else {
-    data = {};
-  }
-
-  let body: IResponseError = {
-    errKind: ResponseErrorKind.BAD_REQUEST,
-    data: data
-  };
-  ctx.response.status = 400;
-  ctx.response.body = body;
-}
-*/

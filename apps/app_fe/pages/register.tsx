@@ -26,7 +26,6 @@ const Login: NextPage = () => {
       setErrorMessage("user was successfully created");
     } catch(err) {
       console.error('@@@@@@@@@@@@@@@@@@@@@ cp 200: error:', err); 
-
       console.dir(err); //@@@@@@@@@@@@@@@@
       if (err instanceof HttpError) {
         setErrorMessage(err.body.data.message);
