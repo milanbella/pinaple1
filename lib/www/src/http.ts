@@ -140,7 +140,7 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
   }
 }
 
-export async function httpDel (url: string, body: any, options?: Options): Promise<any> {
+export async function httpDelete (url: string, body: any, options?: Options): Promise<any> {
   const FUNC = 'httpPost()';
 
   let roptions = getRequestOptions(options);

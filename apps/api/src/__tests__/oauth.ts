@@ -70,7 +70,7 @@ test('Do not issue code using wrong user_name.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong user' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong user' } });
   }
 })
 
@@ -86,7 +86,7 @@ test('Do not issue code using wrong password.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong password' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong password' } });
   }
 })
 
@@ -102,7 +102,7 @@ test('Do not issue code using wrong client_id.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such client_id' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such client_id' } });
   }
 })
 
@@ -118,7 +118,7 @@ test('Do not issue code using wrong redirect_uri.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong redirect_uri' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong redirect_uri' } });
   }
 })
 
@@ -169,7 +169,7 @@ test('Do not issue acces token if wrong code.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such code' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such code' } });
   }
 
 })
@@ -196,7 +196,7 @@ test('Do not issue acces token if inavlid grant type.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(400);
-    expect(err.jsonBody).toEqual({ errKind: 'BAD_REQUEST', data: { message: 'grantType must be \'code\'' } });
+    expect(err.body).toEqual({ errKind: 'BAD_REQUEST', data: { message: 'grantType must be \'code\'' } });
   }
 
 })
@@ -223,7 +223,7 @@ test('Do not issue acces token if wrong redirect_uri.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong redirectUri' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'wrong redirectUri' } });
   }
 
 })
@@ -256,7 +256,7 @@ test('Do not issue acces token if code expired.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'code expired' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'code expired' } });
   }
 
 })
@@ -295,7 +295,7 @@ test('After issuing access token code is invalid and removed', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such code' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'no such code' } });
   }
 })
 
@@ -367,7 +367,7 @@ test('Do not Refresh acces token with invalid refresh token.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(401);
-    expect(err.jsonBody).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'inavlid refresh token' } });
+    expect(err.body).toEqual({ errKind: 'UNAUTHORIZED', data: { message: 'inavlid refresh token' } });
   }
 
 })
@@ -405,7 +405,7 @@ test('Do not Refresh acces token with invalid grant.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(400);
-    expect(err.jsonBody).toEqual({ errKind: 'BAD_REQUEST', data: { message: 'grant_type must be \'refresh_token\'' } });
+    expect(err.body).toEqual({ errKind: 'BAD_REQUEST', data: { message: 'grant_type must be \'refresh_token\'' } });
   }
 
 })

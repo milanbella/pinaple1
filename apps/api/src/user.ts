@@ -173,14 +173,14 @@ router.del('/user', async (ctx) => {
     let sql, params;
     if (ctx.request.body.userName) {
       if (ctx.request.body.email) {
-        sql = 'delete from users where user_name=? or email=?';
+        sql = 'delete from users where user_name=$1 or email=$2'
         params=[ctx.request.body.userName, ctx.request.body.email]
       } else {
-        sql = 'delete from users where user_name=?';
+        sql = 'delete from users where user_name=$1'
         params=[ctx.request.body.userName]
       }
     } else if (ctx.request.body.email) {
-        sql = 'delete from users where email=?';
+        sql = 'delete from users where email=$1'
         params=[ctx.request.body.email]
     } else {
       console.error(`${FILE}:${FUNC} error: either \'userName\' or \'email\' parameter mus be specified`);
@@ -195,7 +195,7 @@ router.del('/user', async (ctx) => {
       return;
     }
 
-    qres = await query(query, params);
+    let qres = await query(sql, params);
     ctx.response.status = 200;
     return;
 

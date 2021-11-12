@@ -154,8 +154,6 @@ router.del('/client', async (ctx) => {
     let qres = await query(sql, params);
 
     ctx.status = 200;
-    ctx.response.body = {
-    };
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);

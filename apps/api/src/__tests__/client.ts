@@ -1,5 +1,5 @@
 import { environment } from '../environment';
-import {httpPost, httpDel, httpGet } from 'pinaple_www/dist/http';
+import {httpPost, httpDelete, httpGet } from 'pinaple_www/dist/http';
 import { initPool, releasePool, query  } from 'pinaple_www/dist/pool';
 
 const fetch = require('node-fetch');
@@ -35,7 +35,7 @@ test('It creates and removes client', async () => {
   let qres = await query("select count(*) as cnt from auth.client where id=$1", [id]);
   expect(qres.rows[0].cnt).toEqual('1');
 
-  hres = await httpDel(`${url()}/client`, {
+  hres = await httpDelete(`${url()}/client`, {
     id: id
   });
   qres = await query("select count(*) as cnt from auth.client where id=$1", [id]);
