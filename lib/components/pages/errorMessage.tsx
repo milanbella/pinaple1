@@ -5,7 +5,9 @@ import PErrorMessage from '../components/PErrorMessage';
 const ErrorMessage: NextPage = () => {
   return (
     <div className={styles.container}>
-      <PErrorMessage message="PErrorMessage component"/>
+      <div className="PErrorMessage">
+        <PErrorMessage message="PErrorMessage component"/>
+      </div>
     </div>
   )
 }
