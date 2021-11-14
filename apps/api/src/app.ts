@@ -13,7 +13,9 @@ const bodyParser = require('koa-bodyparser');
 const Router = require('@koa/router');
 
 const app = new Koa();
+const cors = require('@koa/cors');
 const router = new Router();
+
 
 
 app.use(bodyParser());
@@ -23,6 +25,7 @@ router.get('/', (ctx, next) => {
 });
 
 app
+  .use(cors())
   .use(router.routes())
   .use(router.allowedMethods())
   .use(userRouter.routes())

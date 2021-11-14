@@ -1,4 +1,23 @@
 import { environment } from './environment';
+import { httpDelete } from 'pinaple_www/dist/http';
+
+const FILE = 'registration_page_spec.ts';
+
+async function removeUser() {
+  const FUNC = 'removeUser()';
+  try {
+    let hres = await httpDelete(`${environment.apiUrl}/user`, {
+      userName: 'milanbella'
+    });
+  } catch(err) {
+    console.error(`${FILE}:${FUNC}: error`, err);
+    throw Error('could not remove user');
+  }
+}
+
+before(async () => {
+  await removeUser();
+})
 
 describe('Registartion Page', () => {
 

@@ -1,0 +1,17 @@
+@use '../node_modules/pinaple_www/dist/styles/base';
+@use 'sass:color';
+
+.container {
+  width: 80%;
+  padding: 20px 20px 20px 20px;
+  background-color: color.adjust(base.$color-red, $lightness: 46%);
+  border:  2px solid base.$color-red;
+  border-radius: 10px;
+  color: base.$color-red;
+}
+
+.closeButton {
+  color: base.$color-red;
+  float: right;
+  cursor: pointer;
+}

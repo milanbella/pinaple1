@@ -1,0 +1,7 @@
+@use '../node_modules/pinaple_www/dist/styles/base';
+@use '../node_modules/pinaple_www/dist/styles/page';
+
+.container {
+  padding-top: 20px;
+  @extend .pageContainer;
+}

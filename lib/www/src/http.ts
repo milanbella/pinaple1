@@ -12,6 +12,7 @@ export interface Options {
   headers?: {
     [key: string]: string
   }
+  mode?: 'same-origin' | 'no-cors' | 'cors' | 'navigate' | 'websocket'
 }
 
 interface HttpErrorData {
@@ -49,14 +50,18 @@ function fetch() {
 }
 
 function getRequestOptions(options?: Options) {
-  if (options) {
-    return {
-      query: options.query || undefined,
-      headers: options.headers || undefined,
-    };
+  return R.mergeRight(options, {});
+}
+
+function appendQueryToUrl(url, options: Options) {
+  let _url;
+  if (options.query) {
+    let q = R.compose(R.join('&'), R.map((pair) => `${pair[0]}=${encodeURIComponent(pair[1])}`), R.toPairs)(options.query);
+    _url=`${url}?${q}`;
   } else {
-    return {};
+    _url = url;
   }
+  return _url;
 }
 
 async function getBody(response): Promise<any> {
@@ -82,17 +87,18 @@ export async function httpGet (url: string, options?: Options): Promise<any> {
   let roptions = getRequestOptions(options);
   let foptions = {
     headers: roptions.headers, 
+    mode: roptions.mode,
   };
 
-  let _url;
-  if (roptions.query) {
-    let q = R.compose(R.join('&'), R.map((pair) => `${pair[0]}=${encodeURIComponent(pair[1])}`), R.toPairs)(roptions.query);
-    _url=`${url}?${q}`;
-  } else {
-    _url = url;
-  }
+  let _url = appendQueryToUrl(url, roptions);
   
-  let response = await fetch()(_url, foptions);
+  let response;
+  try {
+    response = await fetch()(_url, foptions);
+  } catch(err) {
+    console.error(`${FILE}:${FUNC}: fetch() failed, url: ${url}`, err);
+    throw new HttpError(0, '');
+  }
 
   if (response.ok) {
     try {
@@ -115,14 +121,22 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
   let roptions = getRequestOptions(options);
   let foptions = {
     method: 'post',
-    query: roptions.query, 
     headers: R.mergeLeft(roptions.headers || {}, {
       'Content-Type': 'application/json',
     }), 
+    mode: roptions.mode,
     body: JSON.stringify(body),
   };
 
-  let response = await fetch()(url, foptions);
+  let _url = appendQueryToUrl(url, roptions);
+
+  let response;
+  try {
+    response = await fetch()(_url, foptions);
+  } catch(err) {
+    console.error(`${FILE}:${FUNC}: fetch() failed, url: ${url}`, err); 
+    throw new HttpError(0, '');
+  }
 
   if (response.ok) {
     try {
@@ -146,14 +160,22 @@ export async function httpDelete (url: string, body: any, options?: Options): Pr
   let roptions = getRequestOptions(options);
   let foptions = {
     method: 'delete',
-    query: roptions.query, 
     headers: R.mergeLeft(roptions.headers || {}, {
       'Content-Type': 'application/json',
     }), 
+    mode: roptions.mode,
     body: JSON.stringify(body),
   };
 
-  let response = await fetch()(url, foptions);
+  let _url = appendQueryToUrl(url, roptions);
+
+  let response;
+  try {
+    response = await fetch()(_url, foptions);
+  } catch(err) {
+    console.error(`${FILE}:${FUNC}: fetch() failed, url: ${url}`, err); 
+    throw new HttpError(0, '');
+  }
 
   if (response.ok) {
     try {

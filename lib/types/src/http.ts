@@ -16,6 +16,7 @@ export enum ResponseErrorKind {
 
 export interface IResposeErrorData {
   message: string;
+  value?: any;
 }
 
 export interface IResponseError {
