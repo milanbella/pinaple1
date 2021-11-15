@@ -11,7 +11,7 @@ const PErrorMessage = (props: IProps) => {
   const [isShowing, setIsShowing] = useState(true);
   if (isShowing === true) { 
     return (
-      <div className={styles.container}>
+      <div className="">
         {props.message}
         <span className={styles.closeButton} onClick={() => setIsShowing(false)}>&times;</span>
       </div>

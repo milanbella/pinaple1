@@ -2,11 +2,13 @@
   "compilerOptions": {
     "outDir": "./dist/",
     "noImplicitAny": true,
+    "declaration": true,
     "module": "es6",
     "target": "es5",
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "allowJs": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "typeRoots": ["components/typings"]
   },
   "include": ["components/**/*.ts"],
 }
