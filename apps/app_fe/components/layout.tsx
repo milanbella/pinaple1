@@ -12,7 +12,7 @@ const Layout: NextPage = ({ children }) => {
       </main>
       <Footer/>
     </div>
-  );
+  )
 };
 
 export default Layout;

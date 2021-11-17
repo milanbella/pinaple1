@@ -1,17 +1,18 @@
-import type { NextPage } from "next";
 import styles from "../styles/pages/Register.module.scss";
 import { httpPost, HttpError } from "pinaple_www/dist/http";
 import { PErrorMessage }  from "pinaple_components/dist";
-//import PErrorMessage1  from "../components/PErrorMessage";
 
+import type { NextPage } from "next";
+import Router from 'next/router'
 import { useForm } from "react-hook-form";
 import React from "react";
 import { useState } from "react";
+import { ResultKind } from './result';
 
 const Login: NextPage = () => {
   const [count, setCount] = useState(0);
   const { register, handleSubmit, watch, formState } = useForm();
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("test error");
   const [isUserCreated, setIsUserCreated] = useState(false);
 
   let submitForm = async (data: any) => {
@@ -23,13 +24,16 @@ const Login: NextPage = () => {
         password: data.password,
         passwordConfirm: data.passwordConfirm
       });
-      console.error('@@@@@@@@@@@@@@@@@@@@@ cp 100: sussess:', hres); 
+
       setIsUserCreated(true);
-      setErrorMessage("user was successfully created");
+
+      Router.push({
+        pathname: '/result',
+        query: { page: ResultKind.registrationSuccess },
+      })
+
     } catch(err) {
       setIsUserCreated(false);
-      console.error('@@@@@@@@@@@@@@@@@@@@@ cp 200: error:', err); 
-      console.dir(err); //@@@@@@@@@@@@@@@@
       if (err instanceof HttpError) {
         setErrorMessage(err.body.data.message);
       } else {
@@ -38,10 +42,24 @@ const Login: NextPage = () => {
     }
   };
 
+
+
   React.useEffect(() => {
     console.dir('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ errors:'); //@@@@@@@@@@@@@@@@@@@
     console.dir(formState.errors); //@@@@@@@@@@@@@@@@@@@
   }, [formState]);
+
+  function showError() {
+    if (errorMessage === "") {
+      return null;
+    } else {
+      return (
+        <div className={styles.messageField}>
+          <PErrorMessage message={errorMessage} onClose={() => setErrorMessage("")}/>
+        </div>
+      );
+    }
+  }
 
   function loginForm() {
     return (
@@ -95,11 +113,10 @@ const Login: NextPage = () => {
             Odošli{" "}
           </a>
         </div>
-        <PErrorMessage message="Hello from PErrorMessage!"/>
+        {showError()}
       </div>
     );
   }
-  //<PErrorMessage message="Hello from PErrorMessage!"/>
 
   return loginForm()
 };

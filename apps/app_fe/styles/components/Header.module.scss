@@ -1,5 +1,9 @@
 @use '../../node_modules/pinaple_www/dist/styles/base';
+@use 'sass:color';
+
 .header {
+  border-bottom: 1px solid color.adjust(base.$color-primary, $lightness: 20%);
+
   .nav {
     margin-top: 10px;
     ul {
@@ -11,8 +15,7 @@
       display: inline-block;
       padding: 10px 15px;
       margin-right: 10px;
-      background-color: base.$color-primary; 
-      color: base.$color-white; 
+      color: color.adjust(base.$color-primary, $lightness: -5%);
     }
   }
 }
