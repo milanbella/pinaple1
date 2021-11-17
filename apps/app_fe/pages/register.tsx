@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
 import styles from "../styles/pages/Register.module.scss";
 import { httpPost, HttpError } from "pinaple_www/dist/http";
-import { PErrorMessage }  from "pinaple_components/dist/components";
+import { PErrorMessage }  from "pinaple_components/dist";
+//import PErrorMessage1  from "../components/PErrorMessage";
 
 import { useForm } from "react-hook-form";
 import React from "react";
@@ -41,18 +42,6 @@ const Login: NextPage = () => {
     console.dir('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ errors:'); //@@@@@@@@@@@@@@@@@@@
     console.dir(formState.errors); //@@@@@@@@@@@@@@@@@@@
   }, [formState]);
-
-  function showError() {
-    if (errorMessage !== "") {
-      return (
-        <PErrorMessage message={errorMessage}/>
-      );
-    } else {
-      return (
-        null
-      );
-    }
-  }
 
   function loginForm() {
     return (
@@ -106,10 +95,11 @@ const Login: NextPage = () => {
             Odošli{" "}
           </a>
         </div>
-        {"errorMessage()"}
+        <PErrorMessage message="Hello from PErrorMessage!"/>
       </div>
     );
   }
+  //<PErrorMessage message="Hello from PErrorMessage!"/>
 
   return loginForm()
 };

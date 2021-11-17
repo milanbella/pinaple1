@@ -1,4 +1,4 @@
-import styles from '../styles/components/PErrorMessage.module.scss';
+
 
 import { useState } from 'react';
 
@@ -11,9 +11,9 @@ const PErrorMessage = (props: IProps) => {
   const [isShowing, setIsShowing] = useState(true);
   if (isShowing === true) { 
     return (
-      <div className="">
+      <div className="PErrorMessage-container">
         {props.message}
-        <span className={styles.closeButton} onClick={() => setIsShowing(false)}>&times;</span>
+        <span className="PErrorMessage-closeButton" onClick={() => setIsShowing(false)}>&times;</span>
       </div>
     );
   } else {
