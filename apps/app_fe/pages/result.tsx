@@ -15,7 +15,7 @@ const RegisterResult: NextPage = () => {
     )
   }
 
-  display = () => {
+  let display = () => {
     if (router.query.page === ResultKind.registrationSuccess) {
       return rigistartionSuccess();
     } else {
@@ -23,7 +23,7 @@ const RegisterResult: NextPage = () => {
     }
   }
 
-  display();
+  return display();
 };
 
 export default RegisterResult;
