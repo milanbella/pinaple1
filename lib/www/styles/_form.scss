@@ -17,7 +17,7 @@
 .formContainer h2 {
   text-align: center;
   margin-top: 20px;
-  color: base.$color-gray;
+  color: base.$color-grey;
 }
 
 .formField {
@@ -28,7 +28,7 @@
   width: 100%;
   padding: 15px 10px;
   border-radius: 5px;
-  border: 1px solid color.adjust(base.$color-gray, $lightness: 20%);
+  border: 1px solid color.adjust(base.$color-grey, $lightness: 20%);
   background-color: base.$color-white; 
 
 

@@ -1,5 +1,5 @@
 import type { NextPage } from "next";
-import styles from "../styles/pages/RegisterResult.module.scss";
+import styles from "../styles/pages/Result.module.scss";
 import { useRouter } from 'next/router';
 
 export enum ResultKind {
@@ -23,7 +23,11 @@ const RegisterResult: NextPage = () => {
     }
   }
 
-  return display();
+  return (
+    <div className={styles.container}>
+      {display()}
+    </div>
+  );
 };
 
 export default RegisterResult;

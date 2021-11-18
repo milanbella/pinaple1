@@ -12,8 +12,7 @@ import { ResultKind } from './result';
 const Login: NextPage = () => {
   const [count, setCount] = useState(0);
   const { register, handleSubmit, watch, formState } = useForm();
-  const [errorMessage, setErrorMessage] = useState("test error");
-  const [isUserCreated, setIsUserCreated] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   let submitForm = async (data: any) => {
 
@@ -25,15 +24,12 @@ const Login: NextPage = () => {
         passwordConfirm: data.passwordConfirm
       });
 
-      setIsUserCreated(true);
-
       Router.push({
         pathname: '/result',
         query: { page: ResultKind.registrationSuccess },
       })
 
     } catch(err) {
-      setIsUserCreated(false);
       if (err instanceof HttpError) {
         setErrorMessage(err.body.data.message);
       } else {
@@ -41,13 +37,6 @@ const Login: NextPage = () => {
       }
     }
   };
-
-
-
-  React.useEffect(() => {
-    console.dir('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ errors:'); //@@@@@@@@@@@@@@@@@@@
-    console.dir(formState.errors); //@@@@@@@@@@@@@@@@@@@
-  }, [formState]);
 
   function showError() {
     if (errorMessage === "") {
