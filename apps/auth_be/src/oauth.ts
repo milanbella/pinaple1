@@ -5,7 +5,9 @@ import { HttpError } from 'pinaple_www/dist/http';
 import { httpGet, httpPost } from 'pinaple_www/dist/http';
 import { Authorize, Session } from './types';
 
+const querystring = require('querystring');
 const Router = require('@koa/router');
+
 export const router = new Router();
 
 const FILE = 'oauth.ts';
@@ -93,7 +95,7 @@ router.get('/authorize', async (ctx) => {
         } 
       }
 
-      console.error(`${FILE}:${FUNC}: http error: ${err}`, err)
+      console.error(`${FILE}:${FUNC}: error: ${err}`, err)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -135,7 +137,125 @@ router.get('/authorize', async (ctx) => {
     return;
   }
 
-})
+});
+
+router.post('/token', async (ctx) => {
+  const FUNC = 'router.post(/token)';
+  try {
+
+    if (ctx.request.headers['Content-Type'] !== 'application/x-www-form-urlencoded') {
+      console.warn(`${FILE}:${FUNC} wrong content type`);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'wrong content type',
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    }
+
+    if (!ctx.request.body.grant_type) {
+      console.warn(`${FILE}:${FUNC} missing grant_type`);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'missing grant_type',
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    }
+
+    if (!ctx.request.body.code) {
+      console.warn(`${FILE}:${FUNC} missing code`);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'missing code',
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    }
+
+    if (!ctx.request.body.code) {
+      console.warn(`${FILE}:${FUNC} missing redirect_uri`);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'missing redirect_uri',
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    }
+
+    if (!ctx.request.body.client_id) {
+      console.warn(`${FILE}:${FUNC} missing client_id`);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'missing client_id',
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    }
+
+    try {
+      let res = httpPost(`${apiUrl()}/oauth/token/issue`, {
+        grantType: ctx.request.body.grant_type,
+        code: ctx.request.body.code, 
+        redirectUri: ctx.request.body.redirect_uri, 
+        clientId: ctx.request.body.client_id,
+      });
+    } catch(err) {
+      if (err instanceof HttpError) {
+          console.warn(`${FILE}:${FUNC}: http error: `, err)
+          let body: IResponseError = {
+            errKind: err.body.errKind,
+            data: {
+              message: err.body.data.message,
+              value: err.body.data.value,
+            }
+          };
+          ctx.response.status = err.status;
+          ctx.response.body = body;
+          return;
+        } 
+
+        console.error(`${FILE}:${FUNC} httpPost() error:`, err);
+        let body: IResponseError = {
+          errKind: ResponseErrorKind.INTERNAL_ERROR,
+          data: {
+            message: 'internal error',
+          }
+        };
+        ctx.response.status = 500;
+        ctx.response.body = body;
+        return;
+    }
+
+  } catch(err) {
+    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error',
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
+    return;
+  }
+
+});
 
 router.get('/api/authenticate', async (ctx) => {
   const FUNC = 'router.get(/api/authenticate)';
@@ -252,3 +372,4 @@ router.get('/api/authenticate', async (ctx) => {
   }
 
 })
+

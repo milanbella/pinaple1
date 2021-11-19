@@ -5,7 +5,7 @@ import { environment } from "../environment";
 
 const Header: NextPage = () => {
 
-  let redirectUri=`${environment.authProtocol}://${environment.authHost}:${environment.authPort}/authorize?client_id=${environment.oauthClientId}&redirec_uri${encodeURIComponent(environment.oauthRedirectUri)}`;
+  let redirectUri=`${environment.authProtocol}://${environment.authHost}:${environment.authPort}/authorize?response_type=code&client_id=${environment.oauthClientId}&redirec_uri${encodeURIComponent(environment.oauthRedirectUri)}`;
   return (
     <header className={styles.header}>
       <nav className={styles.nav}>

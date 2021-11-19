@@ -32,15 +32,10 @@ router.post('/api/register', async (ctx) => {
       password: data.password,
     });
 
-    console.log(`@@@@@@@@@@@@@@@@@@@@ cp 1000`); //@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    console.dir(hres); //@@@@@@@@@@@@@@@@@@@@@@@@@
-
     ctx.response.status = 200;
     return;
 
   } catch(err) {
-    console.log(`@@@@@@@@@@@@@@@@@@@@ cp 2000`); //@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    console.dir(err); //@@@@@@@@@@@@@@@@@@@@@@@@@
     if (err instanceof HttpError && err.status === 409) {
       let message, status, errKind;
       if (err.body.data.message === 'user name already exists') {

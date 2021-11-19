@@ -12,6 +12,6 @@ export let environment: IEnvironment = {
   authHost: 'pinaple-auth',
   authPort: 80,
 
-  oauthClientId: 'XXXXXXX',
-  oauthRedirectUri: 'http://pinaple-app:7300'
+  oauthClientId: 'pinaple',
+  oauthRedirectUri: 'http://pinaple-app/app'
 }
