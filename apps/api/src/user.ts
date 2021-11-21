@@ -16,13 +16,11 @@ router.get('/user', async (ctx) => {
   const FUNC = 'router.get(/user)';
   try {
 
-    let userName = ctx.request.query.user_name;
-
-    if (!userName) {
+    if (!(ctx.request.query.userName || ctx.request.query.userEmail)) {
       let body: IResponseError = {
-        errKind: ResponseErrorKind.WRONG_PARAMETR,
+        errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
-          message: 'missing user_name query parameter',
+          message: `either 'userName' or 'userEmail' parameter has to be specified in query string`,
         }
       };
       ctx.response.status = 400;
@@ -30,7 +28,22 @@ router.get('/user', async (ctx) => {
       return;
     }
 
-    let qres = await query('select id, user_name, email, password from users where user_name=$1', [ctx.request.body.userName]);  
+    let userName = ctx.request.query.userName;
+    let userEmail = ctx.request.query.userEmail;
+
+    let sql, params;
+
+    if (userName) {
+      sql = 'select id, user_name, email, password from users where user_name=$1';
+      params = [userName];
+    } else if (userEmail) {
+      sql = 'select id, user_name, email, password from users where email=$1';
+      params = [userEmail];
+    } else {
+      throw new Error('assertion failed');
+    }
+
+    let qres = await query(sql, params);  
 
     if (qres.rows.length === 1) {
       let data = qres.rows[0];
@@ -53,7 +66,7 @@ router.get('/user', async (ctx) => {
       ctx.response.body = body; 
       return;
     } else {
-      console.error(`${FILE}:${FUNC}: more then one user found`);
+      console.error(`${FILE}:${FUNC}: more then one user found, userName: ${userName}, userEmail: ${userEmail}`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -136,7 +149,6 @@ router.post('/user', async (ctx) => {
     qres = await query('insert into users(id, user_name, email, password) values($1, $2, $3, $4)', [id, inData.userName, inData.email, password]);  
 
     ctx.response.status = 200;
-    ctx.response.body = {}
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} error: ${err}`, err);

@@ -18,6 +18,9 @@ async function removeUser() {
 before(async () => {
   await removeUser();
 })
+after (async () => {
+  await removeUser();
+})
 
 describe('Registartion Page', () => {
 

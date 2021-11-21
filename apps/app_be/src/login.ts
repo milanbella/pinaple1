@@ -10,7 +10,7 @@ export const router = new Router();
 const FILE = 'login.ts';
 
 function redirectUri() {
-  let url = `${environment.authProtocol}://${authUrl()}/authorize?request_type=code&client_id=${environment.oauthClientId}`
+  let url =`${environment.authProtocol}://${environment.authHost}:${environment.authPort}/authorize?response_type=code&client_id=${environment.oauthClientId}&redirec_uri${encodeURIComponent(environment.oauthRedirectUri)}`;
   return url;
 }
 
@@ -18,11 +18,9 @@ function redirectUri() {
 router.get('/api/login', async (ctx) => {
   const FUNC = 'router.get(/api/login)';
   try {
-
     let url = redirectUri();
 
     ctx.response.redirect(url);
-
 
   } catch(err) {
     console.error(`${FILE}:${FUNC} missing grant_type`);
@@ -56,7 +54,6 @@ router.get('/api/token', async (ctx) => {
       ctx.response.body = body;
       return;
     }
-
 
     try {
       let query = `grant_type=authorization_code&code=${code}&client_id=${environment.oauthClientId}`;

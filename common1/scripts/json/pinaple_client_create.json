@@ -1,0 +1,4 @@
+{
+  "name": "pinaple",
+  "redirectUri": "http://pinaple-app/api/token"
+}

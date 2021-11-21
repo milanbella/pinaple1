@@ -30,6 +30,40 @@ test('Create new user', async () => {
   expect(qresult.rows[0].cnt).toEqual('1');
 })
 
+test('Read user by userName', async () => {
+  await cleanDb();
+
+  let result = await httpPost(`${url()}/user`, {
+    userName: 'johnDoe',
+    email: 'johndoe@foo.com',
+    password: 'bla',
+  });
+  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  expect(qresult.rows[0].cnt).toEqual('1');
+
+  result = await httpGet(`${url()}/user?userName=johnDoe`);
+
+  expect(result.userName).toEqual('johnDoe');
+  expect(result.userEmail).toEqual('johndoe@foo.com');
+})
+
+test('Read user by userEmail', async () => {
+  await cleanDb();
+
+  let result = await httpPost(`${url()}/user`, {
+    userName: 'johnDoe',
+    email: 'johndoe@foo.com',
+    password: 'bla',
+  });
+  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  expect(qresult.rows[0].cnt).toEqual('1');
+
+  result = await httpGet(`${url()}/user?userEmail=${encodeURIComponent('johndoe@foo.com')}`);
+
+  expect(result.userName).toEqual('johnDoe');
+  expect(result.userEmail).toEqual('johndoe@foo.com');
+})
+
 
 test('Do not create user with same user name', async () => {
   await cleanDb();

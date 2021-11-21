@@ -30,7 +30,7 @@ beforeEach(async () => {
   // create client
   let hres = await httpPost(`${url()}/client`, {
     redirectUri: gRedirectUri,
-    name: gClientName, 
+    clientName: gClientName, 
   });
   gClientId = hres.id;
 

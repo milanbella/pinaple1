@@ -25,9 +25,9 @@ function url() {
   return `${environment.apiProtocol}://${environment.apiHost}:${environment.apiPort}`;
 }
 
-test('It creates and removes client', async () => {
+test('It creates and removes client by id', async () => {
   let hres = await httpPost(`${url()}/client`, {
-    name: gClientName,
+    clientName: gClientName,
     redirectUri: gRedirectUri
   });
   expect(hres.id).toBeDefined();
@@ -36,16 +36,33 @@ test('It creates and removes client', async () => {
   expect(qres.rows[0].cnt).toEqual('1');
 
   hres = await httpDelete(`${url()}/client`, {
-    id: id
+    clientId: id
   });
   qres = await query("select count(*) as cnt from auth.client where id=$1", [id]);
   expect(qres.rows[0].cnt).toEqual('0');
 })
 
-test('It gets client', async () => {
+test('It creates and removes client by name', async () => {
+  let hres = await httpPost(`${url()}/client`, {
+    clientName: gClientName,
+    redirectUri: gRedirectUri
+  });
+  expect(hres.id).toBeDefined();
+  let id = hres.id;
+  let qres = await query("select count(*) as cnt from auth.client where id=$1", [id]);
+  expect(qres.rows[0].cnt).toEqual('1');
+
+  hres = await httpDelete(`${url()}/client`, {
+    clientName: gClientName
+  });
+  qres = await query("select count(*) as cnt from auth.client where id=$1", [id]);
+  expect(qres.rows[0].cnt).toEqual('0');
+})
+
+test('It gets client by id', async () => {
 
   let hres = await httpPost(`${url()}/client`, {
-    name: gClientName,
+    clientName: gClientName,
     redirectUri: gRedirectUri
   });
 
@@ -55,6 +72,30 @@ test('It gets client', async () => {
   hres = await httpGet(`${url()}/client`, {
     query: {
       clientId: clientId
+    }
+  });
+
+  expect(hres).toEqual({
+    clientId: clientId,
+    name: gClientName,
+    redirectUri: gRedirectUri,
+  });
+
+})
+
+test('It gets client by name', async () => {
+
+  let hres = await httpPost(`${url()}/client`, {
+    clientName: gClientName,
+    redirectUri: gRedirectUri
+  });
+
+  expect(hres.id).toBeDefined();
+  let clientId = hres.id;
+
+  hres = await httpGet(`${url()}/client`, {
+    query: {
+      clientName: gClientName
     }
   });
 
