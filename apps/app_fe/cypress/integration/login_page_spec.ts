@@ -30,43 +30,16 @@ async function removeUser() {
   }
 }
 
-async function createClient() {
-  const FUNC = 'createClient()';
-  try {
-    let hres = await httpPost(`${environment.apiUrl}/client`, {
-      clientName: "pinaple",
-      redirectUri: "http://pinaple-app/api/token"
-    });
-  } catch(err) {
-    console.error(`${FILE}:${FUNC}: error`, err);
-    throw Error('could not create client');
-  }
-}
-
-async function removeClient() {
-  const FUNC = 'removeClient()';
-  try {
-    let hres = await httpDelete(`${environment.apiUrl}/client`, {
-      clientName: 'pinaple'
-    });
-  } catch(err) {
-    console.error(`${FILE}:${FUNC}: error`, err);
-    throw Error('could not remove client');
-  }
-}
 
 
 before(async () => {
   removeUser();
-  removeClient();
 
-  createClient();
   createUser();
 });
 
 after(async () => {
   removeUser();
-  removeClient();
 });
 
 describe('Login Page', () => {
@@ -74,6 +47,13 @@ describe('Login Page', () => {
   it('Open Login Page.', () => {
     cy.visit(environment.url);
     cy.get('nav li a').contains('Prihlásiť').click();
-  })
+    cy.get('#header').contains('Prihlásiť sa');
+  });
+
+  it('Logs in.', () => {
+    cy.get('input[name=userName]').type('milanbella');
+    cy.get('input[name=password]').type('foo');
+    cy.get('a.btn').contains('Odošli').click();
+  });
 
 })

@@ -114,12 +114,12 @@ router.get('/authorize', async (ctx) => {
     }
 
     if (ctx.session.session) {
-      (ctx.session as Session).authorize = authorize;
+      (ctx.session.session as Session).authorize = authorize;
     } else {
       let session: Session = {
         authorize: authorize
       }
-      ctx.session = session;
+      ctx.session.session = session;
     }
 
     ctx.response.redirect('/login')
@@ -257,10 +257,10 @@ router.post('/token', async (ctx) => {
 
 });
 
-router.get('/api/authenticate', async (ctx) => {
+router.post('/api/authenticate', async (ctx) => {
   const FUNC = 'router.get(/api/authenticate)';
   try {
-    let session: Session = ctx.session;
+    let session: Session = ctx.session.session;
     if (!session) {
       console.warn(`${FILE}:${FUNC}: no session`)
       let body: IResponseError = {

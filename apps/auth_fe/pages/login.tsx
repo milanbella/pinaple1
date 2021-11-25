@@ -12,6 +12,7 @@ const Login: NextPage = () => {
   const { register, handleSubmit, watch, formState } = useForm();
 
   let submitForm = (data: any) => {
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 1000: submitForm');
     try {
       let hres = httpPost('/api/authenticate', {
         userName: data.userName,
@@ -33,7 +34,7 @@ const Login: NextPage = () => {
 
   return (
     <div className={styles.formContainer}>
-      <h2 id="header"> Login </h2>
+      <h2 id="header"> Prihlásiť sa </h2>
       <div className={ styles.formField }>
         <label htmlFor="userName"> Užívateľské meno </label>
         <input

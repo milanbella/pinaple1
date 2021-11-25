@@ -8,32 +8,6 @@ let program = new Command();
 
 const FILE = 'login_page_spec.ts';
 
-async function createUser() {
-  const FUNC = 'createUser()';
-  try {
-    let hres = await httpPost(`${environment.apiUrl}/user`, {
-      userName: "milanbella",
-      email: "milanbella@hotmail.com",
-      password: "foo"
-    });
-    console.log(`created oauth user, name: 'milanbella', email: milanbella@hotmail.com, password: foo`);  
-  } catch(err) {
-    console.error(`${FILE}:${FUNC}: error`, err);
-    throw Error('could not create user');
-  }
-}
-
-async function removeUser() {
-  const FUNC = 'removeUser()';
-  try {
-    let hres = await httpDelete(`${environment.apiUrl}/user`, {
-      userName: 'milanbella'
-    });
-  } catch(err) {
-    console.error(`${FILE}:${FUNC}: error`, err);
-    throw Error('could not remove user');
-  }
-}
 
 async function createClient() {
   const FUNC = 'createClient()';
@@ -62,14 +36,10 @@ async function removeClient() {
 }
 
 program.command('setup').action(async () => {
-    await removeUser();
     await removeClient();
-
     await createClient();
-    await createUser();
   });
 program.command('teardown').action(async () => {
-    await removeUser();
     await removeClient();
   })
 
