@@ -36,6 +36,33 @@ export async function query(sql: string, values?: any[]): Promise<IResult> {
   })
 }
 
+
+export interface IClient {
+  query: (sql: string, values?: any[]) => Promise<IResult>;
+  end: () => Promise<void>;
+}
+
+export async function getClient(): Promise<IClient> {
+  const FUNC = 'getClient()';
+
+  if (!pool) {
+    console.error(`${FILE}:${FUNC}: pool not initialized, call initPool() to initialize it`);
+    return Promise.reject(new Error('pool not initialized'));
+  }
+
+  return new Promise((resolve, reject) => {
+    pool.connect((err, client, release) => {
+      if (err) {
+        release()
+        console.error(`${FILE}:${FUNC}: pool error: ${err}`, err);
+        reject(err);
+        return;
+      }
+      resolve(client as IClient);
+    })
+  });
+}
+
 export function initPool(user: string, host: string, database: string, password: string, port: number) {
   const FUNC = 'initPool()';
   if (pool) {

@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@cypress/react': ~5.10.3
   '@koa/cors': ~3.1.0
   '@koa/router': ^10.1.1
   '@rollup/plugin-commonjs': ~21.0.1
@@ -34,6 +35,7 @@ specifiers:
   uuid: ~8.3.2
 
 dependencies:
+  '@cypress/react': 5.10.3
   '@koa/cors': 3.1.0
   '@koa/router': 10.1.1
   '@rollup/plugin-commonjs': 21.0.1_rollup@2.60.0
@@ -463,6 +465,43 @@ packages:
 
   /@cypress/mount-utils/1.0.2:
     resolution: {integrity: sha512-Fn3fdTiyayHoy8Ol0RSu4MlBH2maQ2ZEXeEVKl/zHHXEQpld5HX3vdNLhK5YLij8cLynA4DxOT/nO9iEnIiOXw==}
+    dev: false
+
+  /@cypress/react/5.10.3:
+    resolution: {integrity: sha512-E68ws4P6CPFbtIqr98rWimf47E5nY6plWwKpHt98GKadSq/MN+57qego+Z5SA1CaDLk7Pvfdk98oYNzkmj20jA==}
+    peerDependencies:
+      '@babel/core': '>=7'
+      '@babel/preset-env': '>=7'
+      '@cypress/webpack-dev-server': '*'
+      '@types/react': ^16.9.16 || ^17.0.0
+      babel-loader: '>=8'
+      cypress: '*'
+      next: '>=8'
+      react: ^=16.x || ^=17.x
+      react-dom: ^=16.x || ^=17.x
+      webpack: '>=4'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/preset-env':
+        optional: true
+      '@cypress/webpack-dev-server':
+        optional: true
+      '@types/react':
+        optional: true
+      babel-loader:
+        optional: true
+      next:
+        optional: true
+      webpack:
+        optional: true
+    dependencies:
+      '@cypress/mount-utils': 1.0.2
+      debug: 4.3.2
+      find-webpack: 2.2.1
+      find-yarn-workspace-root: 2.0.0
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@cypress/react/5.10.3_e9d03a312dae5527bebb09180fd221b6:
@@ -2515,6 +2554,11 @@ packages:
   /commander/5.1.0:
     resolution: {integrity: sha512-P0CysNDQ7rtVw4QIQtm+MRxV66vKFSvlsQvGYXZWR3qFU0jlMKHZZZgw8e+8DSah4UDKMqnknRDQz+xuQXQ/Zg==}
     engines: {node: '>= 6'}
+    dev: false
+
+  /commander/8.3.0:
+    resolution: {integrity: sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==}
+    engines: {node: '>= 12'}
     dev: false
 
   /common-tags/1.8.1:
@@ -9147,7 +9191,7 @@ packages:
     dev: false
 
   file:projects/pinaple_app_be.tgz:
-    resolution: {integrity: sha512-XeL6elU3GJ1Xn57gBhciLHPW+07fzNAfUPwS+l0JswwAWdU1yYA4pNIWsOGaU74ydXt+MAJythckMO0a98PQow==, tarball: file:projects/pinaple_app_be.tgz}
+    resolution: {integrity: sha512-SCyNEmQoD/1e5HrjZb5rzgStM4hYNEx/6vsfw/YoW2B6R1dhWARA1bw8LutNuWviCnT3Ixs3CDgXYeMJJ6ChjQ==, tarball: file:projects/pinaple_app_be.tgz}
     name: '@rush-temp/pinaple_app_be'
     version: 0.0.0
     dependencies:
@@ -9157,6 +9201,7 @@ packages:
       '@typescript-eslint/eslint-plugin': 4.33.0_cc617358c89d3f38c52462f6d809db4c
       '@typescript-eslint/parser': 4.33.0_eslint@7.32.0+typescript@4.4.4
       ajv: 8.8.0
+      commander: 8.3.0
       eslint: 7.32.0
       jest: 27.3.1
       koa: 2.13.4
