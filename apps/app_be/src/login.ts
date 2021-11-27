@@ -7,10 +7,11 @@ import { HttpError } from 'pinaple_www/dist/http';
 const Router = require('@koa/router');
 export const router = new Router();
 
+const PROJECT = environment.appName;
 const FILE = 'login.ts';
 
 function redirectUri() {
-  let url =`${environment.authProtocol}://${environment.authHost}:${environment.authPort}/authorize?response_type=code&client_id=${environment.oauthClientId}&redirec_uri${encodeURIComponent(environment.oauthRedirectUri)}`;
+  let url =`${environment.authProtocol}://${environment.authHost}${environment.authPort === 80 ? '' : ':' + environment.authPort}/authorize?response_type=code&client_id=${environment.oauthClientId}&redirec_uri${encodeURIComponent(environment.oauthRedirectUri)}`;
   return url;
 }
 
@@ -23,7 +24,7 @@ router.get('/api/login', async (ctx) => {
     ctx.response.redirect(url);
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} missing grant_type`);
+    console.error(`${PROJECT}:${FILE}:${FUNC} missing grant_type`);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -43,7 +44,7 @@ router.get('/api/token', async (ctx) => {
 
     let code = ctx.request.query.code;
     if (!code) {
-      console.warn(`${FILE}:${FUNC} missing code`);
+      console.warn(`${PROJECT}:${FILE}:${FUNC} missing code`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -56,13 +57,17 @@ router.get('/api/token', async (ctx) => {
     }
 
     try {
+      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 800'); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
       let query = `grant_type=authorization_code&code=${code}&client_id=${environment.oauthClientId}`;
-      let hres = await httpPost(`${authUrl()}/token`, {
-        body: query
+      let hres = await httpPost(`${authUrl()}/token`, query, {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
       });
     } catch(err) {
       if (err instanceof HttpError) {
-          console.warn(`${FILE}:${FUNC}: http error: `, err)
+          console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 900'); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+          console.warn(`${PROJECT}:${FILE}:${FUNC}: http error: `, err)
           let body: IResponseError = {
             errKind: err.body.errKind,
             data: {
@@ -75,7 +80,7 @@ router.get('/api/token', async (ctx) => {
           return;
         } 
 
-        console.error(`${FILE}:${FUNC} httpPost() error:`, err);
+        console.error(`${PROJECT}:${FILE}:${FUNC} httpPost() error:`, err);
         let body: IResponseError = {
           errKind: ResponseErrorKind.INTERNAL_ERROR,
           data: {
@@ -88,7 +93,7 @@ router.get('/api/token', async (ctx) => {
     }
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {

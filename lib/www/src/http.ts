@@ -1,4 +1,5 @@
 import { IResponseError, ResponseErrorKind } from 'pinaple_types/dist/http';
+import { PROJECT } from './common';
 
 const nodeFetch = require('node-fetch');
 const R = require('ramda');
@@ -75,7 +76,7 @@ async function getBody(response): Promise<any> {
       return text;
     }
   } catch(err) {
-    console.error(`${FILE}:${FUNC}: error: ${err}`, err)
+    console.error(`${PROJECT}:${FILE}:${FUNC}:  error: ${err}`, err)
     return;
   }
 }
@@ -96,7 +97,7 @@ export async function httpGet (url: string, options?: Options): Promise<any> {
   try {
     response = await fetch()(_url, foptions);
   } catch(err) {
-    console.error(`${FILE}:${FUNC}: fetch() failed, url: ${url}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC}: fetch() failed, url: ${url}`, err);
     throw new HttpError(0, '');
   }
 
@@ -105,12 +106,12 @@ export async function httpGet (url: string, options?: Options): Promise<any> {
       let body = await getBody(response);
       return body;
     } catch(err) {
-      console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
+      console.error(`${PROJECT}:${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
       throw new HttpError(response.status, 'response.json() failed, error: ${err}');
     }
   } else {
     let body = await getBody(response);
-    console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
+    console.error(`${PROJECT}:${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
     throw new HttpError(response.status, body);
   }
 }
@@ -120,7 +121,7 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
 
   let roptions = getRequestOptions(options);
   let foptions = {
-    method: 'post',
+    method: 'POST',
     headers: R.mergeLeft(roptions.headers || {}, {
       'Content-Type': 'application/json',
     }), 
@@ -128,13 +129,15 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
     body: JSON.stringify(body),
   };
 
+  console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 1900: foptions, uel: ${url}`); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
+  console.dir(foptions); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   let _url = appendQueryToUrl(url, roptions);
 
   let response;
   try {
     response = await fetch()(_url, foptions);
   } catch(err) {
-    console.error(`${FILE}:${FUNC}: fetch() failed, url: ${url}`, err); 
+    console.error(`${PROJECT}:${FILE}:${FUNC}: fetch() failed, url: ${url}`, err); 
     throw new HttpError(0, '');
   }
 
@@ -143,12 +146,15 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
       let body = await getBody(response);
       return body;
     } catch(err) {
-      console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
+      console.error(`${PROJECT}:${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
       throw new HttpError(response.status, 'response.json() failed, error: ${err}');
     }
   } else {
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 2000: httpPost(): status: ${response.status}`); 
+    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     let body = await getBody(response);
-    console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
+    console.error(`${PROJECT}:${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
     let err = new HttpError(response.status, body);
     throw err;
   }
@@ -159,7 +165,7 @@ export async function httpDelete (url: string, body: any, options?: Options): Pr
 
   let roptions = getRequestOptions(options);
   let foptions = {
-    method: 'delete',
+    method: 'DELETE',
     headers: R.mergeLeft(roptions.headers || {}, {
       'Content-Type': 'application/json',
     }), 
@@ -173,7 +179,7 @@ export async function httpDelete (url: string, body: any, options?: Options): Pr
   try {
     response = await fetch()(_url, foptions);
   } catch(err) {
-    console.error(`${FILE}:${FUNC}: fetch() failed, url: ${url}`, err); 
+    console.error(`${PROJECT}:${FILE}:${FUNC}: fetch() failed, url: ${url}`, err); 
     throw new HttpError(0, '');
   }
 
@@ -182,12 +188,12 @@ export async function httpDelete (url: string, body: any, options?: Options): Pr
       let body = await getBody(response);
       return body;
     } catch(err) {
-      console.error(`${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
+      console.error(`${PROJECT}:${FILE}:${FUNC}: url: ${url}, response.json() failed, error: ${err}`, err);
       throw new HttpError(response.status, 'response.json() failed, error: ${err}');
     }
   } else {
     let body = await getBody(response);
-    console.error(`${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
+    console.error(`${PROJECT}:${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
     throw new HttpError(response.status, body);
   }
 }

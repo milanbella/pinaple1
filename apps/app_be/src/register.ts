@@ -6,6 +6,7 @@ import { apiUrl } from './common';
 const Router = require('@koa/router');
 export const router = new Router();
 
+const PROJECT = environment.appName;
 const FILE = 'register.ts';
 
 
@@ -47,7 +48,7 @@ router.post('/api/register', async (ctx) => {
         status = 409;
         errKind = ResponseErrorKind.RESOURCE_EXISTS;
       } else {
-        console.error(`${FILE}:${FUNC}: unknown message: ${err.body.data.message}`);
+        console.error(`${PROJECT}:${FILE}:${FUNC}: unknown message: ${err.body.data.message}`);
         status = 500;
         message = 'internal error';
         errKind = ResponseErrorKind.INTERNAL_ERROR;
@@ -64,7 +65,7 @@ router.post('/api/register', async (ctx) => {
       return;
     } 
 
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {

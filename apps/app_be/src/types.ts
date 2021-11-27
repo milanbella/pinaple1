@@ -1,4 +1,6 @@
 export interface IEnvironment {
+  appName: string;
+
   port: number;
 
   apiProtocol: string;

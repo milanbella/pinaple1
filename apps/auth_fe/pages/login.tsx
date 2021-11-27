@@ -1,35 +1,53 @@
-import React from 'react';
+import styles from '../styles/Login.module.scss';
+import { httpPost, HttpError } from 'pinaple_www/dist/http';
+import { environment } from '../common/environment';
+import { PErrorMessage }  from "pinaple_components/dist";
+
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type { NextPage } from 'next';
 
-import styles from '../styles/Login.module.scss';
-import { httpPost, HttpError } from 'pinaple_www/dist/http';
-
+const PROJECT = environment.appName;
 const FILE = 'login.tsx';
 
 const Login: NextPage = () => {
   const FUNC = 'Login()';
   const { register, handleSubmit, watch, formState } = useForm();
+  const [errorMessage, setErrorMessage] = useState('');
 
-  let submitForm = (data: any) => {
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 1000: submitForm');
+  let submitForm = async (data: any) => {
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 100: submitForm()'); 
     try {
-      let hres = httpPost('/api/authenticate', {
+      let hres = await httpPost('/api/authenticate', {
         userName: data.userName,
         password: data.password,
       })
+      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@ hres'); 
+      console.dir(hres); // @@@@@@@@@@@@@@@@@@@@@@@
+      setErrorMessage('');
+      window.location.href = hres.redirectUri;
     } catch(err) {
+      console.error('@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 100: error', err); 
       if (err instanceof HttpError) {
-        if (err.status === 401) {
-        } else {
-          console.error(`${FILE}:${FUNC}: submitForm(), calling /api/authenticate failed`, err);
-        }
+          setErrorMessage(err.body.data.message);
       } else {
-          console.error(`${FILE}:${FUNC}: submitForm(), calling /api/authenticate failed`, err);
+          setErrorMessage('internal error');
       }
     }
 
   };
+
+  function showError() {
+    if (errorMessage === '') {
+      return null;
+    } else {
+      return (
+        <div className={styles.messageField}>
+          <PErrorMessage message={errorMessage} onClose={() => setErrorMessage("")}/>
+        </div>
+      );
+    }
+  }
 
 
   return (
@@ -62,6 +80,7 @@ const Login: NextPage = () => {
           Odošli{" "}
         </a>
       </div>
+      {showError()}
     </div>
   );
 };

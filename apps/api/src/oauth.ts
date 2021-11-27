@@ -9,6 +9,7 @@ const Ajv = require("ajv");
 const { v4: uuidv4 } = require('uuid');
 const { v1: uuidv1 } = require('uuid');
 
+const PROJECT = environment.appName;
 const FILE = 'oauth.ts';
 
 const ajv = new Ajv();
@@ -46,7 +47,7 @@ async function issueToken(clientId: string, userId: string, userName: string, us
         expiresIn: expiresIn,
       }
     } catch(err) {
-      console.error(`${FILE}:${FUNC}: error: ${err}`, err);
+      console.error(`${PROJECT}:${FILE}:${FUNC}: error: ${err}`, err);
       throw err;
     }
 }
@@ -90,7 +91,7 @@ router.post('/oauth/code/issue', async (ctx) => {
       ctx.response.body = body;
       return;
     } else if (qres.rows.length > 1) {
-      console.error(`${FILE}:${FUNC}: client_id ${ctx.request.body.clientId} is not unique`)
+      console.error(`${PROJECT}:${FILE}:${FUNC}: client_id ${ctx.request.body.clientId} is not unique`)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -135,7 +136,7 @@ router.post('/oauth/code/issue', async (ctx) => {
       ctx.response.body = body;
       return;
     } else if (qres.rows.length > 1) {
-      console.error(`${FILE}:${FUNC}: user is not unique, userName: ${ctx.request.body.userName}, email: ${ctx.request.body.email}`)
+      console.error(`${PROJECT}:${FILE}:${FUNC}: user is not unique, userName: ${ctx.request.body.userName}, email: ${ctx.request.body.email}`)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -180,7 +181,7 @@ router.post('/oauth/code/issue', async (ctx) => {
 
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -212,6 +213,7 @@ const schemaOauthTokenIssue = ajv.compile({
 });
 router.post('/oauth/token/issue', async (ctx) => {
   const FUNC = 'router.get(/oauth/token/issue)';
+  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 3000: /oauth/token/issue');
   try {
     if (!validateSchema(schemaOauthTokenIssue, ctx)) {
       return;
@@ -350,7 +352,7 @@ router.post('/oauth/token/issue', async (ctx) => {
     }
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -411,7 +413,7 @@ router.post('/oauth/token/refresh', async (ctx) => {
       ctx.response.body = body;
       return;
     } if (qres.rows.length > 1) {
-      console.error(`${FILE}:${FUNC}: refresh token not unique`);
+      console.error(`${PROJECT}:${FILE}:${FUNC}: refresh token not unique`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -473,7 +475,7 @@ router.post('/oauth/token/refresh', async (ctx) => {
     }
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {

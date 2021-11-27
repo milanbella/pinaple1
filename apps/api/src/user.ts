@@ -1,11 +1,13 @@
 import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
 import { query } from 'pinaple_www/dist/pool';
 import { validateSchema, hashString } from './common';
+import { environment } from './environment';
 
 const Router = require('@koa/router');
 const Ajv = require("ajv");
 const { v1: uuidv1 } = require('uuid');
 
+const PROJECT = environment.appName;
 const FILE = 'user.ts';
 
 const ajv = new Ajv();
@@ -66,7 +68,7 @@ router.get('/user', async (ctx) => {
       ctx.response.body = body; 
       return;
     } else {
-      console.error(`${FILE}:${FUNC}: more then one user found, userName: ${userName}, userEmail: ${userEmail}`);
+      console.error(`${PROJECT}:${FILE}:${FUNC}: more then one user found, userName: ${userName}, userEmail: ${userEmail}`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -79,7 +81,7 @@ router.get('/user', async (ctx) => {
     }
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -151,7 +153,7 @@ router.post('/user', async (ctx) => {
     ctx.response.status = 200;
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -195,7 +197,7 @@ router.del('/user', async (ctx) => {
         sql = 'delete from users where email=$1'
         params=[ctx.request.body.email]
     } else {
-      console.error(`${FILE}:${FUNC} error: either \'userName\' or \'email\' parameter mus be specified`);
+      console.error(`${PROJECT}:${FILE}:${FUNC} error: either \'userName\' or \'email\' parameter mus be specified`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -212,7 +214,7 @@ router.del('/user', async (ctx) => {
     return;
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {

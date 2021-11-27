@@ -7,6 +7,7 @@ const Router = require('@koa/router');
 const Ajv = require("ajv");
 const { v1: uuidv1 } = require('uuid');
 
+const PROJECT = environment.appName;
 const FILE = 'oauth.ts';
 
 const ajv = new Ajv();
@@ -47,7 +48,7 @@ router.post('/client', async (ctx) => {
     };
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -104,7 +105,7 @@ router.get('/client', async (ctx) => {
       ctx.response.body = body;
       return;
     } if (qres.rows.length > 1) {
-      console.error(`${FILE}:${FUNC}: more then one client found, clientId: ${clientId}, clientName: ${clientName}`)
+      console.error(`${PROJECT}:${FILE}:${FUNC}: more then one client found, clientId: ${clientId}, clientName: ${clientName}`)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -124,7 +125,7 @@ router.get('/client', async (ctx) => {
     };
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -158,7 +159,7 @@ router.del('/client', async (ctx) => {
     let clientName = ctx.request.body.clientName;
 
     if (!(clientId || clientName)) {
-      console.warn(`${FILE}:${FUNC} either 'clientId' or 'clientName' or both has to be specified`);
+      console.warn(`${PROJECT}:${FILE}:${FUNC} either 'clientId' or 'clientName' or both has to be specified`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -190,7 +191,7 @@ router.del('/client', async (ctx) => {
     return;
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {

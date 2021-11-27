@@ -1,6 +1,8 @@
 import { IEnvironment } from './types'; 
 
 export let environment: IEnvironment = {
+  appName: 'pinaple-api', 
+
   apiProtocol: 'http',
   apiHost: 'localhost',
   apiPort: 80,

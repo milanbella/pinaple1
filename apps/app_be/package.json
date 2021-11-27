@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "bash -c './scripts/build.sh dev'",
-    "build-prod": "bash -c './scripts/build.sh prod'",
+    "build": "tsc",
     "build-test-fixtures": "tsc --project tsconfig_test_fixtures.json",
     "start": "node dist/app.js",
     "watch": "nodemon dist/app.js",

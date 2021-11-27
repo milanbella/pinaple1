@@ -17,6 +17,7 @@ specifiers:
   '@types/jest': ^27.0.2
   '@typescript-eslint/eslint-plugin': ^4.32.0
   '@typescript-eslint/parser': ^4.32.0
+  commander: ~8.3.0
   crypto-js: ~4.1.1
   jose: ^3.18.0
   koa: ^2.13.3
@@ -51,6 +52,7 @@ dependencies:
   '@types/jest': 27.0.2
   '@typescript-eslint/eslint-plugin': 4.33.0_@typescript-eslint+parser@4.33.0
   '@typescript-eslint/parser': 4.33.0
+  commander: 8.3.0
   crypto-js: 4.1.1
   jose: 3.20.3
   koa: 2.13.4
@@ -9191,10 +9193,11 @@ packages:
     dev: false
 
   file:projects/pinaple_app_be.tgz:
-    resolution: {integrity: sha512-SCyNEmQoD/1e5HrjZb5rzgStM4hYNEx/6vsfw/YoW2B6R1dhWARA1bw8LutNuWviCnT3Ixs3CDgXYeMJJ6ChjQ==, tarball: file:projects/pinaple_app_be.tgz}
+    resolution: {integrity: sha512-YeIenoSq2hOXXMUxTr3bZz280zGgoKSz826H+8wZQ5K8eexhf8Q4P3bjQaXZrHPPDKAmN3OTTz5CEih6n1k3ZA==, tarball: file:projects/pinaple_app_be.tgz}
     name: '@rush-temp/pinaple_app_be'
     version: 0.0.0
     dependencies:
+      '@koa/cors': 3.1.0
       '@koa/router': 10.1.1
       '@types/jest': 27.0.2
       '@types/node': 16.11.7
@@ -9278,7 +9281,7 @@ packages:
     dev: false
 
   file:projects/pinaple_auth_fe.tgz:
-    resolution: {integrity: sha512-QdqS+80UM4CuB9W/RKudksT/uIiM5dcocqFCRD80AsHXCW1Wil5ZJ61MXpVg6jKUfuM7K7BH12Z3ECe0h2JVhw==, tarball: file:projects/pinaple_auth_fe.tgz}
+    resolution: {integrity: sha512-ZzargmBeW6NtdEoQBqlRQGrf3HwEyl4QCLXPIazUu5tWQFkTP1hFf6I7awzkLo/neYs5WEiWOLJWZs6zjLcNaw==, tarball: file:projects/pinaple_auth_fe.tgz}
     name: '@rush-temp/pinaple_auth_fe'
     version: 0.0.0
     dependencies:

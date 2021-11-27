@@ -1,4 +1,5 @@
 const { Pool } = require('pg');
+import { PROJECT } from './common';
 
 const FILE = 'pool.ts'
 
@@ -11,7 +12,7 @@ export async function query(sql: string, values?: any[]): Promise<IResult> {
   const FUNC = 'query()';
 
   if (!pool) {
-    console.error(`${FILE}:${FUNC}: pool not initialized, call initPool() to initialize it`);
+    console.error(`${PROJECT}:${FILE}:${FUNC}: pool not initialized, call initPool() to initialize it`);
     return Promise.reject(new Error('pool not initialized'));
   }
 
@@ -19,14 +20,14 @@ export async function query(sql: string, values?: any[]): Promise<IResult> {
     pool.connect((err, client, release) => {
       if (err) {
         release()
-        console.error(`${FILE}:${FUNC}: pool error: sql: ${sql}`, err);
+        console.error(`${PROJECT}:${FILE}:${FUNC}: pool error: sql: ${sql}`, err);
         reject(err);
         return;
       }
       client.query(sql, values, (err, res) => {
         release();
         if (err) {
-          console.error(`${FILE}:${FUNC}: query error: sql: ${sql}`, err);
+          console.error(`${PROJECT}:${FILE}:${FUNC}: query error: sql: ${sql}`, err);
           reject(err);
           return;
         }
@@ -46,7 +47,7 @@ export async function getClient(): Promise<IClient> {
   const FUNC = 'getClient()';
 
   if (!pool) {
-    console.error(`${FILE}:${FUNC}: pool not initialized, call initPool() to initialize it`);
+    console.error(`${PROJECT}:${FILE}:${FUNC}: pool not initialized, call initPool() to initialize it`);
     return Promise.reject(new Error('pool not initialized'));
   }
 
@@ -54,7 +55,7 @@ export async function getClient(): Promise<IClient> {
     pool.connect((err, client, release) => {
       if (err) {
         release()
-        console.error(`${FILE}:${FUNC}: pool error: ${err}`, err);
+        console.error(`${PROJECT}:${FILE}:${FUNC}: pool error: ${err}`, err);
         reject(err);
         return;
       }
@@ -66,7 +67,7 @@ export async function getClient(): Promise<IClient> {
 export function initPool(user: string, host: string, database: string, password: string, port: number) {
   const FUNC = 'initPool()';
   if (pool) {
-    console.error(`${FILE}:${FUNC}: pool already initialized`);
+    console.error(`${PROJECT}:${FILE}:${FUNC}: pool already initialized`);
     throw new Error('pool already initialized');
   }
   let opts = {

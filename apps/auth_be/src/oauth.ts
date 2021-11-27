@@ -4,12 +4,14 @@ import { apiUrl } from './common';
 import { HttpError } from 'pinaple_www/dist/http';
 import { httpGet, httpPost } from 'pinaple_www/dist/http';
 import { Authorize, Session } from './types';
+import { environment } from './environment';
 
 const querystring = require('querystring');
 const Router = require('@koa/router');
 
 export const router = new Router();
 
+const PROJECT = environment.appName;
 const FILE = 'oauth.ts';
 
 router.get('/authorize', async (ctx) => {
@@ -82,7 +84,7 @@ router.get('/authorize', async (ctx) => {
     } catch(err) {
       if (err instanceof HttpError) {
         if (err.status === 404) {
-          console.warn(`${FILE}:${FUNC}: no such client: ${clientId}`, err)
+          console.warn(`${PROJECT}:${FILE}:${FUNC}: no such client: ${clientId}`, err)
           let body: IResponseError = {
             errKind: ResponseErrorKind.UNAUTHORIZED,
             data: {
@@ -95,7 +97,7 @@ router.get('/authorize', async (ctx) => {
         } 
       }
 
-      console.error(`${FILE}:${FUNC}: error: ${err}`, err)
+      console.error(`${PROJECT}:${FILE}:${FUNC}: error: ${err}`, err)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -125,7 +127,7 @@ router.get('/authorize', async (ctx) => {
     ctx.response.redirect('/login')
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -142,9 +144,10 @@ router.get('/authorize', async (ctx) => {
 router.post('/token', async (ctx) => {
   const FUNC = 'router.post(/token)';
   try {
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 2400 /token');
 
     if (ctx.request.headers['Content-Type'] !== 'application/x-www-form-urlencoded') {
-      console.warn(`${FILE}:${FUNC} wrong content type`);
+      console.warn(`${PROJECT}:${FILE}:${FUNC} wrong content type`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -157,7 +160,7 @@ router.post('/token', async (ctx) => {
     }
 
     if (!ctx.request.body.grant_type) {
-      console.warn(`${FILE}:${FUNC} missing grant_type`);
+      console.warn(`${PROJECT}:${FILE}:${FUNC} missing grant_type`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -170,7 +173,7 @@ router.post('/token', async (ctx) => {
     }
 
     if (!ctx.request.body.code) {
-      console.warn(`${FILE}:${FUNC} missing code`);
+      console.warn(`${PROJECT}:${FILE}:${FUNC} missing code`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -183,7 +186,7 @@ router.post('/token', async (ctx) => {
     }
 
     if (!ctx.request.body.code) {
-      console.warn(`${FILE}:${FUNC} missing redirect_uri`);
+      console.warn(`${PROJECT}:${FILE}:${FUNC} missing redirect_uri`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -196,7 +199,7 @@ router.post('/token', async (ctx) => {
     }
 
     if (!ctx.request.body.client_id) {
-      console.warn(`${FILE}:${FUNC} missing client_id`);
+      console.warn(`${PROJECT}:${FILE}:${FUNC} missing client_id`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -209,7 +212,8 @@ router.post('/token', async (ctx) => {
     }
 
     try {
-      let res = httpPost(`${apiUrl()}/oauth/token/issue`, {
+      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ /oauth/token/issue');
+      let res = await httpPost(`${apiUrl()}/oauth/token/issue`, {
         grantType: ctx.request.body.grant_type,
         code: ctx.request.body.code, 
         redirectUri: ctx.request.body.redirect_uri, 
@@ -217,7 +221,7 @@ router.post('/token', async (ctx) => {
       });
     } catch(err) {
       if (err instanceof HttpError) {
-          console.warn(`${FILE}:${FUNC}: http error: `, err)
+          console.warn(`${PROJECT}:${FILE}:${FUNC}: http error: `, err)
           let body: IResponseError = {
             errKind: err.body.errKind,
             data: {
@@ -230,7 +234,7 @@ router.post('/token', async (ctx) => {
           return;
         } 
 
-        console.error(`${FILE}:${FUNC} httpPost() error:`, err);
+        console.error(`${PROJECT}:${FILE}:${FUNC} httpPost() error:`, err);
         let body: IResponseError = {
           errKind: ResponseErrorKind.INTERNAL_ERROR,
           data: {
@@ -243,7 +247,7 @@ router.post('/token', async (ctx) => {
     }
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {
@@ -262,7 +266,7 @@ router.post('/api/authenticate', async (ctx) => {
   try {
     let session: Session = ctx.session.session;
     if (!session) {
-      console.warn(`${FILE}:${FUNC}: no session`)
+      console.warn(`${PROJECT}:${FILE}:${FUNC}: no session`)
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
         data: {
@@ -274,7 +278,7 @@ router.post('/api/authenticate', async (ctx) => {
       return;
     }
     if (!session.authorize) {
-      console.warn(`${FILE}:${FUNC}: session is missing 'authorize' attribute`)
+      console.warn(`${PROJECT}:${FILE}:${FUNC}: session is missing 'authorize' attribute`)
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
         data: {
@@ -287,7 +291,7 @@ router.post('/api/authenticate', async (ctx) => {
     }
     let authorize = session.authorize;
     if (!authorize.clientId) {
-      console.error(`${FILE}:${FUNC}: authorize object is missing 'clientId'`)
+      console.error(`${PROJECT}:${FILE}:${FUNC}: authorize object is missing 'clientId'`)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -299,7 +303,7 @@ router.post('/api/authenticate', async (ctx) => {
       return;
     }
     if (!authorize.redirectUri) {
-      console.error(`${FILE}:${FUNC}: authorize object is missing 'redirectUri'`)
+      console.error(`${PROJECT}:${FILE}:${FUNC}: authorize object is missing 'redirectUri'`)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -316,7 +320,7 @@ router.post('/api/authenticate', async (ctx) => {
 
     let code;
     try {
-      let hres = await httpPost(`${apiUrl()}/code/issue`, {
+      let hres = await httpPost(`${apiUrl()}/oauth/code/issue`, {
         clientId: authorize.clientId,
         userName: userName,
         password: password,
@@ -325,7 +329,7 @@ router.post('/api/authenticate', async (ctx) => {
       code = hres.code;
     } catch(err) {
       if (err instanceof HttpError && err.status === 401) {
-        console.warn(`${FILE}:${FUNC}: unauthorized, userName: ${userName}`, err)
+        console.warn(`${PROJECT}:${FILE}:${FUNC}: unauthorized, userName: ${userName}`, err)
         let message = '';
         if (err.body.data.message === 'wrong user') {
           message = 'wrong user';
@@ -344,7 +348,7 @@ router.post('/api/authenticate', async (ctx) => {
         ctx.response.body = body;
         return;
       }
-      console.error(`${FILE}:${FUNC}: http error: ${err}`, err)
+      console.error(`${PROJECT}:${FILE}:${FUNC}: http error: ${err}`, err)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -356,10 +360,15 @@ router.post('/api/authenticate', async (ctx) => {
       return;
     }
 
-    ctx.response.redirect(`${authorize.redirectUri}?code=${code}`)
+    //ctx.response.redirect(`${authorize.redirectUri}?code=${code}`)
+    ctx.response.status = 200;
+    ctx.response.body = {
+      redirectUri: `${authorize.redirectUri}?code=${code}` 
+    }
+
 
   } catch(err) {
-    console.error(`${FILE}:${FUNC} error: ${err}`, err);
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
       data: {

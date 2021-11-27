@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "bash -c './scripts/build.sh dev'",
-    "build-prod": "bash -c './scripts/build.sh prod'",
+    "build": "tsc",
     "start": "node dist/app.js",
     "watch": "nodemon dist/app.js",
     "test": "jest --runInBand",
