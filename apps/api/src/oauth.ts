@@ -104,7 +104,7 @@ router.post('/oauth/code/issue', async (ctx) => {
       client_id = qres.rows[0].id;
       redirect_uri = qres.rows[0].redirect_uri;
 
-      if (redirect_uri !== ctx.request.body.redirectUri) {
+      if (ctx.request.body.redirectUri && (redirect_uri !== ctx.request.body.redirectUri)) {
         let body: IResponseError = {
           errKind: ResponseErrorKind.UNAUTHORIZED,
           data: {
@@ -176,7 +176,8 @@ router.post('/oauth/code/issue', async (ctx) => {
 
     ctx.response.status = 200;
     ctx.response.body = {
-      code: code
+      code: code,
+      redirectUri: ctx.request.body.redirectUri || redirect_uri,  
     }
 
 
@@ -265,7 +266,7 @@ router.post('/oauth/token/issue', async (ctx) => {
 
     // Verify redirect_uri.
 
-    if (ctx.request.body.redirectUri !== redirect_uri) {
+    if (ctx.request.body.redirectUri && (ctx.request.body.redirectUri !== redirect_uri)) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
         data: {

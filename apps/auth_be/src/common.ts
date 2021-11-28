@@ -11,5 +11,5 @@ export function redirectWithErrorResponse(ctx, redirectUri: string, errorCode: s
 
 
 export function apiUrl() {
-  return `${environment.apiProtocol}://${environment.apiHost}${environment.apiPort === 80 ? '' : ':' + environment.apiPort  }`
+  return `${environment.apiProtocol}://${environment.apiHost}${(environment.apiPort === 80 || environment.apiPort === 443) ? '' : ':' + environment.apiPort  }`
 }

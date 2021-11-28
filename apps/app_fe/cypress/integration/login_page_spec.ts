@@ -33,13 +33,12 @@ async function removeUser() {
 
 
 before(async () => {
-  removeUser();
-
-  createUser();
+  await removeUser();
+  await createUser();
 });
 
 after(async () => {
-  removeUser();
+  await removeUser();
 });
 
 describe('Login Page', () => {

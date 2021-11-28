@@ -5,15 +5,14 @@ export let environment: IEnvironment = {
 
   port: 5301,
 
-  apiProtocol: 'http',
+  apiProtocol: 'https',
   apiHost: 'pinaple-api',
-  apiPort: 80,
+  apiPort: 443,
 
-  authProtocol: 'http',
+  authProtocol: 'https',
   authHost: 'pinaple-auth',
-  authPort: 80,
+  authPort: 443,
 
   oauthClientId: '874c2480-4e05-11ec-8cc4-1d0236bb7edf',
-  oauthRedirectUri: 'http://pinaple-app/api/token',
 }
 

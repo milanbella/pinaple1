@@ -13,7 +13,6 @@ export let environment: IEnvironment = {
   authHost: 'pinaple-auth-k',
   authPort: 80,
 
-  oauthClientId: 'XXXXXXX',
-  oauthRedirectUri: 'http://pinaple-app-k/api/token',
+  oauthClientId: 'XXXXXXX'
 }
 

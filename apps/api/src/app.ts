@@ -6,17 +6,21 @@ import { router as clientRouter } from './client';
 import { router as oauthRouter } from './oauth';
 import { initPool } from 'pinaple_www/dist/pool';
 
-initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
+import * as fs from 'fs';
+const path = require('path');
+const https = require('https');
 
 const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const Router = require('@koa/router');
+const cors = require('@koa/cors');
+
+initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
 
 const app = new Koa();
-const cors = require('@koa/cors');
 const router = new Router();
 
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 app.use(bodyParser());
 
@@ -33,5 +37,18 @@ app
   .use(oauthRouter.routes())
 ;
 
-app.listen(environment.apiPort);
+
+const serverConfig = {
+  port: environment.apiPort, 
+  key: fs.readFileSync(path.resolve(process.cwd(), 'key.pem'), 'utf8').toString(),
+  cert: fs.readFileSync(path.resolve(process.cwd(), 'cert.pem'), 'utf8').toString(),
+}
+
+const httpsServer = https.createServer(serverConfig, app.callback());
+httpsServer.listen(environment.apiPort, (err) => {
+  if (err) {
+    console.error('failed to create https server, error:', err);
+  }
+  console.log(`https server is listening on port ${environment.apiPort}`); 
+});
 

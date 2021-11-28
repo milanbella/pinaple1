@@ -12,5 +12,4 @@ export interface IEnvironment {
   authPort: number;
 
   oauthClientId: string;
-  oauthRedirectUri: string;
 }

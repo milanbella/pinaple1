@@ -50,17 +50,6 @@ router.get('/authorize', async (ctx) => {
       ctx.response.body = body;
       return;
     }
-    if (ctx.request.query.redirect_uri) {
-      let body: IResponseError = {
-        errKind: ResponseErrorKind.BAD_REQUEST,
-        data: {
-          message: '\'redirect_uri\' parameter is not supported'
-        }
-      };
-      ctx.response.status = 400;
-      ctx.response.body = body;
-      return;
-    }
     if (ctx.request.query.scope) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
@@ -112,7 +101,7 @@ router.get('/authorize', async (ctx) => {
     let authorize: Authorize = {
       clientId: hres.clientId,
       clientName: hres.name,
-      redirectUri: hres.redirectUri,
+      redirectUri: ctx.request.query.redirect_uri,
     }
 
     if (ctx.session.session) {
@@ -184,19 +173,6 @@ router.post('/token', async (ctx) => {
       return;
     }
 
-    if (!ctx.request.body.redirect_uri) {
-      console.warn(`${PROJECT}:${FILE}:${FUNC} missing redirect_uri`);
-      let body: IResponseError = {
-        errKind: ResponseErrorKind.BAD_REQUEST,
-        data: {
-          message: 'missing redirect_uri',
-        }
-      };
-      ctx.response.status = 400;
-      ctx.response.body = body;
-      return;
-    }
-
     if (!ctx.request.body.client_id) {
       console.warn(`${PROJECT}:${FILE}:${FUNC} missing client_id`);
       let body: IResponseError = {
@@ -214,8 +190,7 @@ router.post('/token', async (ctx) => {
       let hres = await httpPost(`${apiUrl()}/oauth/token/issue`, {
         grantType: ctx.request.body.grant_type,
         code: ctx.request.body.code, 
-        redirectUri: ctx.request.body.redirect_uri, 
-        clientId: ctx.request.body.client_id,
+        clientId: ctx.request.body.client_id
       });
 
       ctx.response.status = 200;
@@ -309,23 +284,13 @@ router.post('/api/authenticate', async (ctx) => {
       ctx.response.body = body;
       return;
     }
-    if (!authorize.redirectUri) {
-      console.error(`${PROJECT}:${FILE}:${FUNC}: authorize object is missing 'redirectUri'`)
-      let body: IResponseError = {
-        errKind: ResponseErrorKind.INTERNAL_ERROR,
-        data: {
-          message: 'internal error'
-        }
-      };
-      ctx.response.status = 500;
-      ctx.response.body = body;
-      return;
-    }
 
     let userName = ctx.request.body.userName;
     let password = ctx.request.body.password;
 
     let code;
+    let redirectUri;
+    let hres;
     try {
       let hres = await httpPost(`${apiUrl()}/oauth/code/issue`, {
         clientId: authorize.clientId,
@@ -333,7 +298,6 @@ router.post('/api/authenticate', async (ctx) => {
         password: password,
         redirectUri: authorize.redirectUri,
       });
-      code = hres.code;
     } catch(err) {
       if (err instanceof HttpError && err.status === 401) {
         console.warn(`${PROJECT}:${FILE}:${FUNC}: unauthorized, userName: ${userName}`, err)
@@ -370,7 +334,7 @@ router.post('/api/authenticate', async (ctx) => {
     //ctx.response.redirect(`${authorize.redirectUri}?code=${code}`)
     ctx.response.status = 200;
     ctx.response.body = {
-      redirectUri: `${authorize.redirectUri}?code=${code}` 
+      redirectUri: `${hres.redirectUri}?code=${hres.code}` 
     }
 
 

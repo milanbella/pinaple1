@@ -11,7 +11,7 @@ const PROJECT = environment.appName;
 const FILE = 'login.ts';
 
 function redirectUri() {
-  let url =`${environment.authProtocol}://${environment.authHost}${environment.authPort === 80 ? '' : ':' + environment.authPort}/authorize?response_type=code&client_id=${environment.oauthClientId}&redirec_uri${encodeURIComponent(environment.oauthRedirectUri)}`;
+  let url =`${environment.authProtocol}://${environment.authHost}${environment.authPort === 80 ? '' : ':' + environment.authPort}/authorize?response_type=code&client_id=${environment.oauthClientId}`;
   return url;
 }
 
@@ -57,7 +57,7 @@ router.get('/api/token', async (ctx) => {
     }
 
     try {
-      let query = `grant_type=authorization_code&code=${code}&client_id=${environment.oauthClientId}&redirect_uri=${encodeURIComponent(environment.oauthRedirectUri)}`;
+      let query = `grant_type=authorization_code&code=${code}&client_id=${environment.oauthClientId}`;
       let hres = await httpPost(`${authUrl()}/token/`, query, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'

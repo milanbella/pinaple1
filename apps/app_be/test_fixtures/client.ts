@@ -14,7 +14,7 @@ async function createClient() {
   try {
     let hres = await httpPost(`${environment.apiUrl}/client`, {
       clientName: "pinaple",
-      redirectUri: "http://pinaple-app/api/token"
+      redirectUri: "https://pinaple-app/api/token"
     });
     console.log(`created oauth client, name: 'pinaple', id: ${hres.id}`);  
   } catch(err) {

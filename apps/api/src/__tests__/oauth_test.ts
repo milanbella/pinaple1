@@ -132,7 +132,7 @@ test('Issue access token.', async () => {
   let code = hres.code;
 
   hres = await httpPost(`${url()}/oauth/token/issue`, {
-    grantType: 'code',
+    grantType: 'authorization_code',
     code: code,
     redirectUri: gRedirectUri,
     clientId: gClientId,
@@ -157,7 +157,7 @@ test('Do not issue acces token if wrong code.', async () => {
 
   try {
     hres = await httpPost(`${url()}/oauth/token/issue`, {
-      grantType: 'code',
+      grantType: 'authorization_code',
       code: code + 'xxx',
       redirectUri: gRedirectUri,
       clientId: gClientId,
@@ -184,7 +184,7 @@ test('Do not issue acces token if inavlid grant type.', async () => {
 
   try {
     hres = await httpPost(`${url()}/oauth/token/issue`, {
-      grantType: 'code_xxxx',
+      grantType: 'authorization_code_xxxx',
       code: code,
       redirectUri: gRedirectUri,
       clientId: gClientId,
@@ -193,7 +193,7 @@ test('Do not issue acces token if inavlid grant type.', async () => {
   } catch(err) {
     expect(err instanceof HttpError).toBe(true);
     expect(err.status).toBe(400);
-    expect(err.body).toEqual({ errKind: 'BAD_REQUEST', data: { message: 'grantType must be \'code\'' } });
+    expect(err.body).toEqual({ errKind: 'BAD_REQUEST', data: { message: 'grantType must be \'authorization_code\'' } });
   }
 
 })
@@ -211,7 +211,7 @@ test('Do not issue acces token if wrong redirect_uri.', async () => {
 
   try {
     hres = await httpPost(`${url()}/oauth/token/issue`, {
-      grantType: 'code',
+      grantType: 'authorization_code',
       code: code,
       redirectUri: gRedirectUri + 'xxx',
       clientId: gClientId,
@@ -244,7 +244,7 @@ test('Do not issue acces token if code expired.', async () => {
     await query("update code set issued_at=$1 where id=$2", [issued_at, code]);
 
     hres = await httpPost(`${url()}/oauth/token/issue`, {
-      grantType: 'code',
+      grantType: 'authorization_code',
       code: code,
       redirectUri: gRedirectUri,
       clientId: gClientId,
@@ -270,7 +270,7 @@ test('After issuing access token code is invalid and removed', async () => {
   let code = hres.code;
 
   hres = await httpPost(`${url()}/oauth/token/issue`, {
-    grantType: 'code',
+    grantType: 'authorization_code',
     code: code,
     redirectUri: gRedirectUri,
     clientId: gClientId,
@@ -283,7 +283,7 @@ test('After issuing access token code is invalid and removed', async () => {
 
   try {
     hres = await httpPost(`${url()}/oauth/token/issue`, {
-      grantType: 'code',
+      grantType: 'authorization_code',
       code: code,
       redirectUri: gRedirectUri,
       clientId: gClientId,
@@ -308,7 +308,7 @@ test('Refresh acces token.', async () => {
   let code = hres.code;
 
   hres = await httpPost(`${url()}/oauth/token/issue`, {
-    grantType: 'code',
+    grantType: 'authorization_code',
     code: code,
     redirectUri: gRedirectUri,
     clientId: gClientId,
@@ -343,7 +343,7 @@ test('Do not Refresh acces token with invalid refresh token.', async () => {
   let code = hres.code;
 
   hres = await httpPost(`${url()}/oauth/token/issue`, {
-    grantType: 'code',
+    grantType: 'authorization_code',
     code: code,
     redirectUri: gRedirectUri,
     clientId: gClientId,
@@ -381,7 +381,7 @@ test('Do not Refresh acces token with invalid grant.', async () => {
   let code = hres.code;
 
   hres = await httpPost(`${url()}/oauth/token/issue`, {
-    grantType: 'code',
+    grantType: 'authorization_code',
     code: code,
     redirectUri: gRedirectUri,
     clientId: gClientId,
