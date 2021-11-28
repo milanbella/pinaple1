@@ -1,6 +1,7 @@
 import { environment } from '../environment';
-import {httpPost, httpDelete, httpGet } from 'pinaple_www/dist/http';
+import { httpPost, httpDelete, httpGet } from 'pinaple_www/dist/http';
 import { initPool, releasePool, query  } from 'pinaple_www/dist/pool';
+import { url } from './common';
 
 const fetch = require('node-fetch');
 
@@ -20,10 +21,6 @@ beforeEach(async () => {
 afterAll(() => {
   return releasePool();
 });
-
-function url() {
-  return `${environment.apiProtocol}://${environment.apiHost}:${environment.apiPort}`;
-}
 
 test('It creates and removes client by id', async () => {
   let hres = await httpPost(`${url()}/client`, {

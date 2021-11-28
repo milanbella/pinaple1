@@ -1,6 +1,7 @@
 import { environment } from '../environment';
 import { httpGet, httpPost, HttpError } from 'pinaple_www/dist/http';
 import { initPool, releasePool, query  } from 'pinaple_www/dist/pool';
+import { url } from './common';
 
 const fetch = require('node-fetch');
 
@@ -12,10 +13,6 @@ let gClientName = 'test_client_for_oauth.ts';
 let gUserName = 'johnDoe' ;
 let gUserEmail = 'johndoe@foo.com' ;
 let gPassword =  'bla';
-
-function url() {
-  return `${environment.apiProtocol}://${environment.apiHost}:${environment.apiPort}`;
-}
 
 async function cleanDb() {
   await query("delete from users where user_name = $1", [gUserName]);

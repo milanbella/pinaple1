@@ -128,9 +128,12 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
     mode: roptions.mode,
     body: JSON.stringify(body),
   };
+  if (foptions.headers['Content-Type'].startsWith('application/json')) {
+    foptions.body = JSON.stringify(body);
+  } else {
+    foptions.body = body;
+  }
 
-  console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 1900: foptions, uel: ${url}`); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 
-  console.dir(foptions); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
   let _url = appendQueryToUrl(url, roptions);
 
   let response;

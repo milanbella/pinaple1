@@ -57,16 +57,21 @@ router.get('/api/token', async (ctx) => {
     }
 
     try {
-      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 800'); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-      let query = `grant_type=authorization_code&code=${code}&client_id=${environment.oauthClientId}`;
-      let hres = await httpPost(`${authUrl()}/token`, query, {
+      let query = `grant_type=authorization_code&code=${code}&client_id=${environment.oauthClientId}&redirect_uri=${encodeURIComponent(environment.oauthRedirectUri)}`;
+      let hres = await httpPost(`${authUrl()}/token/`, query, {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         }
       });
+
+      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ logged in');
+      console.dir(hres); // @@@@@@@@@@@@@@@@@@@@@@@@
+
+      ctx.response.redirect('/');
+
+
     } catch(err) {
       if (err instanceof HttpError) {
-          console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 900'); // @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
           console.warn(`${PROJECT}:${FILE}:${FUNC}: http error: `, err)
           let body: IResponseError = {
             errKind: err.body.errKind,

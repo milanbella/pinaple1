@@ -144,10 +144,9 @@ router.get('/authorize', async (ctx) => {
 router.post('/token', async (ctx) => {
   const FUNC = 'router.post(/token)';
   try {
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ 2400 /token');
-
-    if (ctx.request.headers['Content-Type'] !== 'application/x-www-form-urlencoded') {
-      console.warn(`${PROJECT}:${FILE}:${FUNC} wrong content type`);
+    let contentType = ctx.request.headers['content-type'];
+    if (contentType !== 'application/x-www-form-urlencoded') {
+      console.warn(`${PROJECT}:${FILE}:${FUNC} wrong content type: ${contentType}`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
@@ -185,7 +184,7 @@ router.post('/token', async (ctx) => {
       return;
     }
 
-    if (!ctx.request.body.code) {
+    if (!ctx.request.body.redirect_uri) {
       console.warn(`${PROJECT}:${FILE}:${FUNC} missing redirect_uri`);
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
@@ -212,13 +211,21 @@ router.post('/token', async (ctx) => {
     }
 
     try {
-      console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ /oauth/token/issue');
-      let res = await httpPost(`${apiUrl()}/oauth/token/issue`, {
+      let hres = await httpPost(`${apiUrl()}/oauth/token/issue`, {
         grantType: ctx.request.body.grant_type,
         code: ctx.request.body.code, 
         redirectUri: ctx.request.body.redirect_uri, 
         clientId: ctx.request.body.client_id,
       });
+
+      ctx.response.status = 200;
+      ctx.response.body = {
+        access_token: hres.accessToken,
+        token_type: hres.tokenType,
+        expires_in: hres.expiresIn, 
+        refresh_token: hres.tokenType,
+      }
+
     } catch(err) {
       if (err instanceof HttpError) {
           console.warn(`${PROJECT}:${FILE}:${FUNC}: http error: `, err)

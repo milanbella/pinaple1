@@ -41,7 +41,7 @@ async function issueToken(clientId: string, userId: string, userName: string, us
       await query(sql, params);
 
       return {
-        accessToken: `$jwt`,
+        accessToken: `${jwt}`,
         tokenType: `Bearer`,
         refreshToken: `${refresh_token}`, 
         expiresIn: expiresIn,
@@ -213,18 +213,17 @@ const schemaOauthTokenIssue = ajv.compile({
 });
 router.post('/oauth/token/issue', async (ctx) => {
   const FUNC = 'router.get(/oauth/token/issue)';
-  console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 3000: /oauth/token/issue');
   try {
     if (!validateSchema(schemaOauthTokenIssue, ctx)) {
       return;
     }
 
     let grantType = ctx.request.body.grantType;
-    if (grantType !== 'code') {
+    if (grantType !== 'authorization_code') {
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
-          message: 'grantType must be \'code\''
+          message: 'grantType must be \'authorization_code\''
         }
       };
       ctx.response.status = 400;
@@ -339,7 +338,7 @@ router.post('/oauth/token/issue', async (ctx) => {
     params = [id];
     await query(sql, params);
 
-    // Issue acces and refresh token.
+    // Issue access and refresh token.
 
     let res = await issueToken(client_id, user_id, user_name, user_email);
 
