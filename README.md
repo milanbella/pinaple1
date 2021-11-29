@@ -13,7 +13,7 @@ Portal consist of the mesh of following applications:
 and of following sahred npm libraries:
 
 - `common/types` - common typescript definitions
-- `common/www` - common www utilities
+- `common/www` - common www utilities as well as sahred sass
 - `common/components` - common react components
 
 To install all dependencie run:
@@ -65,7 +65,7 @@ Then start locally nginx server using configurartion `common1/nginx/conf/nginx.c
 127.0.0.1 pinaple-api
 ```
 
-Then portal home page shal be available in your locall browser at `https//pinaple-app/`. 
+Then portal home page shall be available in your locall browser at `https//pinaple-app/`. 
 
 What's working and has been tested so far:
 
