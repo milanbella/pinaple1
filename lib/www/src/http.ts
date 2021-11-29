@@ -153,9 +153,6 @@ export async function httpPost (url: string, body: any, options?: Options): Prom
       throw new HttpError(response.status, 'response.json() failed, error: ${err}');
     }
   } else {
-    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 2000: httpPost(): status: ${response.status}`); 
-    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     let body = await getBody(response);
     console.error(`${PROJECT}:${FILE}:${FUNC}: url: ${url}, status: ${response.status}, body: ${JSON.stringify(body)}`);
     let err = new HttpError(response.status, body);

@@ -292,7 +292,7 @@ router.post('/api/authenticate', async (ctx) => {
     let redirectUri;
     let hres;
     try {
-      let hres = await httpPost(`${apiUrl()}/oauth/code/issue`, {
+        hres = await httpPost(`${apiUrl()}/oauth/code/issue`, {
         clientId: authorize.clientId,
         userName: userName,
         password: password,

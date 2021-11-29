@@ -38,7 +38,7 @@ before(async () => {
 });
 
 after(async () => {
-  await removeUser();
+  //await removeUser();
 });
 
 describe('Login Page', () => {

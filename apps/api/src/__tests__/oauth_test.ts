@@ -45,7 +45,7 @@ afterAll(() => {
 });
 
 
-test('Issue code using user_name.', async () => {
+test('Issue code.', async () => {
   let hres = await httpPost(`${url()}/oauth/code/issue`, {
     clientId: gClientId,
     userName: gUserName,
@@ -53,6 +53,17 @@ test('Issue code using user_name.', async () => {
     redirectUri: gRedirectUri,
   });
   expect(hres.code).toBeDefined();
+  expect(hres.redirectUri).toBeDefined();
+})
+
+test('Issue code when no redirect uri is specified.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+  });
+  expect(hres.code).toBeDefined();
+  expect(hres.redirectUri).toBeDefined();
 })
 
 test('Do not issue code using wrong user_name.', async () => {
@@ -135,6 +146,29 @@ test('Issue access token.', async () => {
     grantType: 'authorization_code',
     code: code,
     redirectUri: gRedirectUri,
+    clientId: gClientId,
+  });
+
+  expect(hres.accessToken).toBeDefined();
+  expect(hres.tokenType).toEqual('Bearer');
+  expect(hres.refreshToken).toBeDefined();
+  expect(hres.expiresIn).toBeDefined();
+})
+
+test('Issue access token when no redirect uri is specified.', async () => {
+  let hres = await httpPost(`${url()}/oauth/code/issue`, {
+    clientId: gClientId,
+    userName: gUserName,
+    password: gPassword,
+    redirectUri: gRedirectUri,
+  });
+  expect(hres.code).toBeDefined();
+
+  let code = hres.code;
+
+  hres = await httpPost(`${url()}/oauth/token/issue`, {
+    grantType: 'authorization_code',
+    code: code,
     clientId: gClientId,
   });
 

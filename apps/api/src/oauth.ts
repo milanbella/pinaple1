@@ -136,7 +136,7 @@ router.post('/oauth/code/issue', async (ctx) => {
       ctx.response.body = body;
       return;
     } else if (qres.rows.length > 1) {
-      console.error(`${PROJECT}:${FILE}:${FUNC}: user is not unique, userName: ${ctx.request.body.userName}, email: ${ctx.request.body.email}`)
+      console.error(`${PROJECT}:${FILE}:${FUNC}: user is not unique, userName: ${ctx.request.body.userName}`)
       let body: IResponseError = {
         errKind: ResponseErrorKind.INTERNAL_ERROR,
         data: {
@@ -207,7 +207,6 @@ const schemaOauthTokenIssue = ajv.compile({
   required: [
     'grantType',
     'code',
-    'redirectUri',
     'clientId'
   ],
   additionalProperties: false,

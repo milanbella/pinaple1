@@ -13,6 +13,6 @@ export let environment: IEnvironment = {
   authHost: 'pinaple-auth',
   authPort: 443,
 
-  oauthClientId: '874c2480-4e05-11ec-8cc4-1d0236bb7edf',
+  oauthClientId: '1b9696c0-50d6-11ec-bff4-4b46c86d9618',
 }
 
