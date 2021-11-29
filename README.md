@@ -8,13 +8,13 @@ Portal consist of the mesh of following applications:
 - `apps/auth_be` - oauth authentification backend server
 - `apps/auth_fe` - oauth autentification server frontent page in react - nextjs
 - `apps/app_be` - portal application backend 
-- `apps/app_fe` - portal application frontend in react - next js 
+- `apps/app_fe` - portal application frontend in react - nextjs 
 
 and of following sahred npm libraries:
 
 - `common/types` - common typescript definitions
 - `common/www` - common www utilities as well as sahred sass
-- `common/components` - common react components
+- `common/components` - common react components library
 
 To install all dependencie run:
 
