@@ -30,7 +30,7 @@ rush build
 
 
 
-To run/develop portal locally start all application (each must be starte in separate shell):
+To run/develop portal locally start all application (each app must be run in separate shell, e.g use tmux panes):
 
 ```
 cd apps/api
@@ -66,3 +66,8 @@ Then start locally nginx server using configurartion `common1/nginx/conf/nginx.c
 ```
 
 Then portal home page shal be available in your locall browser at `https//pinaple-app/`. 
+
+What's working and has been tested so far:
+
+- user registration
+- login
