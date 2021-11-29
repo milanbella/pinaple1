@@ -2,19 +2,19 @@
 
 This is webportal rush.js monorepo prototype.
 
-Portal consist of mesh of following applications:
+Portal consist of the mesh of following applications:
 
-`apps/api` - core rest api  
-`apps/auth_be` - oauth authentification backend server
-`apps/auth_fe` - oauth autentification server frontent page in react - nextjs
-`apps/app_be` - portal application backend 
-`apps/app_fe` - portal application frontend in react - next js 
+- `apps/api` - core rest api  
+- `apps/auth_be` - oauth authentification backend server
+- `apps/auth_fe` - oauth autentification server frontent page in react - nextjs
+- `apps/app_be` - portal application backend 
+- `apps/app_fe` - portal application frontend in react - next js 
 
 and of following sahred npm libraries:
 
-`common/types` - common typescript definitions
-`common/www` - common www utilities
-`common/components` - common react components
+- `common/types` - common typescript definitions
+- `common/www` - common www utilities
+- `common/components` - common react components
 
 To install all dependencie run:
 
@@ -65,4 +65,4 @@ Then start locally nginx server using configurartion `common1/nginx/conf/nginx.c
 127.0.0.1 pinaple-api
 ```
 
-Then portal home page shal be available n your locall browser at `https//pinaple-app/`. 
+Then portal home page shal be available in your locall browser at `https//pinaple-app/`. 
