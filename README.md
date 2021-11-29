@@ -2,7 +2,7 @@
 
 This is webportal rush.js monorepo prototype.
 
-Portal consist of the mesh of following applications:
+The portal consists of the mesh of following applications:
 
 - `apps/api` - core rest api  
 - `apps/auth_be` - oauth authentification backend server
@@ -28,9 +28,7 @@ To build everything run:
 rush build
 ```
 
-
-
-To run/develop portal locally start all application (each app must be run in separate shell, e.g use tmux panes):
+To run/develop portal locally start each application (each app must be run in separate shell, e.g you may use `tmux` terminal multiplexer):
 
 ```
 cd apps/api
@@ -65,9 +63,10 @@ Then start locally nginx server using configurartion `common1/nginx/conf/nginx.c
 127.0.0.1 pinaple-api
 ```
 
-Then portal home page shall be available in your locall browser at `https//pinaple-app/`. 
+Then the portal home page shall be available in your locall browser at `https//pinaple-app/`. 
 
 What's working and has been tested so far:
 
+- oauth code grant
 - user registration
 - login
