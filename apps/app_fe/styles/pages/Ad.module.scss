@@ -1,0 +1,59 @@
+@use '../../node_modules/pinaple_www/dist/styles/base';
+
+.formContainer {
+  padding: 30px 0px 30px 50px;
+
+
+
+  select, input {
+  border-radius: 5px;
+    padding: 5px;
+  }
+
+  label {
+    color: base.$color-grey
+  }
+
+  .mainHeader {
+    margin-top: 10px;
+  }
+
+}
+
+.categoryBox {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  margin-top: 10px;
+
+  .category {
+    margin-top: 20px;
+  }
+
+  .subCategory {
+    margin-top: 20px;
+  }
+}
+
+.adTitleBox {
+  .title {
+    margin-top: 20px;
+  }
+  label {
+    display: block;
+  }
+  input {
+  }
+}
+
+.imagesBox {
+  .button {
+    margin-top: 30px;
+    margin-bottom: 20px;
+  }
+
+  .hiddenFileInput {
+    display: none;
+  }
+}
+

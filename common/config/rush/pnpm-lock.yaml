@@ -1293,6 +1293,12 @@ packages:
     resolution: {integrity: sha512-L28j2FcJfSZOnL1WBjDYp2vUHCeIFlyYI/53EwD/rKUBQ7MtUUfbQWiyKJGpcnv4/WgrhWsFKrcPstcAt/J0tQ==}
     dev: false
 
+  /@types/ramda/0.27.58:
+    resolution: {integrity: sha512-rdHO+hTyMn2kndZX5JW/4jp0J0I0nb5Vuj1yD0vii2/+BbdgYwWXEijqI/2xWm7Dd4CnJRt+JVfgy0+285KMGw==}
+    dependencies:
+      ts-toolbelt: 6.15.5
+    dev: false
+
   /@types/react/17.0.24:
     resolution: {integrity: sha512-eIpyco99gTH+FTI3J7Oi/OH8MZoFMJuztNRimDOJwH4iGIsKV2qkGnk4M9VzlaVWeEEWLWSQRy0FEA0Kz218cg==}
     dependencies:
@@ -8581,6 +8587,10 @@ packages:
       typescript: 4.4.3
     dev: false
 
+  /ts-toolbelt/6.15.5:
+    resolution: {integrity: sha512-FZIXf1ksVyLcfr7M317jbB67XFJhOO1YqdTcuGaq9q5jLUoTikukZ+98TPjKiP2jC5CgmYdWWYs0s2nLSU0/1A==}
+    dev: false
+
   /tsconfig-paths/3.11.0:
     resolution: {integrity: sha512-7ecdYDnIdmv639mmDwslG6KQg1Z9STTz1j7Gcz0xa+nshh/gKDAHcPxRbWOsA3SPp0tXP2leTcY9Kw+NAkfZzA==}
     dependencies:
@@ -9193,7 +9203,7 @@ packages:
     dev: false
 
   file:projects/pinaple_app_be.tgz:
-    resolution: {integrity: sha512-YeIenoSq2hOXXMUxTr3bZz280zGgoKSz826H+8wZQ5K8eexhf8Q4P3bjQaXZrHPPDKAmN3OTTz5CEih6n1k3ZA==, tarball: file:projects/pinaple_app_be.tgz}
+    resolution: {integrity: sha512-SCyNEmQoD/1e5HrjZb5rzgStM4hYNEx/6vsfw/YoW2B6R1dhWARA1bw8LutNuWviCnT3Ixs3CDgXYeMJJ6ChjQ==, tarball: file:projects/pinaple_app_be.tgz}
     name: '@rush-temp/pinaple_app_be'
     version: 0.0.0
     dependencies:
@@ -9226,16 +9236,18 @@ packages:
     dev: false
 
   file:projects/pinaple_app_fe.tgz:
-    resolution: {integrity: sha512-QRPRvWN4Bq8TPoBIGqzk2MdlSC+KhZEGBGs54IV1s3KqPRGlChZD6hg0SWtQXU6kEkj8CEHLo86k8PkFHRl/+Q==, tarball: file:projects/pinaple_app_fe.tgz}
+    resolution: {integrity: sha512-6y4VDPxR0VsEI2OrDMWQyqeKjBV8EUWbUHZqb152imNdEoqxlYiYXHHKmY5/Etoh4R963xzAN7M+2no+nxYK2g==, tarball: file:projects/pinaple_app_fe.tgz}
     name: '@rush-temp/pinaple_app_fe'
     version: 0.0.0
     dependencies:
+      '@types/ramda': 0.27.58
       '@types/react': 17.0.24
       cypress: 8.7.0
       eslint: 7.32.0
       eslint-config-next: 11.1.2_82ad98da5e129ae9d310451a179848d9
       next: 11.1.2_2f2dea48057bb09f315837e44b14312e
       prettier: 2.4.1
+      ramda: 0.27.1
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       react-hook-form: 7.19.5_react@17.0.2
