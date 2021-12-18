@@ -1,7 +1,7 @@
 @use '../../node_modules/pinaple_www/dist/styles/base';
 
 .formContainer {
-  padding: 30px 0px 30px 50px;
+  padding: 30px 30px 30px 50px;
 
 
 
@@ -23,7 +23,6 @@
 .categoryBox {
   display: flex;
   flex-direction: column;
-  width: 400px;
   margin-top: 10px;
 
   .category {
@@ -38,6 +37,7 @@
 .adTitleBox {
   .title {
     margin-top: 20px;
+    margin-bottom: 20px;
   }
   label {
     display: block;
@@ -46,14 +46,48 @@
   }
 }
 
-.imagesBox {
-  .button {
-    margin-top: 30px;
-    margin-bottom: 20px;
+
+.addImagesBox {
+  margin-top: 30px;
+
+  .addImageIcon {
+    &:hover {
+      cursor: pointer;
+    }
+
+    display: inline-block;
+    margin-left: 10px;
   }
 
-  .hiddenFileInput {
-    display: none;
+
+  .boxLabel {
+    display: inline-block;
+    margin-bottom: 10px;
+  }
+
+  .imagesBox {
+
+    .hiddenFileInput {
+      display: none;
+    }
+
+    .imageBox {
+      margin-bottom: 10px;
+      img {
+        border: 1px solid base.$color-grey;
+        border-radius: 4px;
+        padding: 5px;
+        width: 150px;
+      }
+
+      .removeImageIcon {
+        display: inline-block;
+        margin-left: 15px;
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
   }
 }
 
