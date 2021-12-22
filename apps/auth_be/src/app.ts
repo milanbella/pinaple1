@@ -43,7 +43,7 @@ app.use(router.routes())
   .use(oauthRouter.routes());
 
 const serverConfig = {
-  port: environment.apiPort, 
+  port: environment.port, 
   key: fs.readFileSync(path.resolve(process.cwd(), 'key.pem'), 'utf8').toString(),
   cert: fs.readFileSync(path.resolve(process.cwd(), 'cert.pem'), 'utf8').toString(),
 }

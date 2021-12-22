@@ -27,10 +27,17 @@ let initialState: IState = {
   images: [],
 }
 
-function reducer(state: ISstate, action: IAction): IState {
+function foo() {
+const double = (x: number) => x * 2;
+
+R.map(double, [1, 2, 3]); //=> [2, 4, 6]
+
+}
+
+function reducer(state: IState, action: IAction): IState {
   const FUNC = 'reducer()'
   if (action.type === 'addImage') {
-    let images = R.map(v => {
+    let images = R.map((v: IImage) => {
       let image: IImage = {
         src: v.src,
         file: v.file,
@@ -49,6 +56,7 @@ function reducer(state: ISstate, action: IAction): IState {
     }
   } else {
     console.error(`${PROJECT}:${FILE}:${FUNC}: unknown action type: ${action.type}`);
+    return state;
   }
 }
 
@@ -58,8 +66,12 @@ const Ad: NextPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   function handleOnFileChange(event: SyntheticEvent) {
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@
+    let a: { foo: number }|null = null;
+    a!.foo // OK, type number
+    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-    let images = R.reduce((a, file) => {
+    let images = R.reduce((a: IImage[], file) => {
 
       a.push({
         src: URL.createObjectURL(file),
@@ -67,21 +79,17 @@ const Ad: NextPage = () => {
       });
       return a; 
 
-    }, [], event.currentTarget.files) 
+    }, [], (event.currentTarget as any).files) 
     dispatch({
       type: 'addImage',
       payload: images,
     });
-    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 100: fileInputRef');
-    console.dir(fileInputRef)
-    //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
     fileInputRef.current.value = ''; //@@@@@@@@@@@@@@@@
   }
 
 
   function images() {
-    return R.addIndex(R.reduce)((a, image: IImage, idx) => {
+    return R.addIndex(R.reduce)((a: any[], image: IImage, idx) => {
       function remove() {
         dispatch({
           type: 'removeImage',

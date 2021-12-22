@@ -476,6 +476,10 @@
       "projectFolder": "apps/auth_be"
     },
     {
+      "packageName": "pinaple_img",
+      "projectFolder": "apps/img"
+    },
+    {
       "packageName": "pinaple_api",
       "projectFolder": "apps/api"
     },
