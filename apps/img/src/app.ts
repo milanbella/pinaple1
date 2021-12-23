@@ -5,6 +5,7 @@ import { environment } from './environment';
 import * as fs from 'fs';
 const path = require('path');
 const https = require('https');
+const cors = require('@koa/cors');
 
 import { router } from './router';
 
@@ -12,6 +13,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 const app = new Koa();
 
+app.use(cors());
 app.use(router.routes());
 app.use(router.allowedMethods());
 

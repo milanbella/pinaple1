@@ -1,5 +1,6 @@
 <html>
 <head>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script> 
 <style>
   .form-element {
     padding: 20px;
@@ -11,5 +12,51 @@
     <div class="form-element"><input type="file" name="uploaded_file"></div>
     <div class="form-element"><input type="submit"></div>
   </form>
+  <div id="result">
+  </div>
 </body>
+<script>
+  let formQ = $('form')
+  formQ.on('submit', function (event) {
+    event.preventDefault();
+
+    async function send() {
+
+      let formData = new FormData(formQ.get(0));
+
+      const response = await fetch('https://localhost:5401/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      if (!response.ok) {
+        console.error(`http status: ${response.status}`);
+        let body = await response.text();
+        console.error(`http response body: ${body}`);
+        return;
+      }
+
+      let body = await response.json();
+      return body;
+    }
+
+    function showImages(urls) {
+      let resultQ = $('#result');
+
+      resultQ.empty();
+      for (let url of urls) {
+        resultQ.append(`
+          <div> <img src="http://pinaple-img/${url}"> </div>
+          <div style="height: 10px"></div>
+        `)
+      }
+    }
+
+    send().then((body) => {
+      showImages(body);
+    });
+
+
+  });
+</script>
 </html>

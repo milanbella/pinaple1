@@ -24,7 +24,9 @@
     "@koa/multer": "~3.0.0",
     "multer": "~1.4.4",
     "pinaple_www": "*",
-    "pinaple_types": "*"
+    "pinaple_types": "*",
+    "sharp": "~0.29.3",
+    "@koa/cors": "~3.1.0"
   },
   "devDependencies": {
     "@types/jest": "^27.0.2",

@@ -5,20 +5,30 @@ const Router = require('@koa/router');
 const multer = require('@koa/multer');
 const fs = require('fs');
 const fsP = require('fs/promises');
+const sharp = require("sharp");
 
 const PROJECT = environment.appName;
 const FILE = 'router.ts';
+
+interface IFile {
+  filename: string;
+  path: string;
+  urlPath: string;
+  destination: string;
+}
 
 export const router = new Router();
 const upload = multer({
   dest: 'uploads/'
 });
 
-async function moveFile(file: any): Promise<any> {
+async function moveFile(file: IFile): Promise<IFile> {
   const FUNC = 'moveFile()';
   try {
-    let dirName = `images/${file.filename.substring(0, 4)}`; 
+    let subdirName = `${file.filename.substring(0, 3)}` 
+    let dirName = `images/${subdirName}`; 
     let filePath = `${dirName}/${file.filename}`;
+    let urlPath = `/${subdirName}/${file.filename}`;
 
     if (! fs.existsSync(dirName)) {
       fs.mkdirSync(dirName, { recursive: true });
@@ -29,6 +39,7 @@ async function moveFile(file: any): Promise<any> {
     let movedFile = {...file};
     movedFile.destination = dirName;
     movedFile.path = filePath;
+    movedFile.urlPath = urlPath;
     return movedFile;
   } catch(err) {
     console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
@@ -37,16 +48,54 @@ async function moveFile(file: any): Promise<any> {
   
 }
 
+async function resizeImage(file: IFile): Promise<string[]> {
+  const FUNC = 'resizeFile()';
+  try {
+    const image = sharp(file.path);
+    const meta = await image.metadata();
+
+    let urls = [];
+
+    async function toFile(image, file, suffix): Promise<string> {
+      await image.jpeg({ mozjpeg: true }).toFile(`${file.path}${suffix}.jpg`)
+      return `${file.urlPath}${suffix}.jpg`
+    }
+
+    let suffix = '_big';
+    if (meta.height > 1200) {
+      let url = await toFile(image.resize({height: 1200}), file, suffix);
+      urls.push(url);
+    } else {
+      let url = await toFile(image, file, suffix);
+      urls.push(url);
+    }
+
+    suffix = '_thumb';
+    if (meta.height > 280) {
+      let url = await toFile(image.resize({height: 280}), file, suffix)
+      urls.push(url);
+    } else {
+      let url = await toFile(image, file, suffix)
+      urls.push(url);
+    }
+
+    return urls;
+
+  } catch(err) {
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
+    throw new Error('could not resize image');
+  }
+}
+
 router.post(
   '/upload',
   upload.single('uploaded_file'),
   async (ctx) => {
     const FUNC = 'router.post(/upload)';
     try {
-      console.log('ctx.request.file', ctx.request.file);
-
       let file = await moveFile(ctx.request.file);
-      ctx.response.body = file;
+      let imageUrls = await resizeImage(file);
+      ctx.response.body = imageUrls;
 
     } catch(err) {
       console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
