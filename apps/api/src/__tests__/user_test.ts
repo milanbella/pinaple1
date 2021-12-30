@@ -5,14 +5,14 @@ import { url } from './common';
 
 const fetch = require('node-fetch');
 
-initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
+const pool = initPool(environment.pgAuthUser, environment.pgAuthHost, environment.pgAuthDatabase, environment.pgAuthPassword, environment.pgAuthPort); 
 
 afterAll(() => {
-  return releasePool();
+  return releasePool(pool);
 });
 
 async function cleanDb() {
-  await query("delete from users where user_name in ('johnDoe') or email in ('johndoe25@foo.com',  'johndoe@foo.com')");
+  await query(pool, "delete from users where user_name in ('johnDoe') or email in ('johndoe25@foo.com',  'johndoe@foo.com')");
 }
 
 test('Create new user', async () => {
@@ -23,7 +23,7 @@ test('Create new user', async () => {
     email: 'johndoe@foo.com',
     password: 'bla',
   });
-  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  let qresult = await query(pool, "select count(*) as cnt from auth.users where user_name='johnDoe'");
   expect(qresult.rows[0].cnt).toEqual('1');
 })
 
@@ -35,7 +35,7 @@ test('Read user by userName', async () => {
     email: 'johndoe@foo.com',
     password: 'bla',
   });
-  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  let qresult = await query(pool, "select count(*) as cnt from auth.users where user_name='johnDoe'");
   expect(qresult.rows[0].cnt).toEqual('1');
 
   result = await httpGet(`${url()}/user?userName=johnDoe`);
@@ -52,7 +52,7 @@ test('Read user by userEmail', async () => {
     email: 'johndoe@foo.com',
     password: 'bla',
   });
-  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  let qresult = await query(pool, "select count(*) as cnt from auth.users where user_name='johnDoe'");
   expect(qresult.rows[0].cnt).toEqual('1');
 
   result = await httpGet(`${url()}/user?userEmail=${encodeURIComponent('johndoe@foo.com')}`);
@@ -122,13 +122,13 @@ test('Delete user by username', async () => {
     email: 'johndoe@foo.com',
     password: 'bla',
   });
-  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  let qresult = await query(pool, "select count(*) as cnt from auth.users where user_name='johnDoe'");
   expect(qresult.rows[0].cnt).toEqual('1');
 
   result = await httpDelete(`${url()}/user`, {
     userName: 'johnDoe'
   });
-  qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  qresult = await query(pool, "select count(*) as cnt from auth.users where user_name='johnDoe'");
   expect(qresult.rows[0].cnt).toEqual('0');
 })
 
@@ -140,13 +140,13 @@ test('Delete user by email', async () => {
     email: 'johndoe@foo.com',
     password: 'bla',
   });
-  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  let qresult = await query(pool, "select count(*) as cnt from auth.users where user_name='johnDoe'");
   expect(qresult.rows[0].cnt).toEqual('1');
 
   result = await httpDelete(`${url()}/user`, {
     email: 'johndoe@foo.com'
   });
-  qresult = await query("select count(*) as cnt from auth.users where email='johndoe@foo.com'");
+  qresult = await query(pool, "select count(*) as cnt from auth.users where email='johndoe@foo.com'");
   expect(qresult.rows[0].cnt).toEqual('0');
 })
 
@@ -158,12 +158,12 @@ test('Delete user by username and email', async () => {
     email: 'johndoe@foo.com',
     password: 'bla',
   });
-  let qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe'");
+  let qresult = await query(pool, "select count(*) as cnt from auth.users where user_name='johnDoe'");
   expect(qresult.rows[0].cnt).toEqual('1');
 
   result = await httpDelete(`${url()}/user`, {
     email: 'johndoe@foo.com'
   });
-  qresult = await query("select count(*) as cnt from auth.users where user_name='johnDoe' or email='johndoe@foo.com'");
+  qresult = await query(pool, "select count(*) as cnt from auth.users where user_name='johnDoe' or email='johndoe@foo.com'");
   expect(qresult.rows[0].cnt).toEqual('0');
 })

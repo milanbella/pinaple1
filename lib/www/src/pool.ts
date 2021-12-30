@@ -3,12 +3,12 @@ import { PROJECT } from './common';
 
 const FILE = 'pool.ts'
 
-let pool;
+type tPool = any;
 
 export interface IResult {
   rows: any[];
 }
-export async function query(sql: string, values?: any[]): Promise<IResult> {
+export async function query(pool: tPool, sql: string, values?: any[]): Promise<IResult> {
   const FUNC = 'query()';
 
   if (!pool) {
@@ -43,7 +43,7 @@ export interface IClient {
   end: () => Promise<void>;
 }
 
-export async function getClient(): Promise<IClient> {
+export async function getClient(pool: tPool): Promise<IClient> {
   const FUNC = 'getClient()';
 
   if (!pool) {
@@ -64,12 +64,8 @@ export async function getClient(): Promise<IClient> {
   });
 }
 
-export function initPool(user: string, host: string, database: string, password: string, port: number) {
+export function initPool(user: string, host: string, database: string, password: string, port: number): tPool {
   const FUNC = 'initPool()';
-  if (pool) {
-    console.error(`${PROJECT}:${FILE}:${FUNC}: pool already initialized`);
-    throw new Error('pool already initialized');
-  }
   let opts = {
     user: user,
     host: host,
@@ -77,9 +73,10 @@ export function initPool(user: string, host: string, database: string, password:
     password: password,
     port: port,
   }
-  pool = new Pool(opts);
+  let pool = new Pool(opts);
+  return pool;
 }
 
-export function releasePool(): Promise<any> {
+export function releasePool(pool: tPool): Promise<any> {
   return pool.end();
 }

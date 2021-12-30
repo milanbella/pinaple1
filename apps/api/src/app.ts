@@ -4,7 +4,6 @@ import { IResponseError } from 'pinaple_types/dist/http';
 import { router as userRouter } from './user';
 import { router as clientRouter } from './client';
 import { router as oauthRouter } from './oauth';
-import { initPool } from 'pinaple_www/dist/pool';
 
 import * as fs from 'fs';
 const path = require('path');
@@ -14,8 +13,6 @@ const Koa = require('koa');
 const bodyParser = require('koa-bodyparser');
 const Router = require('@koa/router');
 const cors = require('@koa/cors');
-
-initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
 
 const app = new Koa();
 const router = new Router();

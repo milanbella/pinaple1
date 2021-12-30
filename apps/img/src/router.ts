@@ -25,7 +25,7 @@ const upload = multer({
 async function moveFile(file: IFile): Promise<IFile> {
   const FUNC = 'moveFile()';
   try {
-    let subdirName = `${file.filename.substring(0, 3)}` 
+    let subdirName = `${file.filename.substring(0, 2)}` 
     let dirName = `images/${subdirName}`; 
     let filePath = `${dirName}/${file.filename}`;
     let urlPath = `/${subdirName}/${file.filename}`;
@@ -86,6 +86,12 @@ async function resizeImage(file: IFile): Promise<string[]> {
     throw new Error('could not resize image');
   }
 }
+
+router.get('/', async (ctx) => {
+  ctx.response.status = 200;
+  ctx.response.body = 'Hello!';
+  return;
+});
 
 router.post(
   '/upload',

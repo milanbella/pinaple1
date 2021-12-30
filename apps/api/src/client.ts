@@ -1,5 +1,5 @@
 import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
-import { query } from 'pinaple_www/dist/pool';
+import { initPool, query } from 'pinaple_www/dist/pool';
 import { validateSchema } from './common';
 import { environment } from './environment';
 
@@ -11,6 +11,8 @@ const PROJECT = environment.appName;
 const FILE = 'oauth.ts';
 
 const ajv = new Ajv();
+
+const pool = initPool(environment.pgAuthUser, environment.pgAuthHost, environment.pgAuthDatabase, environment.pgAuthPassword, environment.pgAuthPort); 
 
 export const router = new Router();
 
@@ -40,7 +42,7 @@ router.post('/client', async (ctx) => {
     let sql = `insert into auth.client(id, name, redirect_uri) values ($1, $2, $3)`;
     let params = [id, name, redirect_uri];
 
-    let qres = await query(sql, params);
+    let qres = await query(pool, sql, params);
 
     ctx.status = 200;
     ctx.response.body = {
@@ -93,7 +95,7 @@ router.get('/client', async (ctx) => {
       throw new Error('assertion failed');
     }
 
-    let qres = await query(sql, params);
+    let qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.NOT_FOUND,
@@ -176,7 +178,7 @@ router.del('/client', async (ctx) => {
       let sql = `delete from client where name=$1`;
       let params = [clientName];
 
-      let qres = await query(sql, params);
+      let qres = await query(pool, sql, params);
     }
 
     if (clientId) {
@@ -184,7 +186,7 @@ router.del('/client', async (ctx) => {
       let sql = `delete from client where id=$1`;
       let params = [clientId];
 
-      let qres = await query(sql, params);
+      let qres = await query(pool, sql, params);
     }
 
     ctx.status = 200;

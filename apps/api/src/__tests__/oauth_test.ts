@@ -5,7 +5,7 @@ import { url } from './common';
 
 const fetch = require('node-fetch');
 
-initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
+const pool = initPool(environment.pgAuthUser, environment.pgAuthHost, environment.pgAuthDatabase, environment.pgAuthPassword, environment.pgAuthPort); 
 
 let gRedirectUri = 'https://blablabla.foo.com';
 let gClientId;
@@ -15,10 +15,10 @@ let gUserEmail = 'johndoe@foo.com' ;
 let gPassword =  'bla';
 
 async function cleanDb() {
-  await query("delete from users where user_name = $1", [gUserName]);
-  await query("delete from client where name = $1", [gClientName]);
-  await query("delete from code where user_name = $1", [gUserName]);
-  await query("delete from token where user_name = $1", [gUserName]);
+  await query(pool, "delete from users where user_name = $1", [gUserName]);
+  await query(pool, "delete from client where name = $1", [gClientName]);
+  await query(pool, "delete from code where user_name = $1", [gUserName]);
+  await query(pool, "delete from token where user_name = $1", [gUserName]);
 }
 
 beforeEach(async () => {
@@ -41,7 +41,7 @@ beforeEach(async () => {
 })
 
 afterAll(() => {
-  return releasePool();
+  return releasePool(pool);
 });
 
 
@@ -272,10 +272,10 @@ test('Do not issue acces token if code expired.', async () => {
 
   try {
 
-    let qres = await query('select issued_at from code where id=$1', [code]);
+    let qres = await query(pool, 'select issued_at from code where id=$1', [code]);
     let issued_at = qres.rows[0].issued_at;
     issued_at.setTime(issued_at.getTime() - 3600*1000);
-    await query("update code set issued_at=$1 where id=$2", [issued_at, code]);
+    await query(pool, "update code set issued_at=$1 where id=$2", [issued_at, code]);
 
     hres = await httpPost(`${url()}/oauth/token/issue`, {
       grantType: 'authorization_code',

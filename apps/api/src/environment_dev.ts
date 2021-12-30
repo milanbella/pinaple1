@@ -7,11 +7,11 @@ export let environment: IEnvironment = {
   apiHost: 'localhost',
   apiPort: 5100,
 
-  pgUser: 'auth',
-  pgHost: 'localhost',
-  pgDatabase: 'auth',
-  pgPassword: 'auth',
-  pgPort: 5433,
+  pgAuthUser: 'auth',
+  pgAuthHost: 'localhost',
+  pgAuthDatabase: 'auth',
+  pgAuthPassword: 'auth',
+  pgAuthPort: 5433,
 
   codeTokenValiditySeconds: 10,
   accessTokenValiditySecons: 3600,

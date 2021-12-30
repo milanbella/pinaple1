@@ -1,5 +1,5 @@
 import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
-import { query } from 'pinaple_www/dist/pool';
+import { initPool, query } from 'pinaple_www/dist/pool';
 import { validateSchema, hashString } from './common';
 import { readKeyFromFs, importPrivateKey, importPublicKey, generateJWT, verifyJWT } from 'pinaple_www/dist/token';
 import { environment } from './environment';
@@ -13,6 +13,8 @@ const PROJECT = environment.appName;
 const FILE = 'oauth.ts';
 
 const ajv = new Ajv();
+
+const pool = initPool(environment.pgAuthUser, environment.pgAuthHost, environment.pgAuthDatabase, environment.pgAuthPassword, environment.pgAuthPort); 
 
 export const router = new Router();
 
@@ -38,7 +40,7 @@ async function issueToken(clientId: string, userId: string, userName: string, us
 
       let sql = `insert into token(id, client_id, user_id, user_name, user_email, access_token_hash, refresh_token, issued_at) values ($1, $2, $3, $4, $5, $6, $7, $8)`;
       let params = [id, clientId, userId, userName, userEmail, access_token_hash, refresh_token, issued_at]
-      await query(sql, params);
+      await query(pool, sql, params);
 
       return {
         accessToken: `${jwt}`,
@@ -79,7 +81,7 @@ router.post('/oauth/code/issue', async (ctx) => {
     let client_id, redirect_uri;
     let sql = 'select id, redirect_uri from client where id=$1';
     let params = [ctx.request.body.clientId];
-    let qres = await query(sql, params);
+    let qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
@@ -124,7 +126,7 @@ router.post('/oauth/code/issue', async (ctx) => {
     sql = 'select id, user_name, email,  password from users where user_name=$1';
     params = [ctx.request.body.userName];
 
-    qres = await query(sql, params);
+    qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
@@ -172,7 +174,7 @@ router.post('/oauth/code/issue', async (ctx) => {
     let code = uuidv4();
     sql = 'insert into code(id, client_id, user_id, user_name, user_email, issued_at) values($1, $2, $3, $4, $5, CURRENT_TIMESTAMP)';
     params = [code, client_id, user_id, user_name, email];
-    qres = await query(sql, params);
+    qres = await query(pool, sql, params);
 
     ctx.response.status = 200;
     ctx.response.body = {
@@ -236,7 +238,7 @@ router.post('/oauth/token/issue', async (ctx) => {
     let client_id, client_name, redirect_uri;
     let sql = 'select id, name, redirect_uri from client where id=$1';
     let params = [ctx.request.body.clientId];
-    let qres = await query(sql, params);
+    let qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
@@ -283,7 +285,7 @@ router.post('/oauth/token/issue', async (ctx) => {
     let id, user_id, user_name, user_email, issued_at;
     sql = 'select id, user_id, client_id, user_name, user_email, issued_at from code where id=$1  and client_id=$2';
     params = [code, client_id];
-    qres = await query(sql, params);
+    qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
@@ -320,7 +322,7 @@ router.post('/oauth/token/issue', async (ctx) => {
       // Invalidate code
       sql = 'delete from auth.code where id=$1';
       params = [id];
-      await query(sql, params);
+      await query(pool, sql, params);
 
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
@@ -336,7 +338,7 @@ router.post('/oauth/token/issue', async (ctx) => {
     // Invalidate code
     sql = 'delete from auth.code where id=$1';
     params = [id];
-    await query(sql, params);
+    await query(pool, sql, params);
 
     // Issue access and refresh token.
 
@@ -400,7 +402,7 @@ router.post('/oauth/token/refresh', async (ctx) => {
 
     let sql = 'select id, client_id, user_id, user_name, user_email, issued_at from token where refresh_token=$1';
     let params = [refreshToken];
-    let qres = await query(sql, params);
+    let qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.UNAUTHORIZED,
@@ -440,7 +442,7 @@ router.post('/oauth/token/refresh', async (ctx) => {
 
         sql = 'delete from token where refresh_token=$1';
         params = [refreshToken];
-        await query(ctx, params);
+        await query(pool, sql, params);
 
         let body: IResponseError = {
           errKind: ResponseErrorKind.UNAUTHORIZED,
@@ -458,7 +460,7 @@ router.post('/oauth/token/refresh', async (ctx) => {
 
       sql = `delete from token where refresh_token=$1`;
       params = [refreshToken];
-      await query(sql, params);
+      await query(pool, sql, params);
 
       // Issue acces and refresh token.
 

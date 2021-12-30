@@ -1,10 +1,10 @@
 import { environment } from './environment';
 import { initPool, releasePool, query  } from 'pinaple_www/dist/pool';
 
-initPool(environment.pgUser, environment.pgHost, environment.pgDatabase, environment.pgPassword, environment.pgPort); 
+const pool = initPool(environment.pgAuthUser, environment.pgAuthHost, environment.pgAuthDatabase, environment.pgAuthPassword, environment.pgAuthPort); 
 
 async function testit() {
-  await query("update code set issued_at=$1 where id=$2", [new Date(), 'xxx']);
+  await query(pool, "update code set issued_at=$1 where id=$2", [new Date(), 'xxx']);
 }
 
 testit().then(() => {

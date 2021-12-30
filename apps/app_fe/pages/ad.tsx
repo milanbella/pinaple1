@@ -66,11 +66,6 @@ const Ad: NextPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   function handleOnFileChange(event: SyntheticEvent) {
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@
-    let a: { foo: number }|null = null;
-    a!.foo // OK, type number
-    // @@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
     let images = R.reduce((a: IImage[], file) => {
 
       a.push({

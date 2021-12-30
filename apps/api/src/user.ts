@@ -1,5 +1,5 @@
 import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
-import { query } from 'pinaple_www/dist/pool';
+import { initPool, query } from 'pinaple_www/dist/pool';
 import { validateSchema, hashString } from './common';
 import { environment } from './environment';
 
@@ -11,6 +11,8 @@ const PROJECT = environment.appName;
 const FILE = 'user.ts';
 
 const ajv = new Ajv();
+
+const pool = initPool(environment.pgAuthUser, environment.pgAuthHost, environment.pgAuthDatabase, environment.pgAuthPassword, environment.pgAuthPort); 
 
 export const router = new Router();
 
@@ -45,7 +47,7 @@ router.get('/user', async (ctx) => {
       throw new Error('assertion failed');
     }
 
-    let qres = await query(sql, params);  
+    let qres = await query(pool, sql, params);  
 
     if (qres.rows.length === 1) {
       let data = qres.rows[0];
@@ -120,7 +122,7 @@ router.post('/user', async (ctx) => {
   try {
 
     // check if such a user already exists
-    let qres = await query('select count(*) as cnt from users where user_name=$1', [inData.userName]);
+    let qres = await query(pool, 'select count(*) as cnt from users where user_name=$1', [inData.userName]);
     if (qres.rows[0].cnt > 0) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.RESOURCE_EXISTS,
@@ -132,7 +134,7 @@ router.post('/user', async (ctx) => {
       ctx.response.body = body; 
       return;
     }
-    qres = await query('select count(*) as cnt from users where email=$1', [inData.email]);
+    qres = await query(pool, 'select count(*) as cnt from users where email=$1', [inData.email]);
     if (qres.rows[0].cnt > 0) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.RESOURCE_EXISTS,
@@ -148,7 +150,7 @@ router.post('/user', async (ctx) => {
     // create new user
     let id = uuidv1()
     let password = hashString(inData.password); 
-    qres = await query('insert into users(id, user_name, email, password) values($1, $2, $3, $4)', [id, inData.userName, inData.email, password]);  
+    qres = await query(pool, 'insert into users(id, user_name, email, password) values($1, $2, $3, $4)', [id, inData.userName, inData.email, password]);  
 
     ctx.response.status = 200;
 
@@ -209,7 +211,7 @@ router.del('/user', async (ctx) => {
       return;
     }
 
-    let qres = await query(sql, params);
+    let qres = await query(pool, sql, params);
     ctx.response.status = 200;
     return;
 

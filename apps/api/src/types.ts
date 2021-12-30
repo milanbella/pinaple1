@@ -5,11 +5,11 @@ export interface IEnvironment {
   apiHost: string;
   apiPort: number;
 
-  pgUser: string;
-  pgHost: string;
-  pgDatabase: string;
-  pgPassword: string;
-  pgPort: number;
+  pgAuthUser: string;
+  pgAuthHost: string;
+  pgAuthDatabase: string;
+  pgAuthPassword: string;
+  pgAuthPort: number;
 
   codeTokenValiditySeconds: number;
   accessTokenValiditySecons: number;
