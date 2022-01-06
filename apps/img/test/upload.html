@@ -53,7 +53,10 @@
     }
 
     send().then((body) => {
-      showImages(body);
+      let urls = [];
+      urls.push(body.bigImageUrl);
+      urls.push(body.thumbImageUrl);
+      showImages(urls);
     });
 
 

@@ -5,6 +5,8 @@ import { url } from './common';
 
 const fetch = require('node-fetch');
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 const pool = initPool(environment.pgAuthUser, environment.pgAuthHost, environment.pgAuthDatabase, environment.pgAuthPassword, environment.pgAuthPort); 
 
 let gRedirectUri = 'https://blablabla.foo.com';

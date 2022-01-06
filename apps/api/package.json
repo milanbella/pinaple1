@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "watch": "nodemon dist/app.js",
-    "test": "jest --runInBand",
+    "test": "bash scripts/test.sh",
     "testDebug": "node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand",
     "prettier-check": "prettier --check \"src/**/*.ts\"",
     "prettier-fix": "prettier --write \"src/**/*.ts\"",

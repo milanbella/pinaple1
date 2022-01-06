@@ -17,6 +17,11 @@ interface IFile {
   destination: string;
 }
 
+interface IUploadImageResult {
+  bigImageUrl: string;
+  thumbImageUrl: string;
+}
+
 export const router = new Router();
 const upload = multer({
   dest: 'uploads/'
@@ -48,13 +53,16 @@ async function moveFile(file: IFile): Promise<IFile> {
   
 }
 
-async function resizeImage(file: IFile): Promise<string[]> {
+async function resizeImage(file: IFile): Promise<IUploadImageResult> {
   const FUNC = 'resizeFile()';
   try {
     const image = sharp(file.path);
     const meta = await image.metadata();
 
-    let urls = [];
+    let result: IUploadImageResult  = {
+      bigImageUrl: '',
+      thumbImageUrl: '',
+    }
 
     async function toFile(image, file, suffix): Promise<string> {
       await image.jpeg({ mozjpeg: true }).toFile(`${file.path}${suffix}.jpg`)
@@ -64,22 +72,22 @@ async function resizeImage(file: IFile): Promise<string[]> {
     let suffix = '_big';
     if (meta.height > 1200) {
       let url = await toFile(image.resize({height: 1200}), file, suffix);
-      urls.push(url);
+      result.bigImageUrl = url;
     } else {
       let url = await toFile(image, file, suffix);
-      urls.push(url);
+      result.bigImageUrl = url;
     }
 
     suffix = '_thumb';
     if (meta.height > 280) {
       let url = await toFile(image.resize({height: 280}), file, suffix)
-      urls.push(url);
+      result.thumbImageUrl = url;
     } else {
       let url = await toFile(image, file, suffix)
-      urls.push(url);
+      result.thumbImageUrl = url;
     }
 
-    return urls;
+    return result;
 
   } catch(err) {
     console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
@@ -100,8 +108,8 @@ router.post(
     const FUNC = 'router.post(/upload)';
     try {
       let file = await moveFile(ctx.request.file);
-      let imageUrls = await resizeImage(file);
-      ctx.response.body = imageUrls;
+      let result = await resizeImage(file);
+      ctx.response.body = result;
 
     } catch(err) {
       console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
