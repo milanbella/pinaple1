@@ -1,6 +1,6 @@
 import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
 import { initPool, query } from 'pinaple_www/dist/pool';
-import { validateSchema, hashString } from './common';
+import { validateSchemaIn, validateSchemaOut, hashString } from './common';
 import { environment } from './environment';
 
 const Router = require('@koa/router');
@@ -14,42 +14,174 @@ const ajv = new Ajv();
 
 export const router = new Router();
 
-const schemaAdCreate = ajv.compile({
-  type: "object",
+const pool = initPool(environment.pgAdUser, environment.pgAdHost, environment.pgAdDatabase, environment.pgAdPassword, environment.pgAdPort); 
+
+async function rollback() {
+  try {
+    await query(pool, 'rollback');
+  } catch(err) {
+  }
+}
+
+const schemaAdCreateIn = ajv.compile({
+  type: 'object',
   properties: {
-    category: {type: "string"},
-    sub_category: {type: "string"},
-    text: {type: "string"},
+    category: {type: 'number'},
+    subCategory: {type: 'number'},
+    text: {type: 'string'},
     images: {
-      type: "array",
+      type: 'array',
       items: {
-        type: "object",
+        type: 'object',
         properties: {
-          url: {type: "string"},
-          image_type: {enum: ["original", "big", "thumb" ]}
+          imageBigUrl: {type: 'string'},
+          imageThumbUrl: {type: 'string'}
         }
       }
     }
-
   },
   required: [
-    "category",
-    "sub_category",
+    "category_id",
+    "sub_category_id",
     "text",
     "images"
+  ],
+  additionalProperties: false,
+});
+const schemaAdCreateOut = ajv.compile({
+  type: 'object',
+  properties: {
+    ad_id: {type: 'string'}
+  },
+  required: [
+    "ad_id",
   ],
   additionalProperties: false,
 });
 router.post('/ad', async (ctx) => {
   const FUNC = 'router.post(/ad)';
 
-  if (!validateSchema(schemaAdCreate, ctx)) {
-    return;
-  }
-
   try {
-    let inData = ctx.request.body;
+    if (!validateSchemaIn(schemaAdCreateIn, ctx)) {
+      return;
+    }
+
+    let sql = 'select id from sub_category where id=$1';
+    let params = [ctx.request.body.sub_category_id];
+    let qres = await query(pool, sql, params);
+    if (qres.rows.length < 1) {
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'no such category_id'
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    } 
+
+    sql = 'select id from sub_category where id=$1';
+    params = [ctx.request.body.category_id];
+    qres = await query(pool, sql, params);
+    if (qres.rows.length < 1) {
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: 'no such sub_category_id'
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    } 
+
+    await query(pool, 'begin')
+
+    let ad_id = uuidv1(); 
+    sql = 'insert into ad(id, text, created_at) values ($1, $2, CURRENT_TIMESTAMP())';
+    params = [ad_id, ctx.request.body.text];
+    try {
+      await query(pool, sql, params);
+    } catch(err) {
+      await rollback();
+
+      console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.INTERNAL_ERROR,
+        data: {
+          message: 'internal error'
+        }
+      };
+      ctx.response.status = 500;
+      ctx.response.body = body;
+      return;
+    }
+
+    interface IImage {
+      imageBigUrl: string,
+      imageThumbUrl: string,
+    }
+
+    for (let image of ctx.request.body.images as IImage[]) {
+      let image_id = uuidv1(); 
+
+      sql = `insert into ad_image_big(id, ad_id, url) values ($1, $2, $3)`;
+      params = [image_id, ad_id, image.imageBigUrl];
+      try {
+        await query(pool, sql, params);
+      } catch(err) {
+        await rollback();
+
+        console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
+        let body: IResponseError = {
+          errKind: ResponseErrorKind.INTERNAL_ERROR,
+          data: {
+            message: 'internal error'
+          }
+        };
+        ctx.response.status = 500;
+        ctx.response.body = body;
+        return;
+      }
+
+      sql = `insert into ad_image_thumb(id, ad_id, url) values ($1, $2, $3)`;
+      params = [image_id, ad_id, image.imageThumbUrl];
+      try {
+        await query(pool, sql, params);
+      } catch(err) {
+        await rollback();
+
+        console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
+        let body: IResponseError = {
+          errKind: ResponseErrorKind.INTERNAL_ERROR,
+          data: {
+            message: 'internal error'
+          }
+        };
+        ctx.response.status = 500;
+        ctx.response.body = body;
+        return;
+      }
+    }
+
+    await query(pool, 'end')
+
+    ctx.response.status = 200;
+    ctx.response.body = {
+      ad_id: ad_id
+    };
+
+    if (!validateSchemaOut(schemaAdCreateOut, ctx)) {
+      return;
+    }
+    return;
+
   } catch(err) {
+
+    rollback();
+
+
     console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
     let body: IResponseError = {
       errKind: ResponseErrorKind.INTERNAL_ERROR,
@@ -64,3 +196,332 @@ router.post('/ad', async (ctx) => {
 
 
 });
+
+const schemaAdReadOut = ajv.compile({
+  type: 'object',
+  properties: {
+    id: {type: 'string'},
+    createdAt: {type: 'string'},
+    text: {type: 'string'},
+    categoryId: {type: 'string'},
+    categoryName: {type: 'string'},
+    subcategoryId: {type: 'string'},
+    subcategoryName: {type: 'string'},
+    iamges: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          imageBigUrl: {type: 'string'},
+          imageThumbUrl: {type: 'string'},
+        },
+        required: [
+          'imageBigUrl',
+          'imageThumbUrl',
+        ]
+      }
+    }
+  },
+  required: [
+    'id',
+    'createdAt',
+    'text',
+    'categoryId',
+    'categoryName',
+    'subCategoryId',
+    'subCategoryName',
+    'images',
+  ],
+  additionalProperties: false,
+});
+router.get('/ad', async (ctx) => {
+  const FUNC = 'router.get(/ad)';
+
+  try {
+    if (!ctx.request.query.adId) {
+
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: `'adId' query parameter required`
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    }
+
+    let ad_id = ctx.request.query.adId;
+
+    let sql = 'select id, url from ad_image_big where ad_id=$1'; 
+    let params = [ad_id]; 
+    let qres = await query(pool, sql, params);
+    let images = [];
+    interface IImage {
+      imageBigUrl: string;
+      imageThumbUrl: string;
+    }
+    for (let row of qres.rows) {
+      let image: IImage = {
+        imageBigUrl: '',
+        imageThumbUrl: '',
+      };
+      image.imageBigUrl = row.url;
+
+      sql = 'select url from ad_image_thumb where id=$1'; 
+      params = [ad_id]; 
+      let qresT = await query(pool, sql, params);
+      if (qresT.rows.length === 1) {
+        image.imageThumbUrl = qresT.rows[0].url;
+      }
+
+      images.push(image);
+    }
+
+    sql = 'select sub_category_id, text, created_at from ad where id=$1';
+    params = [ad_id];
+    qres = await query(pool, sql, params);
+    if (qres.rows.length < 1) {
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.NOT_FOUND,
+        data: {
+          message: 'no found'
+        }
+      };
+      ctx.response.status = 404;
+      ctx.response.body = body;
+      return;
+    }
+
+    let sub_category_id = qres.rows[0].sub_category_id;
+    let text = qres.rows[0].text;
+
+    sql = 'select name, category_id from sub_categrory where id=$1';
+    params = [sub_category_id];
+    qres = await query(pool, sql, params);
+    if (qres.rows.length < 1) {
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.NOT_FOUND,
+        data: {
+          message: 'subcategory not found'
+        }
+      };
+      ctx.response.status = 404;
+      ctx.response.body = body;
+      return;
+    }
+    let sub_category_name = qres.rows[0].name;
+    let category_id = qres.rows[0].category_id; 
+    let created_at = qres.rows[0].created_at;
+
+    sql = 'select name, from categrory where id=$1';
+    params = [category_id];
+    qres = await query(pool, sql, params);
+    if (qres.rows.length < 1) {
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.NOT_FOUND,
+        data: {
+          message: 'category not found'
+        }
+      };
+      ctx.response.status = 404;
+      ctx.response.body = body;
+      return;
+    }
+    let category_name = qres.rows[0].name;
+
+    ctx.response.status = 200;
+    ctx.response.body = {
+      id: ad_id,
+      createdAt: created_at,
+      categoryId: category_id,
+      categoryName: category_name,
+      subCategoryId: sub_category_id,
+      subCategoryName: sub_category_name,
+      images: images,
+    };
+
+    if (!validateSchemaOut(schemaAdReadOut, ctx)) {
+      return;
+    }
+    return;
+
+  } catch(err) {
+
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
+    return;
+  }
+
+
+});
+
+const schemaCategoriesReadOut = ajv.compile({
+  type: 'object',
+  properties: {
+    categories: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: {type: 'string'},
+          name: {type: 'string'}
+        },
+        required: [
+          'id',
+          'name',
+        ]
+      }
+    }
+  },
+  required: [
+    'categories',
+  ],
+  additionalProperties: false,
+});
+router.get('/categories', async (ctx) => {
+  const FUNC = 'router.get(/categories)';
+
+  try {
+
+    let sql = 'select id, name from category'; 
+    let params = [];
+    let qres = await query(pool, sql, params);
+    let categories = []
+    for (let row of qres.rows) {
+      categories.push({
+        id: row.id,
+        name: row.name,
+      });
+    }
+
+    ctx.response.status = 200;
+    ctx.response.body = {
+      categories: categories,
+    };
+
+    if (!validateSchemaOut(schemaCategoriesReadOut, ctx)) {
+      return;
+    }
+    return;
+
+  } catch(err) {
+
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
+    return;
+  }
+
+});
+
+const schemaSubCategoriesReadOut = ajv.compile({
+  type: 'object',
+  properties: {
+    category_id: {type: 'string'},
+    category_name: {type: 'string'},
+    subCategories: {
+      type: 'array',
+      items: {
+        type: 'object',
+        properties: {
+          id: {type: 'string'},
+          name: {type: 'string'}
+        },
+        required: [
+          'id',
+          'name',
+        ]
+      }
+    }
+  },
+  required: [
+    'subCategories',
+  ],
+  additionalProperties: false,
+});
+router.get('/subCategories', async (ctx) => {
+  const FUNC = 'router.get(/subCategories)';
+
+  try {
+    if (!ctx.request.query.categoryId) {
+
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.BAD_REQUEST,
+        data: {
+          message: `'categoryId' query parameter required`
+        }
+      };
+      ctx.response.status = 400;
+      ctx.response.body = body;
+      return;
+    }
+    let category_id = ctx.request.query.categoryId;
+
+    let sql = 'select name from category where id=$1'; 
+    let params = [category_id];
+    let qres = await query(pool, sql, params);
+    if (qres.rows.length < 1) {
+      let body: IResponseError = {
+        errKind: ResponseErrorKind.NOT_FOUND,
+        data: {
+          message: 'category not found'
+        }
+      };
+      ctx.response.status = 404;
+      ctx.response.body = body;
+      return;
+    }
+    let category_name = qres.rows[0].name;
+
+
+    sql = 'select id, name from sub_category where category_id=$1'; 
+    params = [category_id];
+    qres = await query(pool, sql, params);
+    let subCategories = []
+    for (let row of qres.rows) {
+      subCategories.push({
+        id: row.id,
+        name: row.name,
+      });
+    }
+
+    ctx.response.status = 200;
+    ctx.response.body = {
+      categoryId: category_id,
+      categoryName: category_name,
+      subCategories: subCategories,
+    };
+
+    if (!validateSchemaIn(schemaSubCategoriesReadOut, ctx)) {
+      return;
+    }
+    return;
+
+  } catch(err) {
+    console.error(`${PROJECT}:${FILE}:${FUNC} error: ${err}`, err);
+    let body: IResponseError = {
+      errKind: ResponseErrorKind.INTERNAL_ERROR,
+      data: {
+        message: 'internal error'
+      }
+    };
+    ctx.response.status = 500;
+    ctx.response.body = body;
+    return;
+  }
+})
+

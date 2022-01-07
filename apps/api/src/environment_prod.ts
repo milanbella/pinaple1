@@ -13,6 +13,12 @@ export let environment: IEnvironment = {
   pgAuthPassword: 'auth',
   pgAuthPort: 5433,
 
+  pgAdUser: 'ad',
+  pgAdHost: 'localhost',
+  pgAdDatabase: 'ad',
+  pgAdPassword: 'ad',
+  pgAdPort: 5433,
+
   codeTokenValiditySeconds: 10,
   accessTokenValiditySecons: 3600,
   refreshTokenValidityHours: 5,

@@ -1,6 +1,6 @@
 import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
 import { initPool, query } from 'pinaple_www/dist/pool';
-import { validateSchema, hashString } from './common';
+import { validateSchemaIn, hashString } from './common';
 import { readKeyFromFs, importPrivateKey, importPublicKey, generateJWT, verifyJWT } from 'pinaple_www/dist/token';
 import { environment } from './environment';
 
@@ -72,7 +72,7 @@ const schemaOauthCodeIssue = ajv.compile({
 router.post('/oauth/code/issue', async (ctx) => {
   const FUNC = 'router.get(/oauth/code/issue)';
   try {
-    if (!validateSchema(schemaOauthCodeIssue, ctx)) {
+    if (!validateSchemaIn(schemaOauthCodeIssue, ctx)) {
       return;
     }
 
@@ -216,7 +216,7 @@ const schemaOauthTokenIssue = ajv.compile({
 router.post('/oauth/token/issue', async (ctx) => {
   const FUNC = 'router.get(/oauth/token/issue)';
   try {
-    if (!validateSchema(schemaOauthTokenIssue, ctx)) {
+    if (!validateSchemaIn(schemaOauthTokenIssue, ctx)) {
       return;
     }
 
@@ -382,7 +382,7 @@ const schemaOauthTokenRefresh = ajv.compile({
 router.post('/oauth/token/refresh', async (ctx) => {
   const FUNC = 'router.get(/oauth/token/refresh)';
   try {
-    if (!validateSchema(schemaOauthTokenRefresh, ctx)) {
+    if (!validateSchemaIn(schemaOauthTokenRefresh, ctx)) {
       return;
     }
 

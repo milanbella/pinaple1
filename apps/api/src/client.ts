@@ -1,6 +1,6 @@
 import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
 import { initPool, query } from 'pinaple_www/dist/pool';
-import { validateSchema } from './common';
+import { validateSchemaIn } from './common';
 import { environment } from './environment';
 
 const Router = require('@koa/router');
@@ -31,7 +31,7 @@ const schemaClientCreate = ajv.compile({
 router.post('/client', async (ctx) => {
   const FUNC = 'router.post(/client)';
   try {
-    if (!validateSchema(schemaClientCreate, ctx)) {
+    if (!validateSchemaIn(schemaClientCreate, ctx)) {
       return;
     }
 
@@ -72,7 +72,7 @@ router.get('/client', async (ctx) => {
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
-          message: `'clientId' or 'clientName' parameter required`
+          message: `'clientId' or 'clientName' query parameter required`
         }
       };
       ctx.response.status = 400;
@@ -153,7 +153,7 @@ router.del('/client', async (ctx) => {
   const FUNC = 'router.del(/client)';
   try {
 
-    if (!validateSchema(schemaClientDelete, ctx)) {
+    if (!validateSchemaIn(schemaClientDelete, ctx)) {
       return;
     }
 

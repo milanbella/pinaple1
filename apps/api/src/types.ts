@@ -11,6 +11,12 @@ export interface IEnvironment {
   pgAuthPassword: string;
   pgAuthPort: number;
 
+  pgAdUser: string;
+  pgAdHost: string;
+  pgAdDatabase: string;
+  pgAdPassword: string;
+  pgAdPort: number;
+
   codeTokenValiditySeconds: number;
   accessTokenValiditySecons: number;
   refreshTokenValidityHours: number;

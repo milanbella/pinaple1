@@ -1,6 +1,6 @@
 import { IResponseError, ResponseErrorKind   } from 'pinaple_types/dist/http';
 import { initPool, query } from 'pinaple_www/dist/pool';
-import { validateSchema, hashString } from './common';
+import { validateSchemaIn, hashString } from './common';
 import { environment } from './environment';
 
 const Router = require('@koa/router');
@@ -114,7 +114,7 @@ const schemaUserCreate = ajv.compile({
 router.post('/user', async (ctx) => {
   const FUNC = 'router.post(/user)';
 
-  if (!validateSchema(schemaUserCreate, ctx)) {
+  if (!validateSchemaIn(schemaUserCreate, ctx)) {
     return;
   }
   let inData = ctx.request.body;
@@ -182,7 +182,7 @@ router.del('/user', async (ctx) => {
   const FUNC = 'router.del(/user)';
   try {
 
-    if (!validateSchema(schemaUserDelete, ctx)) {
+    if (!validateSchemaIn(schemaUserDelete, ctx)) {
       return;
     }
 
