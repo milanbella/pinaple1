@@ -4,6 +4,7 @@ import { IResponseError } from 'pinaple_types/dist/http';
 import { router as userRouter } from './user';
 import { router as clientRouter } from './client';
 import { router as oauthRouter } from './oauth';
+import { router as adRouter } from './ad';
 
 import * as fs from 'fs';
 const path = require('path');
@@ -32,6 +33,7 @@ app
   .use(userRouter.routes())
   .use(clientRouter.routes())
   .use(oauthRouter.routes())
+  .use(adRouter.routes())
 ;
 
 

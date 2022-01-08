@@ -26,8 +26,8 @@ async function rollback() {
 const schemaAdCreateIn = ajv.compile({
   type: 'object',
   properties: {
-    category: {type: 'number'},
-    subCategory: {type: 'number'},
+    categoryId: {type: 'string'},
+    subCategoryId: {type: 'string'},
     text: {type: 'string'},
     images: {
       type: 'array',
@@ -41,8 +41,8 @@ const schemaAdCreateIn = ajv.compile({
     }
   },
   required: [
-    "category_id",
-    "sub_category_id",
+    "categoryId",
+    "subCategoryId",
     "text",
     "images"
   ],
@@ -51,10 +51,10 @@ const schemaAdCreateIn = ajv.compile({
 const schemaAdCreateOut = ajv.compile({
   type: 'object',
   properties: {
-    ad_id: {type: 'string'}
+    adId: {type: 'string'}
   },
   required: [
-    "ad_id",
+    "adId",
   ],
   additionalProperties: false,
 });
@@ -67,28 +67,29 @@ router.post('/ad', async (ctx) => {
     }
 
     let sql = 'select id from sub_category where id=$1';
-    let params = [ctx.request.body.sub_category_id];
+    let params = [ctx.request.body.subCategoryId];
     let qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
-          message: 'no such category_id'
+          message: 'no such subCategoryId'
         }
       };
       ctx.response.status = 400;
       ctx.response.body = body;
       return;
     } 
+    
 
-    sql = 'select id from sub_category where id=$1';
-    params = [ctx.request.body.category_id];
+    sql = 'select id from category where id=$1';
+    params = [ctx.request.body.categoryId];
     qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
       let body: IResponseError = {
         errKind: ResponseErrorKind.BAD_REQUEST,
         data: {
-          message: 'no such sub_category_id'
+          message: 'no such categoryId'
         }
       };
       ctx.response.status = 400;
@@ -99,8 +100,8 @@ router.post('/ad', async (ctx) => {
     await query(pool, 'begin')
 
     let ad_id = uuidv1(); 
-    sql = 'insert into ad(id, text, created_at) values ($1, $2, CURRENT_TIMESTAMP())';
-    params = [ad_id, ctx.request.body.text];
+    sql = 'insert into ad(id, sub_category_id, text, created_at) values ($1, $2, $3, CURRENT_TIMESTAMP)';
+    params = [ad_id, ctx.request.body.subCategoryId, ctx.request.body.text];
     try {
       await query(pool, sql, params);
     } catch(err) {
@@ -169,7 +170,7 @@ router.post('/ad', async (ctx) => {
 
     ctx.response.status = 200;
     ctx.response.body = {
-      ad_id: ad_id
+      adId: ad_id
     };
 
     if (!validateSchemaOut(schemaAdCreateOut, ctx)) {
@@ -205,9 +206,9 @@ const schemaAdReadOut = ajv.compile({
     text: {type: 'string'},
     categoryId: {type: 'string'},
     categoryName: {type: 'string'},
-    subcategoryId: {type: 'string'},
-    subcategoryName: {type: 'string'},
-    iamges: {
+    subCategoryId: {type: 'string'},
+    subCategoryName: {type: 'string'},
+    images: {
       type: 'array',
       items: {
         type: 'object',
@@ -267,9 +268,10 @@ router.get('/ad', async (ctx) => {
         imageThumbUrl: '',
       };
       image.imageBigUrl = row.url;
+      let image_id = row.id;
 
-      sql = 'select url from ad_image_thumb where id=$1'; 
-      params = [ad_id]; 
+      sql = 'select url from ad_image_thumb where id=$1 and ad_id=$2'; 
+      params = [image_id, ad_id]; 
       let qresT = await query(pool, sql, params);
       if (qresT.rows.length === 1) {
         image.imageThumbUrl = qresT.rows[0].url;
@@ -295,8 +297,9 @@ router.get('/ad', async (ctx) => {
 
     let sub_category_id = qres.rows[0].sub_category_id;
     let text = qres.rows[0].text;
+    let created_at = qres.rows[0].created_at;
 
-    sql = 'select name, category_id from sub_categrory where id=$1';
+    sql = 'select name, category_id from sub_category where id=$1';
     params = [sub_category_id];
     qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
@@ -312,9 +315,8 @@ router.get('/ad', async (ctx) => {
     }
     let sub_category_name = qres.rows[0].name;
     let category_id = qres.rows[0].category_id; 
-    let created_at = qres.rows[0].created_at;
 
-    sql = 'select name, from categrory where id=$1';
+    sql = 'select name from category where id=$1';
     params = [category_id];
     qres = await query(pool, sql, params);
     if (qres.rows.length < 1) {
@@ -333,7 +335,8 @@ router.get('/ad', async (ctx) => {
     ctx.response.status = 200;
     ctx.response.body = {
       id: ad_id,
-      createdAt: created_at,
+      createdAt: created_at.toISOString(),
+      text: text,
       categoryId: category_id,
       categoryName: category_name,
       subCategoryId: sub_category_id,
@@ -431,8 +434,8 @@ router.get('/categories', async (ctx) => {
 const schemaSubCategoriesReadOut = ajv.compile({
   type: 'object',
   properties: {
-    category_id: {type: 'string'},
-    category_name: {type: 'string'},
+    categoryId: {type: 'string'},
+    categoryName: {type: 'string'},
     subCategories: {
       type: 'array',
       items: {
@@ -449,6 +452,8 @@ const schemaSubCategoriesReadOut = ajv.compile({
     }
   },
   required: [
+    'categoryId',
+    'categoryName',
     'subCategories',
   ],
   additionalProperties: false,
@@ -506,7 +511,10 @@ router.get('/subCategories', async (ctx) => {
       subCategories: subCategories,
     };
 
-    if (!validateSchemaIn(schemaSubCategoriesReadOut, ctx)) {
+    console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ cp 500');
+    console.dir(ctx.response.body);
+
+    if (!validateSchemaOut(schemaSubCategoriesReadOut, ctx)) {
       return;
     }
     return;

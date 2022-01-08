@@ -12,9 +12,9 @@ create index sub_category__category_id on ad.sub_category(category_id);
 
 create table ad.ad (
   id varchar(50) not null primary key,
-  text varchar(5000)
+  text varchar(5000),
   sub_category_id varchar(50) not null references ad.sub_category(id), 
-  created_at timestamp with time zone  not null;
+  created_at timestamp with time zone  not null
 );
 create index ad__sub_category_id on ad.ad(sub_category_id);
 
