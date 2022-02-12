@@ -1,34 +1,34 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: pinaple-auth-be-deployment
+  name: pinaple-img-deployment
   labels:
-    app: pinaple-auth-be
+    app: pinaple-img
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: pinaple-auth-be
+      app: pinaple-img
   template:
     metadata:
       labels:
-        app: pinaple-auth-be
+        app: pinaple-img
     spec:
       terminationGracePeriodSeconds: 30
       containers:
-      - name: pinaple-auth-be
-        image: milanbella/pinaple-auth-be
+      - name: pinaple-img
+        image: milanbella/pinaple-img
         imagePullPolicy: Always
         ports:
-        - containerPort: 80
+        - containerPort: 443
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: pinaple-auth-be
+  name: pinaple-img
 spec:
   selector:
-    app: pinaple-auth-be
+    app: pinaple-img
   ports:
     - protocol: TCP
-      port: 80
+      port: 443

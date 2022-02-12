@@ -15,5 +15,5 @@ RUN npm install --production
 # Bundle app source
 COPY dist ./dist
 
-EXPOSE 5201
+EXPOSE 443
 CMD [ "node", "dist/app.js" ]

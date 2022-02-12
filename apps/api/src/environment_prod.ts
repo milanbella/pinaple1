@@ -5,7 +5,7 @@ export let environment: IEnvironment = {
 
   apiProtocol: 'http',
   apiHost: 'localhost',
-  apiPort: 80,
+  apiPort: 443,
 
   pgAuthUser: 'auth',
   pgAuthHost: 'localhost',

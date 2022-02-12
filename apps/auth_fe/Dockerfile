@@ -15,5 +15,5 @@ RUN npm install --production
 # Bundle app source
 COPY .next ./.next
 
-EXPOSE 80
+EXPOSE 443
 CMD [ "npm", "run", "start-prod"]

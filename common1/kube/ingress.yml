@@ -14,7 +14,17 @@ spec:
           service:
             name:  pinaple-api
             port:
-              number: 80
+              number: 443
+  - host: pinaple-img-k
+    http:
+      paths:
+      - pathType: Prefix
+        path: /
+        backend:
+          service:
+            name:  pinaple-img
+            port:
+              number: 443
   - host: pinaple-auth-k
     http:
       paths:
@@ -24,21 +34,28 @@ spec:
           service:
             name:  pinaple-auth-fe
             port:
-              number: 80
+              number: 443
       - pathType: Prefix
         path: /api
         backend:
           service:
             name:  pinaple-auth-be
             port:
-              number: 80
+              number: 443
       - pathType: Prefix
         path: /authorize
         backend:
           service:
             name:  pinaple-auth-be
             port:
-              number: 80
+              number: 443
+      - pathType: Prefix
+        path: /token
+        backend:
+          service:
+            name:  pinaple-auth-be
+            port:
+              number: 443
   - host: pinaple-app-k
     http:
       paths:
