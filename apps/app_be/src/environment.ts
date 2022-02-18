@@ -5,6 +5,9 @@ export let environment: IEnvironment = {
 
   port: 5301,
 
+  sshKeyFilePath: './key_l.pem', 
+  sshCertFilePath: './cert_l.pem',
+
   apiProtocol: 'https',
   apiHost: 'pinaple-api',
   apiPort: 443,

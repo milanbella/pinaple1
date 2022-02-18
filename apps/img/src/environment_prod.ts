@@ -5,7 +5,7 @@ export let environment: IEnvironment = {
 
   port: 5401,
 
-  sshKeyFilePath: './key.pem'; 
-  sshCertFilePath: './cert.pem';
+  sshKeyFilePath: './key.pem', 
+  sshCertFilePath: './cert.pem',
 
 }

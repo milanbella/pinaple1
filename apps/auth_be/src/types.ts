@@ -3,6 +3,9 @@ export interface IEnvironment {
 
   port: number;
 
+  sshKeyFilePath: string; 
+  sshCertFilePath: string;
+
   apiProtocol: string;
   apiHost: string;
   apiPort: number;
