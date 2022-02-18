@@ -3,10 +3,13 @@ import { IEnvironment } from './types';
 export let environment: IEnvironment = {
   appName: 'pinaple-auth-be',
 
-  port: 80,
+  port: 5201,
 
-  apiProtocol: 'http',
-  apiHost: 'pinaple-api-k',
-  apiPort: 80,
+  sshKeyFilePath: './key.pem'; 
+  sshCertFilePath: './cert.pem';
+
+  apiProtocol: 'https',
+  apiHost: 'pinaple-api',
+  apiPort: 443,
 }
 

@@ -7,6 +7,9 @@ export let environment: IEnvironment = {
   apiHost: 'localhost',
   apiPort: 5100,
 
+  sshKeyFilePath: './key_l.pem',
+  sshCertFilePath: './cert_l.pem',
+
   pgAuthUser: 'auth',
   pgAuthHost: 'localhost',
   pgAuthDatabase: 'auth',

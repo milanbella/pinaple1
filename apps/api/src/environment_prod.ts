@@ -3,9 +3,12 @@ import { IEnvironment } from './types';
 export let environment: IEnvironment = {
   appName: 'pinaple-api', 
 
-  apiProtocol: 'http',
+  apiProtocol: 'https',
   apiHost: 'localhost',
-  apiPort: 443,
+  apiPort: 5100,
+
+  sshKeyFilePath: './key.pem',
+  sshCertFilePath: './cert.pem',
 
   pgAuthUser: 'auth',
   pgAuthHost: 'localhost',

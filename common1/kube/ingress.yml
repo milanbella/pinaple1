@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: pinaple-api-k
+  - host: pinaple-api
     http:
       paths:
       - pathType: Prefix
@@ -14,8 +14,8 @@ spec:
           service:
             name:  pinaple-api
             port:
-              number: 443
-  - host: pinaple-img-k
+              number: 5100
+  - host: pinaple-img
     http:
       paths:
       - pathType: Prefix
@@ -25,7 +25,7 @@ spec:
             name:  pinaple-img
             port:
               number: 443
-  - host: pinaple-auth-k
+  - host: pinaple-auth
     http:
       paths:
       - pathType: Prefix
@@ -56,7 +56,7 @@ spec:
             name:  pinaple-auth-be
             port:
               number: 443
-  - host: pinaple-app-k
+  - host: pinaple-app
     http:
       paths:
       - pathType: Prefix
@@ -73,3 +73,16 @@ spec:
             name:  pinaple-app-be
             port:
               number: 80
+  tls:
+    - secretName: secret-ingress-api
+      hosts:
+      - pinaple-api
+    - secretName: secret-ingress-img
+      hosts:
+      - pinaple-img
+    - secretName: secret-ingress-auth
+      hosts:
+      - pinaple-auth
+    - secretName: secret-ingress-app
+      hosts:
+      - pinaple-auth

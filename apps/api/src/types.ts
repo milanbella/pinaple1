@@ -5,6 +5,9 @@ export interface IEnvironment {
   apiHost: string;
   apiPort: number;
 
+  sshKeyFilePath: string; 
+  sshCertFilePath: string;
+
   pgAuthUser: string;
   pgAuthHost: string;
   pgAuthDatabase: string;

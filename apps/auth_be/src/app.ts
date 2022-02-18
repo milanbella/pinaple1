@@ -44,8 +44,8 @@ app.use(router.routes())
 
 const serverConfig = {
   port: environment.port, 
-  key: fs.readFileSync(path.resolve(process.cwd(), 'key.pem'), 'utf8').toString(),
-  cert: fs.readFileSync(path.resolve(process.cwd(), 'cert.pem'), 'utf8').toString(),
+  key: fs.readFileSync(path.resolve(process.cwd(), environmnet.sshKeyFilePath), 'utf8').toString(),
+  cert: fs.readFileSync(path.resolve(process.cwd(), environment.sshKeyCertPath), 'utf8').toString(),
 }
 
 const httpsServer = https.createServer(serverConfig, app.callback());
