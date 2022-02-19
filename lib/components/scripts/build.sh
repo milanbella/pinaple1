@@ -1,4 +1,4 @@
 #!/bin/bash
-set -xe
+set -e
 npm run build-next
-npm run build-lib
+npm run build-lib 2>&1

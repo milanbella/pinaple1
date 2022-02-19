@@ -1,5 +1,5 @@
 #!/bin/bash
-set -xe
+set -e
 npx tsc
 if [ ! -d dist/styles ]; then
   mkdir dist/styles
