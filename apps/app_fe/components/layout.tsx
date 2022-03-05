@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import styles from "../styles/components/Layout.module.scss";
-import Header from './header';
-import Footer from './footer';
+import Header from './Header';
+import Footer from './Footer';
 
 const Layout: NextPage = ({ children }) => {
   return (
