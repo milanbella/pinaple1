@@ -1,42 +1,63 @@
 ---
-- name: Install base packages
-  apt:
-    name:
-      - tmux
-      - vim
-      - net-tools
-- name: Unarchive .vim.tar
-  ansible.builtin.unarchive:
-    src: ../files/vim/.vim.tar.gz
-    dest: /tmp
-  become: yes
-- name: Ensure directory exists /usr/share/vim/vimfiles
-  ansible.builtin.file:
-    path: /usr/share/vim/vimfiles
-    state: directory
-  become: yes
-- name: Copy .vim/autoload 
-  ansible.builtin.copy:
-    src: /tmp/.vim/autoload
-    dest: /usr/share/vim/vimfiles
-  become: yes
-- name: Copy .vim/bundle 
-  ansible.builtin.copy:
-    src: /tmp/.vim/bundle
-    dest: /usr/share/vim/vimfiles
-  become: yes
-- name: Create /etc/vim/vimrc.locals
-  ansible.builtin.copy:
-    src: ../files/vim/.vimrc
-    dest: /etc/vim/vimrc.local
-  become: yes
-- name: Remove /tmp/.vim
-  ansible.builtin.file:
-    path: /tmp/.vim
-    state: absent
-  become: yes
-- name: Configure tmux
-  ansible.builtin.copy:
-    src: ../files/tmux/.tmux.conf
-    dest: "{{ ansible_env.HOME }}" 
-
+- name: Check if '/opt/.ansible_state/roles/common' exists
+  stat:
+    path: /opt/.ansible_state/roles/common
+  register: ansible_state_roles_common
+- name: Installing common role
+  block:
+  - name: Install base packages
+    apt:
+      name:
+        - tmux
+        - vim
+        - net-tools
+  - name: Unarchive .vim.tar
+    ansible.builtin.unarchive:
+      src: ../files/vim/.vim.tar.gz
+      dest: /tmp
+    become: yes
+  - name: Ensure directory exists /usr/share/vim/vimfiles
+    ansible.builtin.file:
+      path: /usr/share/vim/vimfiles
+      state: directory
+    become: yes
+  - name: Copy .vim/autoload 
+    ansible.builtin.copy:
+      src: /tmp/.vim/autoload
+      dest: /usr/share/vim/vimfiles
+    become: yes
+  - name: Copy .vim/bundle 
+    ansible.builtin.copy:
+      src: /tmp/.vim/bundle
+      dest: /usr/share/vim/vimfiles
+    become: yes
+  - name: Create /etc/vim/vimrc.locals
+    ansible.builtin.copy:
+      src: ../files/vim/.vimrc
+      dest: /etc/vim/vimrc.local
+    become: yes
+  - name: Remove /tmp/.vim
+    ansible.builtin.file:
+      path: /tmp/.vim
+      state: absent
+    become: yes
+  - name: Configure tmux
+    ansible.builtin.copy:
+      src: ../files/tmux/.tmux.conf
+      dest: "{{ ansible_env.HOME }}" 
+  - name: Create '/opt/.ansible_state' folder
+    file:
+      path: /opt/.ansible_state
+      state: directory
+    become: yes
+  - name: Create '/opt/.ansible_state/roles' folder
+    file:
+      path: /opt/.ansible_state/roles
+      state: directory
+    become: yes
+  - name: Create '/opt/.ansible_state/roles/common' file
+    file:
+      path: /opt/.ansible_state/roles/common
+      state: touch
+    become: yes
+  when: not ansible_state_roles_common.stat.exists
